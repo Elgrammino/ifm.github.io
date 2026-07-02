@@ -213,7 +213,9 @@ border-radius:8px;
 
 <input
 id="customOffset"
-type="number"
+type="text"
+inputmode="numeric"
+pattern="[0-9]*"
 value="0"
 style="
 width:55px;
@@ -622,7 +624,6 @@ if ("serviceWorker" in navigator) {
 function setTimeOffset(val){
     // Если пользуемся пресетами — своё число сбрасываем
 document.getElementById("customOffset").value = 0;
-customMode = "+";
 
 document.getElementById("modePlus").classList.remove("active");
 document.getElementById("modeMinus").classList.remove("active");
@@ -663,17 +664,39 @@ const customInput = document.getElementById("customOffset");
 const modePlus = document.getElementById("modePlus");
 const modeMinus = document.getElementById("modeMinus");
 document.getElementById("timeMinus").addEventListener("click", () => {
-  timeOffset -= 5;
-  localStorage.setItem("timeOffset", timeOffset);
-  timeValueEl.textContent = timeOffset;
-  updateReceiptPreview();
-});
 
-document.getElementById("timePlus").addEventListener("click", () => {
-  timeOffset += 5;
+  // сбрасываем ручной ввод
+  customInput.value = 0;
+  customMode = "+";
+  modePlus.classList.remove("active");
+  modeMinus.classList.remove("active");
+
+  timeOffset -= 5;
+
   localStorage.setItem("timeOffset", timeOffset);
+
   timeValueEl.textContent = timeOffset;
+
   updateReceiptPreview();
+
+});
+    
+document.getElementById("timePlus").addEventListener("click", () => {
+
+  // сбрасываем ручной ввод
+  customInput.value = 0;
+  customMode = "+";
+  modePlus.classList.remove("active");
+  modeMinus.classList.remove("active");
+
+  timeOffset += 5;
+
+  localStorage.setItem("timeOffset", timeOffset);
+
+  timeValueEl.textContent = timeOffset;
+
+  updateReceiptPreview();
+
 });
     modePlus.addEventListener("click", () => {
 
