@@ -189,20 +189,42 @@ body{
 <button class="main" onclick="generateReceipt()">Сгенерировать чек</button>
   <div id="timeSlider" style="margin-top:12px; display:flex; align-items:center; gap:10px; justify-content:center;">
   
-  <span style="font-size:18px;">🕒</span>
+ <span style="font-size:18px;">🕒</span>
 
-  <button id="timeMinus" class="timeBtn">◀</button>
+<button id="timeMinus" class="timeBtn">◀</button>
 
-  <div id="timeValue" style="
-    min-width:60px;
-    text-align:center;
-    font-size:16px;
-    background:#2b2b2b;
-    padding:6px 10px;
-    border-radius:8px;
-  ">0</div>
+<div id="timeValue"
+style="
+min-width:60px;
+text-align:center;
+font-size:16px;
+background:#2b2b2b;
+padding:6px 10px;
+border-radius:8px;
+">
+0
+</div>
 
-  <button id="timePlus" class="timeBtn">▶</button>
+<button id="timePlus" class="timeBtn">▶</button>
+
+<button id="modeMinus" class="timeBtn">−</button>
+
+<button id="modePlus" class="timeBtn">+</button>
+
+<input
+id="customOffset"
+type="number"
+value="0"
+style="
+width:55px;
+background:#2b2b2b;
+color:white;
+border:none;
+border-radius:8px;
+padding:6px;
+text-align:center;
+font-size:15px;
+">
 
 </div>
 <button class="main" id="resetBtn" onclick="resetPage()">Сброс</button>
@@ -593,9 +615,18 @@ if ("serviceWorker" in navigator) {
   });
 }
     let timeOffset = parseInt(localStorage.getItem("timeOffset") || "0", 10);
+    let timeMode = "preset";
+    let customMode = "+";
 
 // ===== УСТАНОВКА СМЕЩЕНИЯ ВРЕМЕНИ =====
 function setTimeOffset(val){
+    // Если пользуемся пресетами — своё число сбрасываем
+document.getElementById("customOffset").value = 0;
+customMode = "+";
+
+document.getElementById("modePlus").classList.remove("active");
+document.getElementById("modeMinus").classList.remove("active");
+    timeMode = "preset";
   timeOffset = parseInt(val, 10);
   localStorage.setItem("timeOffset", timeOffset);
 
@@ -613,14 +644,24 @@ function setTimeOffset(val){
 
 // ===== ПРИМЕНЕНИЕ СМЕЩЕНИЯ В ЧЕК =====
 function getOffsetTime(){
-  const now = new Date();
-  now.setMinutes(now.getMinutes() + timeOffset);
-  return now;
+    const now = new Date();
+    if(timeOffset !== 0){
+        now.setMinutes(now.getMinutes() + timeOffset);
+    }else{
+        const value = parseInt(customInput.value) || 0;
+        if(customMode === "+")
+            now.setMinutes(now.getMinutes() + value);
+        else
+            now.setMinutes(now.getMinutes() - value);
+    }
+    return now;
 }
 
 // ===== ИНИЦИАЛИЗАЦИЯ СЛАЙДЕРА =====
 const timeValueEl = document.getElementById("timeValue");
-
+const customInput = document.getElementById("customOffset");
+const modePlus = document.getElementById("modePlus");
+const modeMinus = document.getElementById("modeMinus");
 document.getElementById("timeMinus").addEventListener("click", () => {
   timeOffset -= 5;
   localStorage.setItem("timeOffset", timeOffset);
@@ -633,6 +674,47 @@ document.getElementById("timePlus").addEventListener("click", () => {
   localStorage.setItem("timeOffset", timeOffset);
   timeValueEl.textContent = timeOffset;
   updateReceiptPreview();
+});
+    modePlus.addEventListener("click", () => {
+
+    customMode = "+";
+
+    modePlus.classList.add("active");
+    modeMinus.classList.remove("active");
+
+    // Слайдер возвращаем в ноль
+    timeOffset = 0;
+    timeValueEl.textContent = 0;
+
+    updateReceiptPreview();
+
+});
+
+modeMinus.addEventListener("click", () => {
+
+    customMode = "-";
+
+    modeMinus.classList.add("active");
+    modePlus.classList.remove("active");
+
+    // Слайдер возвращаем в ноль
+    timeOffset = 0;
+    timeValueEl.textContent = 0;
+
+    updateReceiptPreview();
+
+});
+
+customInput.addEventListener("input", () => {
+
+    // Любой ввод собственного числа
+    // автоматически обнуляет пресет
+
+    timeOffset = 0;
+    timeValueEl.textContent = 0;
+
+    updateReceiptPreview();
+
 });
 // Запрет увеличения страницы двойным тапом (iPhone)
 let lastTouchEnd = 0;
