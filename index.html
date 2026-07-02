@@ -32,7 +32,11 @@
 body {
     font-family: sans-serif;
     margin: 0;
-    padding: 10px;
+    padding:
+        calc(env(safe-area-inset-top) + 10px)
+        10px
+        calc(env(safe-area-inset-bottom) + 10px)
+        10px;
     background: #121212;
     color: #fff;
     overflow-x: hidden;
