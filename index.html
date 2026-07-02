@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Меню</title>
 
 <link rel="manifest" href="manifest.json">
@@ -153,6 +153,18 @@ canvas { display:none; }
 #timeSlider button.active{
   background:#F77E2D;
   transform:scale(1.1);
+}
+    /* Запрет масштабирования и выделения */
+html,
+body{
+    touch-action: manipulation;
+    overscroll-behavior: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+*{
+    -webkit-tap-highlight-color: transparent;
 }
 </style>
 
@@ -622,9 +634,21 @@ document.getElementById("timePlus").addEventListener("click", () => {
   timeValueEl.textContent = timeOffset;
   updateReceiptPreview();
 });
+// Запрет увеличения страницы двойным тапом (iPhone)
+let lastTouchEnd = 0;
 
+document.addEventListener("touchend", function (event) {
+    const now = Date.now();
+
+    if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+    }
+
+    lastTouchEnd = now;
+}, { passive: false });
 // начальное значение
 timeValueEl.textContent = timeOffset;
+    
 </script>
 
 </div>
