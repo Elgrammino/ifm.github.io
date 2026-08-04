@@ -142,22 +142,105 @@ canvas { display:none; }
   #preview img{ width:240px; }
   #participantInput { font-size:16px; }
 }
-    #timeSlider button{
-  background:#2b2b2b;
-  color:white;
-  border:none;
-  padding:6px 10px;
-  border-radius:8px;
-  font-size:13px;
-  cursor:pointer;
-  transition:0.15s;
-  white-space:nowrap;
+/* ===== Блок «Время на чеке» ===== */
+#timeCard{
+  background:#1E1E1E;
+  border-radius:14px;
+  padding:14px 14px 12px;
+  margin-top:14px;
 }
 
-#timeSlider button.active{
-  background:#F77E2D;
-  transform:scale(1.1);
+#timeCardHead{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:10px;
 }
+
+#timeLabel{
+  font-size:13px;
+  color:#9a9a9a;
+  letter-spacing:.02em;
+}
+
+#timeBadge{
+  font-size:13px;
+  color:#F77E2D;
+  font-weight:600;
+  min-width:52px;
+  text-align:right;
+}
+
+#timeClock{
+  font-family:"SF Mono", "Menlo", monospace;
+  font-variant-numeric: tabular-nums;
+  font-size:34px;
+  font-weight:600;
+  text-align:center;
+  letter-spacing:.02em;
+  margin-bottom:12px;
+}
+
+#chipRow{
+  display:flex;
+  gap:6px;
+  justify-content:space-between;
+}
+
+.chip{
+  flex:1;
+  background:#2b2b2b;
+  color:#fff;
+  border:none;
+  padding:10px 0;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:500;
+  cursor:pointer;
+  transition:transform .12s ease, background .12s ease;
+}
+.chip:active{ transform:scale(0.92); }
+.chip.now{
+  background:transparent;
+  border:1px solid #3a3a3a;
+  color:#bbb;
+  font-size:12px;
+  flex:1.3;
+}
+.chip.now.is-live{
+  border-color:#F77E2D;
+  color:#F77E2D;
+}
+
+#manualRow{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+
+#customOffset{
+  flex:1;
+  background:#2b2b2b;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  padding:9px 10px;
+  font-size:14px;
+  text-align:center;
+}
+#customOffset::placeholder{ color:#777; }
+
+#applyCustom{
+  background:#2b2b2b;
+  color:#F77E2D;
+  border:none;
+  border-radius:10px;
+  padding:9px 16px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+}
+#applyCustom:active{ transform:scale(0.94); }
     /* Запрет масштабирования и выделения */
 html,
 body{
@@ -191,46 +274,26 @@ body{
 <h2 id="title"></h2>
 <div class="list-container" id="list"></div>
 <button class="main" onclick="generateReceipt()">Сгенерировать чек</button>
-  <div id="timeSlider" style="margin-top:12px; display:flex; align-items:center; gap:10px; justify-content:center;">
-  
- <span style="font-size:18px;">🕒</span>
+  <div id="timeCard">
+  <div id="timeCardHead">
+    <span id="timeLabel">🕒 Время на чеке</span>
+    <span id="timeBadge">Сейчас</span>
+  </div>
 
-<button id="timeMinus" class="timeBtn">◀</button>
+  <div id="timeClock">--:--</div>
 
-<div id="timeValue"
-style="
-min-width:60px;
-text-align:center;
-font-size:16px;
-background:#2b2b2b;
-padding:6px 10px;
-border-radius:8px;
-">
-0
-</div>
+  <div id="chipRow">
+    <button class="chip" data-delta="-15">-15</button>
+    <button class="chip" data-delta="-5">-5</button>
+    <button class="chip now" id="timeNow">Сейчас</button>
+    <button class="chip" data-delta="5">+5</button>
+    <button class="chip" data-delta="15">+15</button>
+  </div>
 
-<button id="timePlus" class="timeBtn">▶</button>
-
-<button id="modeMinus" class="timeBtn">−</button>
-
-<button id="modePlus" class="timeBtn">+</button>
-
-<input
-id="customOffset"
-type="text"
-inputmode="numeric"
-pattern="[0-9]*"
-value="0"
-style="
-width:55px;
-background:#2b2b2b;
-color:white;
-border:none;
-border-radius:8px;
-padding:6px;
-text-align:center;
-font-size:15px;
-">
+  <div id="manualRow">
+    <input id="customOffset" type="text" inputmode="numeric" placeholder="Своё смещение, напр. -20">
+    <button id="applyCustom">OK</button>
+  </div>
 
 </div>
 <button class="main" id="resetBtn" onclick="resetPage()">Сброс</button>
@@ -587,14 +650,9 @@ function generateReceipt(){
   renderReceiptToCanvas({ download: true });
 }
 
-// ===== Старт =====
-renderPage("Закуски");
-// первоначальное превью (сработает даже если лого ещё грузится)
-updateReceiptPreview();
+// ===== Инициализация запускается в самом конце файла =====
+// (после того как определены getOffsetTime/timeOffset, см. ниже)
 
-</script>
-
-<script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
@@ -621,128 +679,72 @@ if ("serviceWorker" in navigator) {
   });
 }
     let timeOffset = parseInt(localStorage.getItem("timeOffset") || "0", 10);
-    let timeMode = "preset";
-    let customMode = "+";
-
-// ===== УСТАНОВКА СМЕЩЕНИЯ ВРЕМЕНИ =====
-function setTimeOffset(val){
-    // Если пользуемся пресетами — своё число сбрасываем
-document.getElementById("customOffset").value = 0;
-
-document.getElementById("modePlus").classList.remove("active");
-document.getElementById("modeMinus").classList.remove("active");
-    timeMode = "preset";
-  timeOffset = parseInt(val, 10);
-  localStorage.setItem("timeOffset", timeOffset);
-
-  updateReceiptPreview();
-
-  // лёгкая вибрация
-  if (navigator.vibrate) navigator.vibrate(15);
-
-  document.querySelectorAll("#timeSlider button")
-    .forEach(b => b.classList.remove("active"));
-
-  const active = document.querySelector(`#timeSlider button[data-val="${val}"]`);
-  if (active) active.classList.add("active");
-}
 
 // ===== ПРИМЕНЕНИЕ СМЕЩЕНИЯ В ЧЕК =====
+// Единый источник правды: timeOffset (минуты, может быть отрицательным)
 function getOffsetTime(){
     const now = new Date();
-    if(timeOffset !== 0){
-        now.setMinutes(now.getMinutes() + timeOffset);
-    }else{
-        const value = parseInt(customInput.value) || 0;
-        if(customMode === "+")
-            now.setMinutes(now.getMinutes() + value);
-        else
-            now.setMinutes(now.getMinutes() - value);
-    }
+    if(timeOffset !== 0) now.setMinutes(now.getMinutes() + timeOffset);
     return now;
 }
 
-// ===== ИНИЦИАЛИЗАЦИЯ СЛАЙДЕРА =====
-const timeValueEl = document.getElementById("timeValue");
+// ===== ИНИЦИАЛИЗАЦИЯ БЛОКА ВРЕМЕНИ =====
+const timeClockEl = document.getElementById("timeClock");
+const timeBadgeEl = document.getElementById("timeBadge");
+const timeNowBtn = document.getElementById("timeNow");
 const customInput = document.getElementById("customOffset");
-const modePlus = document.getElementById("modePlus");
-const modeMinus = document.getElementById("modeMinus");
-document.getElementById("timeMinus").addEventListener("click", () => {
+const applyCustomBtn = document.getElementById("applyCustom");
 
-  // сбрасываем ручной ввод
-  customInput.value = 0;
-  customMode = "+";
-  modePlus.classList.remove("active");
-  modeMinus.classList.remove("active");
+function pad(n){ return n.toString().padStart(2, "0"); }
 
-  timeOffset -= 5;
+// Обновляет часы и бейдж смещения, перерисовывает превью чека
+function refreshTimeUI(){
+  const t = getOffsetTime();
+  timeClockEl.textContent = `${pad(t.getHours())}:${pad(t.getMinutes())}`;
 
-  localStorage.setItem("timeOffset", timeOffset);
-
-  timeValueEl.textContent = timeOffset;
-
-  updateReceiptPreview();
-
-});
-    
-document.getElementById("timePlus").addEventListener("click", () => {
-
-  // сбрасываем ручной ввод
-  customInput.value = 0;
-  customMode = "+";
-  modePlus.classList.remove("active");
-  modeMinus.classList.remove("active");
-
-  timeOffset += 5;
+  if(timeOffset === 0){
+    timeBadgeEl.textContent = "Сейчас";
+    timeNowBtn.classList.add("is-live");
+  } else {
+    const sign = timeOffset > 0 ? "+" : "−";
+    timeBadgeEl.textContent = `${sign}${Math.abs(timeOffset)} мин`;
+    timeNowBtn.classList.remove("is-live");
+  }
 
   localStorage.setItem("timeOffset", timeOffset);
-
-  timeValueEl.textContent = timeOffset;
-
   updateReceiptPreview();
+}
 
-});
-    modePlus.addEventListener("click", () => {
+function setOffset(newValue){
+  timeOffset = newValue;
+  customInput.value = "";
+  refreshTimeUI();
+  if (navigator.vibrate) navigator.vibrate(15);
+}
 
-    customMode = "+";
-
-    modePlus.classList.add("active");
-    modeMinus.classList.remove("active");
-
-    // Слайдер возвращаем в ноль
-    timeOffset = 0;
-    timeValueEl.textContent = 0;
-
-    updateReceiptPreview();
-
-});
-
-modeMinus.addEventListener("click", () => {
-
-    customMode = "-";
-
-    modeMinus.classList.add("active");
-    modePlus.classList.remove("active");
-
-    // Слайдер возвращаем в ноль
-    timeOffset = 0;
-    timeValueEl.textContent = 0;
-
-    updateReceiptPreview();
-
+// Чипы +5/-5/+15/-15 добавляют смещение к текущему значению
+document.querySelectorAll(".chip[data-delta]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    setOffset(timeOffset + parseInt(btn.dataset.delta, 10));
+  });
 });
 
-customInput.addEventListener("input", () => {
+// «Сейчас» — сброс смещения в 0
+timeNowBtn.addEventListener("click", () => setOffset(0));
 
-    // Любой ввод собственного числа
-    // автоматически обнуляет пресет
-
-    timeOffset = 0;
-    timeValueEl.textContent = 0;
-
-    updateReceiptPreview();
-
+// Ручной ввод точного смещения (можно со знаком минус)
+function applyCustomOffset(){
+  const val = parseInt(customInput.value, 10);
+  setOffset(Number.isFinite(val) ? val : 0);
+}
+applyCustomBtn.addEventListener("click", applyCustomOffset);
+customInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") { e.preventDefault(); applyCustomOffset(); }
 });
+
+// Держим часы «живыми», пока открыта страница
+setInterval(refreshTimeUI, 15000);
+
 // Запрет увеличения страницы двойным тапом (iPhone)
 let lastTouchEnd = 0;
 
@@ -755,8 +757,10 @@ document.addEventListener("touchend", function (event) {
 
     lastTouchEnd = now;
 }, { passive: false });
-// начальное значение
-timeValueEl.textContent = timeOffset;
+
+// ===== Старт =====
+renderPage("Закуски");
+refreshTimeUI(); // выставляет часы и делает первый рендер чека
     
 </script>
 
