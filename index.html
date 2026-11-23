@@ -39,22 +39,24 @@ nav button.on{color:#f7dcb1}nav b{position:absolute;top:2px;left:55%;width:9px;h
 #sh{position:fixed;inset:0;z-index:9;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top) + 12px) 0 60px;display:none}
 #sh:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(70% 38% at 0 0,#3f1b61aa,transparent),radial-gradient(55% 34% at 100% 60%,#1e402caa,transparent)}
 .back{margin:0 16px 10px}.toast{position:fixed;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 10px);z-index:20;background:var(--gold);color:#1a0f07;font-weight:700;border-radius:14px;padding:12px 14px}
-.pr{border-top:1px solid var(--ln);padding-top:10px;margin-top:10px}a{color:#f7dcb1}
+.demo-notice{padding:10px 16px;background:#20152f;color:#e0d7ef;font-size:14px;text-align:center}button{cursor:pointer}button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--lime);outline-offset:3px}.pr{border-top:1px solid var(--ln);padding-top:10px;margin-top:10px}a{color:#f7dcb1}
 @media(min-width:700px){body{max-width:560px;margin:0 auto}nav{max-width:560px;margin:0 auto}}
-</style></head><body><div id="v"></div><div id="sh"></div>
+</style></head><body><div class="demo-notice">Демонстрационная версия · программа предварительная</div><div id="v"></div><div id="sh"></div>
 <nav id="nv"></nav>
+<script src="storage.js"></script>
 <script>
 const DB='',PIN='1234'; /* DB: адрес Firebase Realtime Database, пусто = демо только на этом телефоне */
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const L=(k,v)=>v===undefined?JSON.parse(localStorage.getItem(k)||'null'):localStorage.setItem(k,JSON.stringify(v));
+let backend;try{backend=localStorage}catch{backend={getItem(){return null},setItem(){throw Error('Storage unavailable')}}}
+const L=IFM.storage(backend,location.pathname.replace(/index\.html$/,''),()=>toast('Не удалось сохранить данные. До закрытия вкладки они останутся в памяти.'));
 const T0=Date.parse('2027-01-19T00:00:00+03:00'),hm=t=>+t.slice(0,2)*60+ +t.slice(3);
 const TY={lec:'Лекция',con:'Конкурс',show:'Шоу',party:'After-party 18+',dealer:'Дилерская зона',brk:'Перерыв'};
 const NAV=[['home','◈','Главная'],['prog','▤','Программа'],['sp','☺','Спикеры'],['notes','✎','Заметки'],['news','✦','Новости']];
-let D={events:[],speakers:[],links:[],dealers:[]},S=L('s')||{shift:0,off:{},add:[],news:[]},fav=L('fav')||{},notes=L('notes')||{},tab='home',day=0,topic='',seen=L('seen')||0,adm=0,tp=0,tt;
+let D={events:[],speakers:[],links:[],dealers:[]},S=IFM.state(L('s')),fav=IFM.record(L('fav'),v=>typeof v==='boolean'),notes=IFM.record(L('notes'),v=>typeof v==='string'),tab='home',day=0,topic='',seen=Number(L('seen'))||0,adm=0,tp=0,tt;
 const tm=t=>new Date(t).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'});
 const EV=()=>[...D.events,...S.add].map(e=>({...e,ts:T0+e.day*864e5+hm(e.t)*6e4+S.shift*6e4})).sort((a,b)=>a.ts-b.ts);
 const SP=id=>D.speakers.find(s=>s.id===id),av=(s,c='')=>s.photo?`<img class="av ${c}" src="${s.photo}" alt="">`:`<div class="av ph ${c}">${esc(s.name.split(' ').map(w=>w[0]).join('').slice(0,2))}</div>`;
-function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.append(d);navigator.vibrate&&navigator.vibrate(120);setTimeout(()=>d.remove(),4000)}
+function toast(t){const d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=t;document.body.append(d);navigator.vibrate&&navigator.vibrate(120);setTimeout(()=>d.remove(),4000)}
 function card(e){const s=SP(e.sp),off=S.off[e.id];return `<div class="cd ev ${off?'off':''}" onclick="openEv('${e.id}')"><div class="tm">${tm(e.ts)}<small>${e.d} мин</small></div><i class="dot ${e.type}"></i><div class="b"><b>${esc(e.title)}</b><br><small>${off?'Отменено':TY[e.type]}${s&&!off?' · '+esc(s.name):''}</small></div><button class="st ${fav[e.id]?'on':''}" onclick="event.stopPropagation();star('${e.id}')">★</button></div>`}
 const V={
 home(){const n=Date.now(),l=EV().filter(e=>!S.off[e.id]),cur=l.find(e=>e.ts<=n&&n<e.ts+e.d*6e4),nx=l.find(e=>e.ts>n),mine=l.filter(e=>fav[e.id]&&e.ts+e.d*6e4>n).slice(0,4),f=l[0],nw=S.news[0];
@@ -79,14 +81,14 @@ function go(t){tab=t;closeSh();render();scrollTo(0,0)}
 function sh(h){const e=$('#sh');e.innerHTML='<button class="btn g back" onclick="closeSh()">‹ Назад</button>'+h;e.style.display='block';e.scrollTop=0}
 function closeSh(){$('#sh').style.display='none';adm=0}
 function star(id){fav[id]=!fav[id];L('fav',fav);render()}
-function openEv(id){const e=EV().find(x=>x.id==id),s=SP(e.sp);sh(`<div class="pad"><small>${19+e.day} января · ${tm(e.ts)}–${tm(e.ts+e.d*6e4)} · ${TY[e.type]}</small><h1 style="margin:6px 0 10px">${esc(e.title)}</h1>${S.off[id]?'<p class="m"><b>Событие отменено</b></p>':''}<p>${esc(e.desc||'Описание появится позже.')}</p>
+function openEv(id){const e=EV().find(x=>x.id==id);if(!e)return toast('Событие не найдено');const s=SP(e.sp);sh(`<div class="pad"><small>${19+e.day} января · ${tm(e.ts)}–${tm(e.ts+e.d*6e4)} · ${TY[e.type]}</small><h1 style="margin:6px 0 10px">${esc(e.title)}</h1>${S.off[id]?'<p class="m"><b>Событие отменено</b></p>':''}<p>${esc(e.desc||'Описание появится позже.')}</p>
  ${s?`<div class="cd row" style="margin:12px 0" onclick="openSp('${s.id}')">${av(s)}<div class="b"><b>${esc(s.name)}</b><br><small>${esc(s.role)}</small></div></div>`:''}${prods(s)}
  <button class="btn g" onclick="star('${id}');openEv('${id}')" style="margin:8px 0">${fav[id]?'★ В моём расписании':'☆ Добавить в моё расписание'}</button>
  <h2 style="margin:16px 0 6px">Заметки</h2><textarea placeholder="Пишите прямо здесь" oninput="notes['${id}']=this.value;L('notes',notes)">${esc(notes[id]||'')}</textarea></div>`)}
 function prods(s){return s&&s.products&&s.products.length?`<h2 style="margin:16px 0 6px">Реквизит спикера</h2>`+s.products.map(p=>`<div class="cd" style="margin:8px 0"><b>${esc(p.n)}</b><p class="m" style="margin:4px 0">${esc(p.d||'')}</p>Где купить: ${p.shops.map(h=>`<a href="${esc(h.u)}" target="_blank" rel="noopener">${esc(h.n)}</a>`).join(' · ')}</div>`).join(''):''}
-function openSp(id){const s=SP(id),ls=EV().filter(e=>e.sp==id);sh(`<div class="pad" style="text-align:center">${av(s,'big')}<h1>${esc(s.name)}</h1><p class="m">${esc(s.role)}</p></div><div class="pad"><p>${esc(s.bio)}</p>${prods(s)}<h2 style="margin:16px 0 0">Выступления</h2></div>${ls.map(card).join('')}`)}
+function openSp(id){const s=SP(id);if(!s)return toast('Спикер не найден');const ls=EV().filter(e=>e.sp==id);sh(`<div class="pad" style="text-align:center">${av(s,'big')}<h1>${esc(s.name)}</h1><p class="m">${esc(s.role)}</p></div><div class="pad"><p>${esc(s.bio)}</p>${prods(s)}<h2 style="margin:16px 0 0">Выступления</h2></div>${ls.map(card).join('')}`)}
 function exp(){const x=EV().filter(e=>(notes[e.id]||'').trim()).map(e=>`${19+e.day} января, ${tm(e.ts)} — ${e.title}\n${notes[e.id]}`).join('\n\n———\n\n');const f=new File([x],'IFM2027-заметки.txt',{type:'text/plain'});
- if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f]}).catch(()=>{});else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;a.click()}}
+ if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f]}).catch(()=>{});else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),30000)}}
 /* ===== скрытая админка: 6 касаний по фото организаторов ===== */
 function sec(){clearTimeout(tt);if(++tp>=6){tp=0;sh('<div class="pad"><h1>Вход для администратора</h1><input id="pin" type="password" inputmode="numeric" placeholder="PIN"><button class="btn" onclick="if($(\'#pin\').value==PIN){adm=1;admPanel()}else toast(\'Неверный PIN\')">Войти</button></div>')}tt=setTimeout(()=>tp=0,2500)}
 function admPanel(){$('#sh').innerHTML='<button class="btn g back" onclick="closeSh()">‹ Назад</button>'+`<div class="pad"><h1 class="gold">Администратор</h1><p class="m">${DB?'Изменения сразу уходят всем.':'Демо-режим: изменения только на этом телефоне.'} Сдвиг сейчас: ${S.shift} мин</p>
@@ -95,11 +97,11 @@ function admPanel(){$('#sh').innerHTML='<button class="btn g back" onclick="clos
  <h2 style="margin:20px 0 4px">Добавить событие</h2><input id="at" placeholder="Название"><div class="row"><select id="ad"><option value="0">19 янв</option><option value="1">20 янв</option><option value="2">21 янв</option></select><input id="ah" type="time" value="12:00"><input id="am" type="number" value="30"></div><select id="ay">${Object.entries(TY).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><button class="btn" onclick="addE()">Добавить</button>
  <h2 style="margin:20px 0 4px">Отмена событий</h2>${EV().map(e=>`<div class="row pr"><div class="b"><b>${esc(e.title)}</b><br><small>${19+e.day} янв, ${tm(e.ts)}</small></div><button class="btn g" onclick="S.off['${e.id}']=!S.off['${e.id}'];save()">${S.off[e.id]?'Вернуть':'Отменить'}</button></div>`).join('')}
  <button class="btn g" style="margin:20px 0" onclick="if(confirm('Сбросить все изменения?')){S={shift:0,off:{},add:[],news:[]};save()}">Сбросить всё</button></div>`}
-function shift(k){const n=+$('#n').value;if(!n)return;S.shift+=k*n;save('Расписание сдвинуто');S.news.unshift({t:'Расписание изменилось',x:`Все события ${k>0?'сдвинуты на '+n+' мин позже':'начнутся на '+n+' мин раньше'}.`,ts:Date.now()});save()}
+function shift(k){const n=+$('#n').value;if(!Number.isInteger(n)||n<1||n>720||Math.abs(S.shift+k*n)>1440)return toast('Введите от 1 до 720 минут. Общий сдвиг — не больше суток.');S.shift+=k*n;S.news.unshift({t:'Расписание изменилось',x:`Все события ${k>0?'сдвинуты на '+n+' мин позже':'начнутся на '+n+' мин раньше'}.`,ts:Date.now()});save('Расписание сдвинуто')}
 function pub(){const t=$('#nt').value.trim();if(!t)return toast('Введите заголовок');S.news.unshift({t,x:$('#nx').value,ts:Date.now()});save('Новость опубликована')}
-function addE(){const t=$('#at').value.trim();if(!t)return toast('Введите название');S.add.push({id:'x'+Date.now(),day:+$('#ad').value,t:$('#ah').value,d:+$('#am').value||30,type:$('#ay').value,title:t});save('Событие добавлено')}
+function addE(){const t=$('#at').value.trim();if(!t)return toast('Введите название');const e={id:'x'+Date.now(),day:+$('#ad').value,t:$('#ah').value,d:+$('#am').value,type:$('#ay').value,title:t};if(!IFM.validEvent(e))return toast('Проверьте время и длительность: от 1 до 1440 минут.');S.add.push(e);save('Событие добавлено')}
 async function save(m){L('s',S);if(DB)try{await fetch(DB+'/s.json',{method:'PUT',body:JSON.stringify(JSON.stringify(S))})}catch(e){toast('Нет сети: сохранено только на этом телефоне')}m&&toast(m);render()}
 async function sync(){if(!DB)return;try{const j=await(await fetch(DB+'/s.json?'+Date.now())).json();if(j){const o=S.news.length;S=JSON.parse(j);L('s',S);if(S.news.length>o&&o>=0&&tab!='news'&&!adm)toast('Новость: '+S.news[0].t);if(!adm)render()}}catch(e){}}
-(async()=>{try{D=await(await fetch('data.json')).json();L('d',D)}catch(e){D=L('d')||D}render();sync();setInterval(sync,20000);document.addEventListener('visibilitychange',()=>!document.hidden&&sync())})();
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+(async()=>{try{const response=await fetch('data.json');if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();if(!Array.isArray(data.events)||!data.events.length||!data.events.every(IFM.validEvent)||!Array.isArray(data.speakers)||!Array.isArray(data.links)||!Array.isArray(data.dealers))throw Error('Invalid data');D=data;L('d',D)}catch(e){const cached=L('d');if(cached&&Array.isArray(cached.events)&&cached.events.length&&cached.events.every(IFM.validEvent)&&Array.isArray(cached.speakers)&&Array.isArray(cached.links)&&Array.isArray(cached.dealers)){D=cached;toast('Открыта сохранённая программа. Обновление пока недоступно.')}else{$('#v').innerHTML='<div class=cd><h1>Программа не загрузилась</h1><p>Проверьте соединение и попробуйте ещё раз.</p><button class=btn onclick=location.reload()>Повторить</button></div>';return}}render();sync();setInterval(sync,20000);document.addEventListener('visibilitychange',()=>!document.hidden&&sync())})();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>toast('Офлайн-режим недоступен. Приложение продолжит работать с интернетом.'));
 </script></body></html>
