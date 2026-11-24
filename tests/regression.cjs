@@ -17,11 +17,26 @@ test('partial state and invalid event input recover',()=>{
  assert.ok(data.events.every(api.validEvent));assert.equal(api.validEvent({...data.events[0],t:'25:00'}),false);assert.equal(api.validEvent({...data.events[0],d:-1}),false);
 });
 function app(response,values={}){
- const elements=Object.fromEntries(['#v','#nv','#sh'].map(k=>[k,{innerHTML:'',style:{},setAttribute(){}}]));
- const ctx={window:{scrollY:120,listeners:{},addEventListener(k,fn){this.listeners[k]=fn}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/'},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){},classList:{add(){}}}),body:{style:{},append(){}},addEventListener(){}},navigator:{},fetch:async()=>response,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},scrollTo(x,y){ctx.lastScroll=[x,y]},console};
+ const classes=new Set(['loading']);
+ const elements=Object.fromEntries(['#v','#nv','#sh','#splash'].map(k=>[k,{innerHTML:'',style:{},classList:{add(n){this.value=n}},setAttribute(){},remove(){this.removed=true}}]));
+ const ctx={window:{scrollY:120,listeners:{},addEventListener(k,fn){this.listeners[k]=fn}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/'},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){},classList:{add(){}}}),body:{style:{},classList:{contains:n=>classes.has(n),add:n=>classes.add(n),remove:n=>classes.delete(n)},append(){}},addEventListener(){}},navigator:{},fetch:async()=>response,setTimeout(fn,delay){(ctx.timers??=[]).push({fn,delay});return ctx.timers.length},setInterval:()=>0,clearTimeout(id){if(ctx.timers?.[id-1])ctx.timers[id-1].cancelled=true},scrollTo(x,y){ctx.lastScroll=[x,y]},console};
  vm.createContext(ctx);vm.runInContext(script,ctx);return {ctx,elements};
 }
 const flush=()=>new Promise(r=>setImmediate(r));
+test('loader waits for program and reveals either content or retry screen',async()=>{
+ let resolve;const pending=new Promise(r=>resolve=r),appWithData=app(pending);
+ assert.equal(appWithData.ctx.document.body.classList.contains('loading'),true);
+ resolve({ok:true,json:async()=>data});await flush();
+ assert.match(appWithData.elements['#v'].innerHTML,/Международный форум/);
+ assert.equal(appWithData.ctx.document.body.classList.contains('loading'),true);
+ appWithData.ctx.timers.find(t=>!t.cancelled&&t.delay<=480).fn();
+ assert.equal(appWithData.ctx.document.body.classList.contains('app-ready'),true);
+ assert.equal(appWithData.elements['#splash'].classList.value,'done');
+ const stalled=app(new Promise(()=>{}));stalled.ctx.timers.find(t=>t.delay===10000).fn();
+ assert.match(stalled.elements['#v'].innerHTML,/Программа загружается слишком долго/);
+ stalled.ctx.timers.find(t=>t.delay<=480).fn();
+ assert.equal(stalled.ctx.document.body.classList.contains('app-ready'),true);
+});
 test('home announcement follows live schedule, cancellation and favourites',async()=>{
  const {ctx,elements}=app({ok:true,json:async()=>data});await flush();
  assert.match(elements['#v'].innerHTML,/class="ann"/);
