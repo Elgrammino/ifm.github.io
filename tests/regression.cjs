@@ -49,6 +49,27 @@ test('home announcement follows live schedule, cancellation and favourites',asyn
  assert.match(cancelled.elements['#v'].innerHTML,/<section class="ann"[^>]*>[\s\S]*?<h2>Открытие форума<\/h2>/);
  assert.doesNotMatch(cancelled.elements['#v'].innerHTML,/<h2>Регистрация участников<\/h2>/);
 });
+test('empty program, missing speaker fields and long content stay usable',async()=>{
+ const empty=app({ok:true,json:async()=>({events:[],speakers:[],links:[],dealers:[]})});await flush();
+ assert.match(empty.elements['#v'].innerHTML,/Программа скоро появится/);
+ vm.runInContext("go('prog')",empty.ctx);assert.match(empty.elements['#v'].innerHTML,/Программа пока не опубликована/);
+ vm.runInContext("go('sp')",empty.ctx);assert.match(empty.elements['#v'].innerHTML,/Информация о спикерах скоро появится/);
+ const worst={events:[{...data.events[0],title:'Демонстрация невероятных иллюзий с очень длинным названием и дополнительными пояснениями для посетителей форума'}],speakers:[{id:'long',name:'👩🏽‍💻 Александра Вишневская-Ковальчук',photo:'missing.jpg',products:[{n:'Набор реквизита'}]},{id:'blank'}],links:[],dealers:[]};
+ const a=app({ok:true,json:async()=>worst});await flush();
+ vm.runInContext("go('sp')",a.ctx);
+ assert.match(a.elements['#v'].innerHTML,/Александра Вишневская-Ковальчук/);
+ assert.match(a.elements['#v'].innerHTML,/Имя спикера уточняется/);
+ assert.match(a.elements['#v'].innerHTML,/onerror="this.remove\(\)"/);
+ assert.doesNotMatch(a.elements['#v'].innerHTML,/undefined/);
+ vm.runInContext("openSp('long')",a.ctx);
+ assert.match(a.elements['#sh'].innerHTML,/Ссылка появится позже/);
+ assert.match(a.elements['#sh'].innerHTML,/Выступления спикера пока не добавлены/);
+ const newsState={'ifm2027:/ifm.github.io/:s':JSON.stringify({shift:0,off:{},add:[],news:[{t:' ',x:'',ts:Date.now()}]})};
+ const newsApp=app({ok:true,json:async()=>worst},newsState);await flush();
+ vm.runInContext("go('news')",newsApp.ctx);
+ assert.match(newsApp.elements['#v'].innerHTML,/Обновление программы/);
+ assert.doesNotMatch(newsApp.elements['#v'].innerHTML,/<p style="margin:6px 0"><\/p>/);
+});
 test('short tabs keep navigation outside scroll area; sheet restores its scroll position',async()=>{
  const {ctx,elements}=app({ok:true,json:async()=>data});await flush();
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
@@ -63,7 +84,9 @@ test('short tabs keep navigation outside scroll area; sheet restores its scroll 
  vm.runInContext("openEv('a1')",ctx);ctx.window.listeners.popstate();
  assert.equal(elements['#sh'].style.display,'none');assert.equal(elements['#app-scroll'].style.overflowY,'');
  vm.runInContext("go('notes')",ctx);assert.equal(elements['#app-scroll'].scrollTop,0);
+ ctx.document.activeElement={closest:k=>k==='#nv'?{}:null};elements['#nv'].querySelector=()=>({focus(){ctx.restoredFocus=true}});
  vm.runInContext("go('news')",ctx);assert.match(elements['#v'].innerHTML,/Новости/);
+ assert.equal(ctx.restoredFocus,true);
 });
 test('program, speaker, saved note and favourite render',async()=>{
  const {ctx,elements}=app({ok:true,json:async()=>data},{'ifm2027:/ifm.github.io/:notes':'{"a3":"Сохранено"}'});await flush();
