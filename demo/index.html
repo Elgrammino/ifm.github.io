@@ -19,7 +19,14 @@ button,input,textarea,select{font:inherit;color:inherit}
 small,.m{color:var(--m);font-size:14px}
 .cd{background:var(--surface);border:1px solid var(--ln);border-radius:var(--radius-card);padding:14px;margin:10px 16px}
 .cd[role="button"]{cursor:pointer;text-align:left;color:inherit;font:inherit;width:calc(100% - 32px)}
-.cd.hi{border-color:#c6ff3d66}
+.ann{margin:10px 16px;padding:26px 24px 22px;background:#21182a;border-radius:var(--radius-card)}
+.ann-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;color:#d4c9da;font-size:12px;letter-spacing:.07em;text-transform:uppercase}
+.ann-head span:last-child{color:var(--lime);white-space:nowrap}
+.ann h2{font-size:clamp(28px,7.5vw,42px);line-height:1.04;letter-spacing:-.035em;margin:26px 0 14px;color:#fff;overflow-wrap:anywhere}
+.ann-time{color:var(--gold);font-size:15px;margin:0 0 20px}.ann-controls{display:flex;flex-wrap:wrap;gap:8px}
+.ann-controls button{min-height:44px;border-radius:12px;padding:10px 14px;border:1px solid #6b6071;background:transparent;color:#fff;font:inherit;cursor:pointer}
+.ann-controls button:first-child{background:var(--gold);border-color:var(--gold);color:#1a0f07;font-weight:800}
+.ann-controls button[aria-pressed=true]{border-color:var(--lime);color:var(--lime)}
 .row{display:flex;gap:12px;align-items:center}.b{flex:1;min-width:0;overflow-wrap:anywhere}
 .tabs{display:flex;gap:8px;overflow:auto;padding:4px 16px 10px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
 .chip{flex:none;min-height:44px;border:1px solid var(--ln);background:var(--surface);border-radius:99px;padding:8px 15px;font-weight:700}
@@ -63,10 +70,10 @@ const SP=id=>D.speakers.find(s=>s.id===id),av=(s,c='')=>s.photo?`<img class="av 
 function toast(t){const d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=t;document.body.append(d);navigator.vibrate&&navigator.vibrate(120);setTimeout(()=>d.remove(),4000)}
 function card(e){const s=SP(e.sp),off=S.off[e.id];return `<div class="cd ev ${off?'off':''}"><button class="event-open" aria-label="${esc(e.title)}; ${tm(e.ts)}" onclick="openEv('${e.id}')"><span class="tm">${tm(e.ts)}<small>${e.d} мин</small></span><i class="dot ${e.type}" aria-hidden="true"></i><span class="b"><b>${esc(e.title)}</b><br><small>${off?'Отменено':TY[e.type]}${s&&!off?' · '+esc(s.name):''}</small></span></button><button class="st ${fav[e.id]?'on':''}" data-event-id="${e.id}" aria-label="${fav[e.id]?'Удалить из моего расписания':'Добавить в моё расписание'}: ${esc(e.title)}" aria-pressed="${!!fav[e.id]}" onclick="star('${e.id}')">${icon('star',fav[e.id])}</button></div>`}
 const V={
-home(){const n=Date.now(),l=EV().filter(e=>!S.off[e.id]),cur=l.find(e=>e.ts<=n&&n<e.ts+e.d*6e4),nx=l.find(e=>e.ts>n),mine=l.filter(e=>fav[e.id]&&e.ts+e.d*6e4>n).slice(0,4),f=l[0],nw=S.news[0];
- const dd=f&&n<f.ts?Math.ceil((f.ts-n)/864e5):0;
+ home(){const n=Date.now(),l=EV().filter(e=>!S.off[e.id]),cur=l.find(e=>e.ts<=n&&n<e.ts+e.d*6e4),nx=l.find(e=>e.ts>n),mine=l.filter(e=>fav[e.id]&&e.ts+e.d*6e4>n).slice(0,4),f=l[0],nw=S.news[0],featured=cur||nx;
+ const dd=f&&n<f.ts?Math.ceil((f.ts-n)/864e5):0,day=t=>new Date(t).toLocaleDateString('ru',{day:'numeric',month:'long',timeZone:'Europe/Moscow'});
  return `<div class="hero"></div><div class="pad" style="margin-top:-46px"><h1 class="gold">Международный форум иллюзионистов</h1><p class="m" style="margin:6px 0 0">19–21 января 2027 · КЗ отеля «Санкт-Петербург»</p></div>
- <div class="cd hi">${dd?`<small>До начала форума</small><h2 style="margin:2px 0 0">${dd} дн.</h2>`:cur?`<small>Сейчас идёт</small><h2 style="margin:2px 0 8px">${esc(cur.title)}</h2>${nx?`<small>Дальше в ${tm(nx.ts)}: ${esc(nx.title)}</small>`:''}`:nx?`<small>Следующее в ${tm(nx.ts)}</small><h2 style="margin:2px 0 0">${esc(nx.title)}</h2>`:'<h2 style="margin:0">Форум завершён</h2>'}</div>
+ <section class="ann" aria-label="Анонс события"><div class="ann-head"><span>${featured?cur?'Сейчас идёт':dd?`Старт программы · ${day(featured.ts)}`:'Дальше по программе':'Программа форума'}</span>${dd?`<span>Через ${dd} дн.</span>`:''}</div>${featured?`<h2>${esc(featured.title)}</h2><p class="ann-time">${day(featured.ts)} · ${tm(featured.ts)}–${tm(featured.ts+featured.d*6e4)}</p><div class="ann-controls"><button type="button" onclick="openEv('${featured.id}')">О событии</button><button type="button" data-event-id="${featured.id}" onclick="star('${featured.id}')" aria-pressed="${!!fav[featured.id]}">${fav[featured.id]?'Убрать из расписания':'В моё расписание'}</button></div>`:'<h2>Форум завершён</h2>'}</section>
  ${nw?`<div class="cd" role="button" tabindex="0" onclick="go('news')" onkeydown="keyAction(event,()=>go('news'))"><small>Новость</small><br><b>${esc(nw.t)}</b></div>`:''}
  <h2>Моё расписание</h2>${mine.length?mine.map(card).join(''):'<div class="cd m">Добавьте событие в программе, нажав значок сохранения рядом с ним.</div>'}
  <h2>Дилерская зона</h2><div class="cd">${D.dealers.length?D.dealers.map(d=>`<a href="${esc(d.u)}" target="_blank" rel="noopener">${esc(d.n)}</a>`).join('<br>'):'<span class="m">Более 20 магазинов реквизита. Список и ссылки появятся здесь.</span>'}</div>
