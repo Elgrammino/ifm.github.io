@@ -4,7 +4,7 @@
     ".write": false,
     "s": {
       ".read": true,
-      ".write": "auth != null && auth.uid === 'REPLACE_WITH_ORGANIZER_UID'"
+      ".write": "auth != null && auth.uid === 'QlcQO3nSkcUcvcGjVzLfiIXC8LY2'"
     }
   }
 }
