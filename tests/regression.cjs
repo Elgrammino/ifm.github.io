@@ -18,7 +18,7 @@ test('partial state and invalid event input recover',()=>{
 });
 function app(response,values={}){
  const classes=new Set(['loading']);
- const elements=Object.fromEntries(['#v','#nv','#sh','#splash'].map(k=>[k,{innerHTML:'',style:{},classList:{add(n){this.value=n}},setAttribute(){},remove(){this.removed=true}}]));
+ const elements=Object.fromEntries(['#v','#nv','#sh','#splash','#app-scroll'].map(k=>[k,{innerHTML:'',style:{},scrollTop:k==='#app-scroll'?120:0,classList:{add(n){this.value=n}},setAttribute(){},remove(){this.removed=true}}]));
  const ctx={window:{scrollY:120,listeners:{},addEventListener(k,fn){this.listeners[k]=fn}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/'},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){},classList:{add(){}}}),body:{style:{},classList:{contains:n=>classes.has(n),add:n=>classes.add(n),remove:n=>classes.delete(n)},append(){}},addEventListener(){}},navigator:{},fetch:async()=>response,setTimeout(fn,delay){(ctx.timers??=[]).push({fn,delay});return ctx.timers.length},setInterval:()=>0,clearTimeout(id){if(ctx.timers?.[id-1])ctx.timers[id-1].cancelled=true},scrollTo(x,y){ctx.lastScroll=[x,y]},console};
  vm.createContext(ctx);vm.runInContext(script,ctx);return {ctx,elements};
 }
@@ -49,15 +49,19 @@ test('home announcement follows live schedule, cancellation and favourites',asyn
  assert.match(cancelled.elements['#v'].innerHTML,/<section class="ann"[^>]*>[\s\S]*?<h2>Открытие форума<\/h2>/);
  assert.doesNotMatch(cancelled.elements['#v'].innerHTML,/<h2>Регистрация участников<\/h2>/);
 });
-test('event sheet locks background and restores its scroll position',async()=>{
+test('short tabs keep navigation outside scroll area; sheet restores its scroll position',async()=>{
  const {ctx,elements}=app({ok:true,json:async()=>data});await flush();
+ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+ assert.ok(html.indexOf('<nav id="nv"')>html.indexOf('</main></div>'));
  vm.runInContext("openEv('a1')",ctx);
- assert.equal(ctx.document.body.style.position,'fixed');assert.equal(ctx.document.body.style.top,'-120px');
+ assert.equal(elements['#app-scroll'].style.overflowY,'hidden');
  assert.equal(elements['#sh'].style.display,'block');
  vm.runInContext('closeSh()',ctx);
- assert.equal(ctx.document.body.style.position,'');assert.deepEqual(ctx.lastScroll,[0,120]);
+ assert.equal(elements['#app-scroll'].style.overflowY,'');assert.equal(elements['#app-scroll'].scrollTop,120);
  vm.runInContext("openEv('a1')",ctx);ctx.window.listeners.popstate();
- assert.equal(elements['#sh'].style.display,'none');assert.equal(ctx.document.body.style.position,'');
+ assert.equal(elements['#sh'].style.display,'none');assert.equal(elements['#app-scroll'].style.overflowY,'');
+ vm.runInContext("go('notes')",ctx);assert.equal(elements['#app-scroll'].scrollTop,0);
+ vm.runInContext("go('news')",ctx);assert.match(elements['#v'].innerHTML,/Новости/);
 });
 test('program, speaker, saved note and favourite render',async()=>{
  const {ctx,elements}=app({ok:true,json:async()=>data},{'ifm2027:/ifm.github.io/:notes':'{"a3":"Сохранено"}'});await flush();
