@@ -53,6 +53,8 @@ test('short tabs keep navigation outside scroll area; sheet restores its scroll 
  const {ctx,elements}=app({ok:true,json:async()=>data});await flush();
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
  assert.ok(html.indexOf('<nav id="nv"')>html.indexOf('</main></div>'));
+ assert.match(html,/body\{position:relative;[^}]*height:100dvh/);
+ assert.match(html,/nav\{position:absolute;left:0;right:0;bottom:0/);
  vm.runInContext("openEv('a1')",ctx);
  assert.equal(elements['#app-scroll'].style.overflowY,'hidden');
  assert.equal(elements['#sh'].style.display,'block');
