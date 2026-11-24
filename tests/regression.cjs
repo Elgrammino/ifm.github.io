@@ -25,6 +25,9 @@ const flush=()=>new Promise(r=>setImmediate(r));
 test('program, speaker, saved note and favourite render',async()=>{
  const {ctx,elements}=app({ok:true,json:async()=>data},{'ifm2027:/ifm.github.io/:notes':'{"a3":"Сохранено"}'});await flush();
  assert.match(elements['#v'].innerHTML,/Международный форум/);vm.runInContext("go('prog');star('a3');openEv('a3')",ctx);
+ assert.match(elements['#v'].innerHTML,/<button class="event-open"/);
+ assert.match(elements['#v'].innerHTML,/<\/button><button class="st /);
+ assert.match(elements['#v'].innerHTML,/aria-pressed="true"/);
  assert.match(elements['#sh'].innerHTML,/Сохранено/);assert.match(elements['#sh'].innerHTML,/В моём расписании/);
  vm.runInContext("openSp('umid')",ctx);assert.match(elements['#sh'].innerHTML,/Умид Миргасанов/);
 });
