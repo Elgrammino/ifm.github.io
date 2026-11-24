@@ -14,6 +14,15 @@ body{margin:0;background:var(--bg);color:#fff;font:500 16px/1.4 M,system-ui,sans
 html{overscroll-behavior-y:none;-webkit-text-size-adjust:100%}button,a,[role="button"]{touch-action:manipulation}button,[role="button"]{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}button:active,.cd[onclick]:active{opacity:.8}
 .btn,.chip,.st,nav button,.ann-controls button{transition:transform 120ms var(--ease-out)}
 .btn:active,.chip:active,.st:active,nav button:active,.ann-controls button:active{transform:scale(.97)}
+.demo-notice,#v,#nv{transition:opacity 260ms var(--ease-out)}
+.loading .demo-notice,.loading #v,.loading #nv{opacity:0}
+.splash{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom);background:var(--bg);transition:opacity 300ms var(--ease-out),visibility 0s linear 300ms}
+.splash.done{opacity:0;visibility:hidden;pointer-events:none}
+.splash-mark{width:220px;height:220px;display:grid;place-items:center;position:relative}
+.splash-mark::before{content:"";position:absolute;inset:0;border:2px solid transparent;border-top-color:var(--lime);border-right-color:var(--vio);border-bottom-color:var(--gold);border-radius:50%;animation:splash-orbit 1.8s linear infinite}
+.splash-mark img{width:184px;height:184px;border-radius:50%;object-fit:cover}
+.splash p{margin:0;color:var(--gold);font-size:14px;letter-spacing:.04em;text-align:center}
+@keyframes splash-orbit{to{transform:rotate(360deg)}}
 button,input,textarea,select{font:inherit;color:inherit}
 .hero{height:300px;background:linear-gradient(transparent 55%,var(--bg)),url(hero.jpg) center/cover;margin-top:0}/* taste-skill-ignore: neutral readability scrim over the actual forum photograph */
 .pad{padding:0 calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left))}h1,h2{margin:0;font-weight:800;letter-spacing:.01em}h1{font-size:26px;line-height:1.1}h2{font-size:20px;margin:22px calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left))}
@@ -52,9 +61,9 @@ nav button.on{color:#f7dcb1}nav b{position:absolute;top:2px;left:55%;width:9px;h
 @keyframes toast-out{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-12px)}}
 .demo-notice{padding:calc(env(safe-area-inset-top) + 10px) calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left));background:#20152f;color:#e0d7ef;font-size:14px;text-align:center}button{cursor:pointer}button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--lime);outline-offset:3px}.ev{min-width:0}.ev .b{overflow-wrap:anywhere}.cd{overflow-wrap:anywhere}#sh .row{flex-wrap:wrap}#sh .row input,#sh .row select{flex:1 1 90px;min-width:0}#sh .row .btn{min-width:120px}a{overflow-wrap:anywhere}.pr{border-top:1px solid var(--ln);padding-top:10px;margin-top:10px}a{color:#f7dcb1}label{display:block;margin:12px 0 2px;font-size:14px;font-weight:700;color:#e0d7ef}::selection{background:var(--vio);color:#fff}
 @media(max-width:360px){.ann{padding:22px 18px}.ann-controls button{flex:1 1 100%}}
-@media(prefers-reduced-motion:reduce){.btn,.chip,.st,nav button,.ann-controls button{transition:none;transform:none!important}.toast{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.btn,.chip,.st,nav button,.ann-controls button{transition:none;transform:none!important}.toast,.splash-mark::before{animation:none!important}.splash,.demo-notice,#v,#nv{transition-duration:120ms}}
 @media(min-width:700px){body{max-width:560px;margin:0 auto}nav{max-width:560px;margin:0 auto}}
-</style></head><body><div class="demo-notice">Демонстрационная версия · программа предварительная</div><main id="v"></main><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
+</style></head><body class="loading"><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div class="demo-notice">Демонстрационная версия · программа предварительная</div><main id="v"></main><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
 <nav id="nv" aria-label="Основная навигация"></nav>
 <script src="storage.js"></script>
 <script src="firebase-config.js"></script>
@@ -62,6 +71,9 @@ nav button.on{color:#f7dcb1}nav b{position:absolute;top:2px;left:55%;width:9px;h
 <script>
 const REMOTE=IFM_REMOTE(window.IFM_FIREBASE);
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function revealApp(){const splash=$('#splash');if(!splash||document.body.classList.contains('app-ready'))return;document.body.classList.remove('loading');document.body.classList.add('app-ready');splash.classList.add('done');splash.setAttribute('aria-hidden','true');setTimeout(()=>splash.remove(),350)}
+const splashStarted=Date.now();
+function finishLoading(){setTimeout(()=>{if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(revealApp));else revealApp()},Math.max(0,480-(Date.now()-splashStarted)))}
 let backend;try{backend=localStorage}catch{backend={getItem(){return null},setItem(){throw Error('Storage unavailable')}}}
 const L=IFM.storage(backend,location.pathname.replace(/index\.html$/,''),()=>toast('Не удалось сохранить данные. До закрытия вкладки они останутся в памяти.'));
 const T0=Date.parse('2027-01-19T00:00:00+03:00'),hm=t=>+t.slice(0,2)*60+ +t.slice(3);
@@ -130,6 +142,7 @@ function addE(){const t=$('#at').value.trim();if(!t)return toast('Введите
 let saving=false;
 async function save(message,change){if(!REMOTE.ready||!REMOTE.signedIn())return toast('Войдите как организатор');if(saving)return; saving=true;try{const next=await REMOTE.update(raw=>{const state=IFM.state(raw);return IFM.state(change(state)||state)});S=IFM.state(next);L('s',S);if(message)toast(message);render()}catch(e){if(!REMOTE.signedIn())REMOTE.logout();toast('Не удалось опубликовать. Изменения не сохранены, попробуйте снова.')}finally{saving=false}}
 async function sync(){if(!REMOTE.ready)return;try{const raw=await REMOTE.read(),next=IFM.state(raw);const latest=S.news[0]?.ts;S=next;L('s',S);if(remoteOffline){remoteOffline=false;toast('Связь восстановлена. Программа обновлена.')}if(S.news[0]&&S.news[0].ts!==latest&&latest&&tab!=='news'&&!adm)toast('Новость: '+S.news[0].t);if(!adm)render()}catch(e){if(!remoteOffline){remoteOffline=true;toast('Нет связи с общей программой. Показаны последние сохранённые данные.')}}}
-(async()=>{try{const response=await fetch('data.json');if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();if(!Array.isArray(data.events)||!data.events.length||!data.events.every(IFM.validEvent)||!Array.isArray(data.speakers)||!Array.isArray(data.links)||!Array.isArray(data.dealers))throw Error('Invalid data');D=data;L('d',D)}catch(e){const cached=L('d');if(cached&&Array.isArray(cached.events)&&cached.events.length&&cached.events.every(IFM.validEvent)&&Array.isArray(cached.speakers)&&Array.isArray(cached.links)&&Array.isArray(cached.dealers)){D=cached;toast('Открыта сохранённая программа. Обновление пока недоступно.')}else{$('#v').innerHTML='<div class=cd><h1>Программа не загрузилась</h1><p>Проверьте соединение и попробуйте ещё раз.</p><button class=btn onclick=location.reload()>Повторить</button></div>';return}}render();sync();setInterval(sync,20000);document.addEventListener('visibilitychange',()=>!document.hidden&&sync())})();
+const loadDeadline=setTimeout(()=>{if(!document.body.classList.contains('loading'))return;$('#v').innerHTML='<div class=cd><h1>Программа загружается слишком долго</h1><p>Проверьте соединение или попробуйте ещё раз.</p><button class=btn onclick=location.reload()>Повторить</button></div>';finishLoading()},10000);
+(async()=>{try{const response=await fetch('data.json');if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();if(!Array.isArray(data.events)||!data.events.length||!data.events.every(IFM.validEvent)||!Array.isArray(data.speakers)||!Array.isArray(data.links)||!Array.isArray(data.dealers))throw Error('Invalid data');D=data;L('d',D)}catch(e){const cached=L('d');if(cached&&Array.isArray(cached.events)&&cached.events.length&&cached.events.every(IFM.validEvent)&&Array.isArray(cached.speakers)&&Array.isArray(cached.links)&&Array.isArray(cached.dealers)){D=cached;toast('Открыта сохранённая программа. Обновление пока недоступно.')}else{clearTimeout(loadDeadline);$('#v').innerHTML='<div class=cd><h1>Программа не загрузилась</h1><p>Проверьте соединение и попробуйте ещё раз.</p><button class=btn onclick=location.reload()>Повторить</button></div>';finishLoading();return}}clearTimeout(loadDeadline);render();finishLoading();sync();setInterval(sync,20000);document.addEventListener('visibilitychange',()=>!document.hidden&&sync())})();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>toast('Офлайн-режим недоступен. Приложение продолжит работать с интернетом.'));
 </script></body></html>
