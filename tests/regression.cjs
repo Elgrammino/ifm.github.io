@@ -18,7 +18,7 @@ test('partial state and invalid event input recover',()=>{
 });
 function app(response,values={}){
  const elements=Object.fromEntries(['#v','#nv','#sh'].map(k=>[k,{innerHTML:'',style:{},setAttribute(){}}]));
- const ctx={window:{addEventListener(){}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/'},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){}}),body:{append(){}},addEventListener(){}},navigator:{},fetch:async()=>response,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},scrollTo(){},console};
+ const ctx={window:{scrollY:120,addEventListener(){}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/'},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){},classList:{add(){}}}),body:{style:{},append(){}},addEventListener(){}},navigator:{},fetch:async()=>response,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},scrollTo(x,y){ctx.lastScroll=[x,y]},console};
  vm.createContext(ctx);vm.runInContext(script,ctx);return {ctx,elements};
 }
 const flush=()=>new Promise(r=>setImmediate(r));
@@ -33,6 +33,14 @@ test('home announcement follows live schedule, cancellation and favourites',asyn
  const cancelled=app({ok:true,json:async()=>data},state);await flush();
  assert.match(cancelled.elements['#v'].innerHTML,/<section class="ann"[^>]*>[\s\S]*?<h2>Открытие форума<\/h2>/);
  assert.doesNotMatch(cancelled.elements['#v'].innerHTML,/<h2>Регистрация участников<\/h2>/);
+});
+test('event sheet locks background and restores its scroll position',async()=>{
+ const {ctx,elements}=app({ok:true,json:async()=>data});await flush();
+ vm.runInContext("openEv('a1')",ctx);
+ assert.equal(ctx.document.body.style.position,'fixed');assert.equal(ctx.document.body.style.top,'-120px');
+ assert.equal(elements['#sh'].style.display,'block');
+ vm.runInContext('closeSh()',ctx);
+ assert.equal(ctx.document.body.style.position,'');assert.deepEqual(ctx.lastScroll,[0,120]);
 });
 test('program, speaker, saved note and favourite render',async()=>{
  const {ctx,elements}=app({ok:true,json:async()=>data},{'ifm2027:/ifm.github.io/:notes':'{"a3":"Сохранено"}'});await flush();
