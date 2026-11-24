@@ -22,6 +22,18 @@ function app(response,values={}){
  vm.createContext(ctx);vm.runInContext(script,ctx);return {ctx,elements};
 }
 const flush=()=>new Promise(r=>setImmediate(r));
+test('home announcement follows live schedule, cancellation and favourites',async()=>{
+ const {ctx,elements}=app({ok:true,json:async()=>data});await flush();
+ assert.match(elements['#v'].innerHTML,/class="ann"/);
+ assert.match(elements['#v'].innerHTML,/Регистрация участников/);
+ assert.match(elements['#v'].innerHTML,/О событии/);
+ vm.runInContext("star('a1')",ctx);
+ assert.match(elements['#v'].innerHTML,/aria-pressed="true">Убрать из расписания/);
+ const state={'ifm2027:/ifm.github.io/:s':JSON.stringify({shift:0,off:{a1:true},add:[],news:[]})};
+ const cancelled=app({ok:true,json:async()=>data},state);await flush();
+ assert.match(cancelled.elements['#v'].innerHTML,/<section class="ann"[^>]*>[\s\S]*?<h2>Открытие форума<\/h2>/);
+ assert.doesNotMatch(cancelled.elements['#v'].innerHTML,/<h2>Регистрация участников<\/h2>/);
+});
 test('program, speaker, saved note and favourite render',async()=>{
  const {ctx,elements}=app({ok:true,json:async()=>data},{'ifm2027:/ifm.github.io/:notes':'{"a3":"Сохранено"}'});await flush();
  assert.match(elements['#v'].innerHTML,/Международный форум/);vm.runInContext("go('prog');star('a3');openEv('a3')",ctx);
