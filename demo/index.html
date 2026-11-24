@@ -10,7 +10,7 @@
 @font-face{font-family:M;src:url(m800.woff2);font-weight:800;font-display:swap}
 :root{--bg:#07050c;--ln:#ffffff1f;--m:#a79fb8;--lime:#c6ff3d;--vio:#a35cff;--gold:#f7dcb1;--surface:#ffffff0c;--surface-strong:#ffffff14;--ink-on-gold:#1a0f07;--radius-card:20px;--ease-out:cubic-bezier(.23,1,.32,1)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;height:100vh;height:100dvh;overflow:hidden;background:var(--bg);color:#fff;font:500 16px/1.4 M,system-ui,sans-serif}
+body{position:relative;margin:0;height:100vh;height:100dvh;overflow:hidden;background:var(--bg);color:#fff;font:500 16px/1.4 M,system-ui,sans-serif}
 .app-scroll{height:100%;overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 html{overscroll-behavior-y:none;-webkit-text-size-adjust:100%}button,a,[role="button"]{touch-action:manipulation}button,[role="button"]{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}button:active,.cd[onclick]:active{opacity:.8}
 .btn,.chip,.st,nav button,.ann-controls button{transition:transform 120ms var(--ease-out)}
@@ -53,7 +53,7 @@ small,.m{color:var(--m);font-size:14px}
 .big{width:112px;height:112px;margin:0 auto 10px;display:block}
 .btn{border:0;border-radius:14px;min-height:44px;padding:12px 18px;background:var(--gold);color:var(--ink-on-gold);font-weight:800}.btn.g{background:var(--surface-strong);color:#fff;border:1px solid var(--ln)}
 input,textarea,select{width:100%;background:#00000066;border:1px solid var(--ln);border-radius:12px;padding:12px;margin:5px 0}textarea{min-height:140px;resize:vertical}
-nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:#0b0813ee;backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:6px calc(4px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(4px + env(safe-area-inset-left));z-index:5}
+nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:#0b0813ee;backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:6px calc(4px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(4px + env(safe-area-inset-left));z-index:5}
 nav button{min-width:0;min-height:52px;flex:1;background:none;border:0;color:var(--m);font-size:12px;font-weight:700;padding:6px 1px;position:relative}nav button svg{display:block;width:22px;height:22px;margin:0 auto 3px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:#f7dcb1}nav b{position:absolute;top:2px;left:55%;width:9px;height:9px;border-radius:50%;background:var(--lime)}
 #sh{position:fixed;inset:0;height:100dvh;z-index:9;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top) + 12px) 0 calc(24px + env(safe-area-inset-bottom));display:none}
