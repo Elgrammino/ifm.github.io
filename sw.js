@@ -1,6 +1,6 @@
 const PREFIX = 'ifm2027:' + self.registration.scope + ':';
-const CACHE = PREFIX + 'demo-2';
-const ASSETS = ['./','./index.html','./storage.js','./data.json','./manifest.json','./hero.jpg','./icon-180.png','./icon-192.png','./icon-512.png','./m500.woff2','./m700.woff2','./m800.woff2','./asi.jpg','./mind.jpg','./umid.jpg','./duo.jpg','./artak.jpg'];
+const CACHE = PREFIX + 'demo-3';
+const ASSETS = ['./','./index.html','./storage.js','./firebase-config.js','./remote.js','./data.json','./manifest.json','./hero.jpg','./icon-180.png','./icon-192.png','./icon-512.png','./m500.woff2','./m700.woff2','./m800.woff2','./asi.jpg','./mind.jpg','./umid.jpg','./duo.jpg','./artak.jpg'];
 const urls = new Set(ASSETS.map(file => new URL(file,self.registration.scope).href));
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith(PREFIX) && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));

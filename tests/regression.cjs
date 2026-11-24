@@ -18,7 +18,7 @@ test('partial state and invalid event input recover',()=>{
 });
 function app(response,values={}){
  const elements=Object.fromEntries(['#v','#nv','#sh'].map(k=>[k,{innerHTML:'',style:{},setAttribute(){}}]));
- const ctx={window:{addEventListener(){}},history:{pushState(){},back(){}},IFM:api,localStorage:backend(values),location:{pathname:'/ifm.github.io/'},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){}}),body:{append(){}},addEventListener(){}},navigator:{},fetch:async()=>response,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},scrollTo(){},console};
+ const ctx={window:{addEventListener(){}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/'},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){}}),body:{append(){}},addEventListener(){}},navigator:{},fetch:async()=>response,setTimeout:()=>0,setInterval:()=>0,clearTimeout(){},scrollTo(){},console};
  vm.createContext(ctx);vm.runInContext(script,ctx);return {ctx,elements};
 }
 const flush=()=>new Promise(r=>setImmediate(r));

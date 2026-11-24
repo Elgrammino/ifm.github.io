@@ -1,0 +1,10 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "s": {
+      ".read": true,
+      ".write": "auth != null && auth.uid === 'REPLACE_WITH_ORGANIZER_UID'"
+    }
+  }
+}
