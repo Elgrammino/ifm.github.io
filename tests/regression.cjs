@@ -28,7 +28,7 @@ test('program, speaker, saved note and favourite render',async()=>{
  assert.match(elements['#v'].innerHTML,/<button class="event-open"/);
  assert.match(elements['#v'].innerHTML,/<\/button><button class="st /);
  assert.match(elements['#v'].innerHTML,/aria-pressed="true"/);
- assert.match(elements['#sh'].innerHTML,/Сохранено/);assert.match(elements['#sh'].innerHTML,/В моём расписании/);
+ assert.match(elements['#sh'].innerHTML,/Сохранено/);assert.match(elements['#sh'].innerHTML,/Удалить из моего расписания/);
  vm.runInContext("openSp('umid')",ctx);assert.match(elements['#sh'].innerHTML,/Умид Миргасанов/);
 });
 test('HTTP failure gives recovery screen or valid cached program',async()=>{
