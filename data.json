@@ -3,11 +3,11 @@
 "dealers":[],
 "speakers":[
 {"id":"blake","name":"Blake Vogt","role":"Хедлайнер IX форума, США","photo":"","bio":"Американский иллюзионист, мастер визуальной магии. Создаёт иллюзии для Дэвида Копперфильда и Дэвида Блейна, консультировал создателей фильмов «Иллюзия обмана» и «Человек-муравей».","products":[]},
-{"id":"asi","name":"Asi Wind","role":"Приглашённый спикер МФИ","photo":"asi.jpg","bio":"Описание появится позже.","products":[{"n":"Демо-товар (пример карточки)","d":"Так будет выглядеть реквизит, который спикер привёз на форум.","shops":[{"n":"Магазин (демо)","u":"https://ucmmagic.ru/mfi/"}]}]},
-{"id":"mind","name":"Mind Cafe","role":"Приглашённые спикеры","photo":"mind.jpg","bio":"Описание появится позже.","products":[]},
-{"id":"umid","name":"Умид Миргасанов","role":"Приглашённый спикер","photo":"umid.jpg","bio":"Описание появится позже.","products":[]},
-{"id":"duo","name":"Андрей Cardician и Александр Суслов","role":"Приглашённые спикеры","photo":"duo.jpg","bio":"Описание появится позже.","products":[]},
-{"id":"artak","name":"Артак Мосоян","role":"Приглашённый спикер","photo":"artak.jpg","bio":"Описание появится позже.","products":[]}
+{"id":"asi","name":"Asi Wind","role":"Приглашённый спикер МФИ","photo":"assets/participants/asi.jpg","bio":"Описание появится позже.","products":[{"n":"Демо-товар (пример карточки)","d":"Так будет выглядеть реквизит, который спикер привёз на форум.","shops":[{"n":"Магазин (демо)","u":"https://ucmmagic.ru/mfi/"}]}]},
+{"id":"mind","name":"Mind Cafe","role":"Приглашённые спикеры","photo":"assets/participants/mind.jpg","bio":"Описание появится позже.","products":[]},
+{"id":"umid","name":"Умид Миргасанов","role":"Приглашённый спикер","photo":"assets/participants/umid.jpg","bio":"Описание появится позже.","products":[]},
+{"id":"duo","name":"Андрей Cardician и Александр Суслов","role":"Приглашённые спикеры","photo":"assets/participants/duo.jpg","bio":"Описание появится позже.","products":[]},
+{"id":"artak","name":"Артак Мосоян","role":"Приглашённый спикер","photo":"assets/participants/artak.jpg","bio":"Описание появится позже.","products":[]}
 ],
 "events":[
 {"id":"a1","day":0,"t":"09:00","d":60,"type":"brk","title":"Регистрация участников"},

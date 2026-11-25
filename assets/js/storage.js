@@ -1,4 +1,4 @@
-/* Shared by the browser and regression checks. No remote storage in this demo. */
+/* Local visitor data, shared validation and regression helpers. */
 (function (root) {
   const object = value => value && typeof value === 'object' && !Array.isArray(value);
   const record = (value, check) => Object.fromEntries(Object.entries(object(value) ? value : {}).filter(([key, item]) => /^[a-zA-Z0-9_-]+$/.test(key) && check(item)));

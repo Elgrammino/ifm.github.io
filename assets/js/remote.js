@@ -7,6 +7,7 @@
     let idToken = '';
     let expires = 0;
     const url = () => databaseURL + '/s.json';
+    const decode = data => typeof data === 'string' ? JSON.parse(data) : data;
     async function checked(response) {
       if (!response.ok) throw Error('HTTP ' + response.status);
       return response;
@@ -15,7 +16,7 @@
       if (!ready) throw Error('Remote storage is not configured');
       const response = await checked(await fetcher(url() + '?t=' + Date.now(), { cache: 'no-store' }));
       const data = await response.json();
-      return typeof data === 'string' ? JSON.parse(data) : data;
+      return decode(data);
     }
     async function login(email, password) {
       if (!ready) throw Error('Remote storage is not configured');
@@ -37,7 +38,7 @@
         const current = await checked(await fetcher(endpoint, { headers: { 'X-Firebase-ETag': 'true' }, cache: 'no-store' }));
         const etag = current.headers.get('ETag');
         if (!etag) throw Error('Database ETag missing');
-        const existing = await current.json();
+        const existing = decode(await current.json());
         const next = change(existing);
         const response = await fetcher(endpoint, {
           method: 'PUT', headers: { 'Content-Type': 'application/json', 'if-match': etag },
