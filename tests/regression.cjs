@@ -16,10 +16,10 @@ test('partial state and invalid event input recover',()=>{
  assert.deepEqual(api.state({shift:'bad',off:null,add:[{}],news:[{}]}),{shift:0,off:{},add:[],news:[]});
  assert.ok(data.events.every(api.validEvent));assert.equal(api.validEvent({...data.events[0],t:'25:00'}),false);assert.equal(api.validEvent({...data.events[0],d:-1}),false);
 });
-function app(response,values={}){
+function app(response,values={},serviceWorker){
  const classes=new Set(['loading']);
  const elements=Object.fromEntries(['#v','#nv','#sh','#splash','#app-scroll'].map(k=>[k,{innerHTML:'',style:{},scrollTop:k==='#app-scroll'?120:0,classList:{add(n){this.value=n}},setAttribute(){},remove(){this.removed=true}}]));
- const ctx={window:{scrollY:120,listeners:{},addEventListener(k,fn){this.listeners[k]=fn}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/'},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){},classList:{add(){}}}),body:{style:{},classList:{contains:n=>classes.has(n),add:n=>classes.add(n),remove:n=>classes.delete(n)},append(){}},addEventListener(){}},navigator:{},fetch:async()=>response,setTimeout(fn,delay){(ctx.timers??=[]).push({fn,delay});return ctx.timers.length},setInterval:()=>0,clearTimeout(id){if(ctx.timers?.[id-1])ctx.timers[id-1].cancelled=true},scrollTo(x,y){ctx.lastScroll=[x,y]},console};
+ const ctx={URL,window:{scrollY:120,listeners:{},addEventListener(k,fn){this.listeners[k]=fn}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/',href:'https://example.com/ifm.github.io/'},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){},classList:{add(){}}}),body:{style:{},classList:{contains:n=>classes.has(n),add:n=>classes.add(n),remove:n=>classes.delete(n)},append(){}},addEventListener(){}},navigator:serviceWorker?{serviceWorker}:{},fetch:async()=>response,setTimeout(fn,delay){(ctx.timers??=[]).push({fn,delay});return ctx.timers.length},setInterval:()=>0,clearTimeout(id){if(ctx.timers?.[id-1])ctx.timers[id-1].cancelled=true},scrollTo(x,y){ctx.lastScroll=[x,y]},console};
  vm.createContext(ctx);vm.runInContext(script,ctx);return {ctx,elements};
 }
 const flush=()=>new Promise(r=>setImmediate(r));
@@ -103,9 +103,9 @@ test('HTTP failure gives recovery screen or valid cached program',async()=>{
 });
 test('worker preserves other apps and serves cached data offline',async()=>{
  const handlers={},deleted=[],scope='https://example.com/ifm.github.io/';
- const ctx={URL,Response,Set,Error,self:{registration:{scope},clients:{claim:async()=>{}},addEventListener:(k,f)=>handlers[k]=f},caches:{keys:async()=>['other-app','ifm2027:'+scope+':old','ifm2027:https://example.com/other/:old'],delete:async k=>deleted.push(k),open:async()=>({match:async()=>new Response('cached')})},fetch:async()=>{throw Error('offline')}};
+ const ctx={URL,Response,Set,Error,self:{registration:{scope},clients:{claim:async()=>{}},addEventListener:(k,f)=>handlers[k]=f},caches:{keys:async()=>['other-app','ifm2027:'+scope+':old','ifm2027:'+scope+'demo/:demo-11','ifm2027:https://example.com/other/:old'],delete:async k=>deleted.push(k),open:async()=>({match:async()=>new Response('cached')})},fetch:async()=>{throw Error('offline')}};
  vm.runInNewContext(fs.readFileSync(path.join(root,'sw.js'),'utf8'),ctx);let p;
- handlers.activate({waitUntil:x=>p=x});await p;assert.deepEqual(deleted,['ifm2027:'+scope+':old']);
+ handlers.activate({waitUntil:x=>p=x});await p;assert.deepEqual(deleted,['ifm2027:'+scope+':old','ifm2027:'+scope+'demo/:demo-11']);
  handlers.fetch({request:{url:scope+'data.json',method:'GET'},respondWith:x=>p=x});assert.equal(await(await p).text(),'cached');
 });
 
@@ -124,4 +124,11 @@ test('reorganized assets resolve and are available to the offline installer',asy
  for(const file of references){assert.ok(fs.existsSync(path.join(root,file)),file+' missing');assert.ok(assets.includes('./'+file),file+' missing from offline cache');}
  assert.equal(data.speakers.filter(s=>s.photo&&!s.photo.startsWith('assets/participants/')).length,0);
  assert.equal(fs.existsSync(path.join(root,'demo')),false);
+});
+
+test('opening main unregisters only the retired demo worker',async()=>{
+ const removed=[],base='https://example.com/ifm.github.io/';
+ const worker={register:async()=>({}),getRegistrations:async()=>[base,base+'demo/','https://example.com/other/demo/'].map(scope=>({scope,unregister:async()=>removed.push(scope)}))};
+ app({ok:true,json:async()=>data},{},worker);await flush();
+ assert.deepEqual(removed,[base+'demo/']);
 });
