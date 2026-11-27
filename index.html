@@ -1,16 +1,15 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
-<title>IFM 2027</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#07050c">
+<title>IFM 2027</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#110b19">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="IFM 2027">
 <link rel="apple-touch-icon" href="assets/icons/icon-180.png"><link rel="icon" href="assets/icons/icon-192.png">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="assets/fonts/ifm-fonts.css">
 <style>
-@font-face{font-family:M;src:url(assets/fonts/m500.woff2);font-weight:500;font-display:swap}
-@font-face{font-family:M;src:url(assets/fonts/m700.woff2);font-weight:700;font-display:swap}
-@font-face{font-family:M;src:url(assets/fonts/m800.woff2);font-weight:800;font-display:swap}
-:root{--bg:#07050c;--ln:#ffffff1f;--m:#a79fb8;--lime:#c6ff3d;--vio:#a35cff;--gold:#f7dcb1;--surface:#ffffff0c;--surface-strong:#ffffff14;--ink-on-gold:#1a0f07;--radius-card:20px;--ease-out:cubic-bezier(.23,1,.32,1)}
+:root{--bg:var(--color-background);--ln:var(--color-border);--m:var(--color-text-muted);--lime:var(--color-live);--vio:#a35cff;--gold:var(--color-action);--surface:var(--color-surface);--surface-strong:color-mix(in srgb,var(--surface) 70%,var(--bg));--ink-on-gold:var(--color-on-action);--ease-out:cubic-bezier(.23,1,.32,1)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{position:relative;margin:0;height:100vh;height:100dvh;overflow:hidden;background:var(--bg);color:#fff;font:500 16px/1.4 M,system-ui,sans-serif}
+body{position:relative;margin:0;height:100vh;height:100dvh;overflow:hidden;background:var(--bg);color:var(--color-text);font:var(--weight-body) var(--size-body)/var(--leading-body) var(--font-body)}
 .app-scroll{height:100%;overflow-y:auto;overscroll-behavior:contain;scroll-padding-bottom:calc(84px + env(safe-area-inset-bottom));padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 html{overscroll-behavior-y:none;-webkit-text-size-adjust:100%;color-scheme:dark}button,a,[role="button"]{touch-action:manipulation}button,[role="button"]{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}button:active,.cd[onclick]:active{opacity:.8}
 .skip{position:absolute;left:16px;top:-100px;z-index:40;padding:10px 14px;background:var(--gold);color:var(--ink-on-gold)}.skip:focus-visible{top:calc(8px + env(safe-area-inset-top))}
@@ -26,26 +25,60 @@ html{overscroll-behavior-y:none;-webkit-text-size-adjust:100%;color-scheme:dark}
 .splash p{margin:0;color:var(--gold);font-size:14px;letter-spacing:.04em;text-align:center}
 @keyframes splash-orbit{to{transform:rotate(360deg)}}
 button,input,textarea,select{font:inherit;color:inherit}
-.hero{height:300px;background:linear-gradient(transparent 55%,var(--bg)),url(assets/images/hero.jpg) center/cover;margin-top:0}/* taste-skill-ignore: neutral readability scrim over the actual forum photograph */
-.pad{padding:0 calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left))}h1,h2{margin:0;font-weight:800;letter-spacing:.01em;overflow-wrap:anywhere;text-wrap:balance}h1{font-size:26px;line-height:1.1}h2{font-size:20px;margin:22px calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left))}
+
+.pad{padding:0 calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left))}h1,h2{margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);letter-spacing:.01em;overflow-wrap:anywhere;text-wrap:balance}h1{font-size:26px;line-height:1.1}h2{font-size:20px;margin:22px calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left))}
 .gold{color:var(--gold)}
 small,.m{color:var(--m);font-size:14px}
 .cd{background:var(--surface);border:1px solid var(--ln);border-radius:var(--radius-card);padding:14px;margin:10px calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left))}
 .cd[role="button"]{cursor:pointer;text-align:left;color:inherit;font:inherit;width:calc(100% - 32px - env(safe-area-inset-left) - env(safe-area-inset-right))}
-.ann{margin:10px calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left));padding:26px 24px 22px;background:#21182a;border-radius:var(--radius-card)}
-.ann-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:8px 12px;color:#d4c9da;font-size:12px;letter-spacing:.07em;text-transform:uppercase}
-.ann-head span:last-child{color:var(--lime);white-space:nowrap}
-.ann h2{font-size:clamp(28px,7.5vw,42px);line-height:1.04;letter-spacing:-.035em;margin:26px 0 14px;color:#fff;overflow-wrap:anywhere}
-.ann-time{color:var(--gold);font-size:15px;margin:0 0 20px}.ann-controls{display:flex;flex-wrap:wrap;gap:8px}
-.ann-controls button{min-height:44px;border-radius:12px;padding:10px 14px;border:1px solid #6b6071;background:transparent;color:#fff;font:inherit;cursor:pointer}
-.ann-controls button:first-child{background:var(--gold);border-color:var(--gold);color:#1a0f07;font-weight:800}
-.ann-controls button[aria-pressed=true]{border-color:var(--lime);color:var(--lime)}
+.hero {
+  height: clamp(160px, 49vw, 216px);
+  display: grid;
+  place-items: center;
+  background: radial-gradient(ellipse at 55% 15%, color-mix(in srgb, var(--color-glow) 33%, transparent), transparent 69%);
+}
+.hero img {
+  width: clamp(152px, 48vw, 194px);
+  height: auto;
+  display: block;
+  mask-image: radial-gradient(ellipse at center, #000 45%, transparent 74%);
+}
+.now-intro { margin-block: 0 var(--space-4); }
+.now-intro p { margin: 0 0 var(--space-1); color: var(--m); font-size: var(--size-caption); }
+.now-intro h1 { font-size: clamp(2.2rem, 11vw, 2.65rem); letter-spacing: -.045em; }
+.ann {
+  margin: var(--space-3) calc(var(--space-4) + env(safe-area-inset-right)) var(--space-3) calc(var(--space-4) + env(safe-area-inset-left));
+  padding: var(--space-4);
+  border: 1px solid var(--ln);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-raised);
+  background: radial-gradient(ellipse at top right, color-mix(in srgb, var(--color-glow) 32%, transparent), transparent 75%), var(--surface);
+}
+.ann-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-2); font-size: var(--size-caption); color: var(--m); }
+.ann-head time, .next-event time { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ann-live { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--lime); font-weight: 700; }
+.ann-live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.ann h2 { font-size: var(--size-heading); margin: var(--space-3) 0; }
+.ann-speaker { display: flex; gap: var(--space-3); align-items: center; min-height: 44px; padding: 0; border: 0; background: none; text-align: left; font-weight: 700; margin-bottom: var(--space-3); }
+.ann-speaker .av { width: 36px; height: 36px; font-size: var(--size-caption); }
+.ann-controls { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.ann-controls button { min-height: 48px; border-radius: var(--radius-control); padding: var(--space-2) var(--space-3); border: 1px solid var(--ln); background: transparent; font: inherit; }
+.ann-controls button:first-child { flex: 1 0 100%; background: var(--gold); border-color: var(--gold); color: var(--ink-on-gold); font-weight: var(--weight-action); }
+.ann-controls button[aria-pressed=true] { border-color: var(--lime); color: var(--lime); }
+.next-event { display: flex; gap: var(--space-3); align-items: baseline; width: 100%; min-height: 44px; padding: var(--space-3) 0; border: 0; border-top: 1px solid var(--ln); background: none; text-align: left; }
+.next-event time { color: var(--m); font-size: var(--size-caption); }
+.subview { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-4); }
+.subview .btn[aria-pressed=true] { background: var(--gold); color: var(--ink-on-gold); }
+.tab-title { font-size: var(--size-title); margin: var(--space-4) calc(var(--space-4) + env(safe-area-inset-right)) var(--space-4) calc(var(--space-4) + env(safe-area-inset-left)); }
+.forum-links { margin: var(--space-5) calc(var(--space-4) + env(safe-area-inset-right)) 0 calc(var(--space-4) + env(safe-area-inset-left)); border-top: 1px solid var(--ln); }
+.forum-links summary { cursor: pointer; min-height: 44px; padding-block: var(--space-3); color: var(--m); }
+.forum-links .cd { margin-inline: 0; width: 100%; }
 .row{display:flex;gap:12px;align-items:center}.b{flex:1;min-width:0;overflow-wrap:anywhere}
 .tabs{display:flex;gap:8px;overflow:auto;padding:4px calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left));scrollbar-width:none;overscroll-behavior-x:contain}.tabs::-webkit-scrollbar{display:none}
 .chip{flex:none;min-height:44px;border:1px solid var(--ln);background:var(--surface);border-radius:99px;padding:8px 15px;font-weight:700}
 .chip.on{background:var(--gold);color:#1a0f07;border-color:transparent}
 .ev{display:flex;gap:12px;align-items:center;padding:13px 14px}.ev.off .b{color:var(--m)}.ev.off b{text-decoration:line-through}.event-open{display:flex;align-items:center;gap:12px;flex:1;min-width:0;min-height:48px;border:0;padding:0;background:none;color:inherit;text-align:left;font:inherit;cursor:pointer}
-.tm{flex:none;width:52px;font-weight:800;font-size:18px;line-height:1.1;font-variant-numeric:tabular-nums}.tm small{display:block;font-weight:500;font-size:12px}
+.tm{flex:none;width:6ch;white-space:nowrap;font-weight:750;font-size:17px;line-height:1.1;font-variant-numeric:tabular-nums}.tm small{display:block;font-weight:500;font-size:12px}
 .dot{flex:none;width:10px;height:44px;border-radius:5px;background:var(--vio)}
 .con{background:var(--lime)}.show{background:#f7dcb1}.party{background:#ff5fa8}.dealer{background:#5fd4ff}.brk{background:#555}
 .st{flex:none;display:grid;place-items:center;width:44px;height:44px;background:none;border:0;color:var(--m);padding:0}.st.on{color:#f7dcb1}.st svg{width:26px;height:26px;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round;fill:none}
@@ -54,9 +87,9 @@ small,.m{color:var(--m);font-size:14px}
 .big{width:112px;height:112px;margin:0 auto 10px;display:grid}
 .btn{border:0;border-radius:14px;min-height:44px;padding:12px 18px;background:var(--gold);color:var(--ink-on-gold);font-weight:800}.btn.g{background:var(--surface-strong);color:#fff;border:1px solid var(--ln)}
 input,textarea,select{width:100%;background:#00000066;border:1px solid var(--ln);border-radius:12px;padding:12px;margin:5px 0}textarea{min-height:140px;resize:vertical}
-nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:#0b0813ee;backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:6px calc(4px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(4px + env(safe-area-inset-left));z-index:5}
+nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:6px calc(4px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(4px + env(safe-area-inset-left));z-index:5}
 nav button{min-width:0;min-height:52px;flex:1;background:none;border:0;color:var(--m);font-size:12px;font-weight:700;padding:6px 1px;position:relative}nav button svg{display:block;width:22px;height:22px;margin:0 auto 3px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-nav button.on{color:#f7dcb1}nav b{position:absolute;top:2px;left:55%;width:9px;height:9px;border-radius:50%;background:var(--lime)}
+nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);background:var(--surface-strong);border:1px solid var(--ln);border-radius:var(--radius-control)}nav button[data-view="prog"].on{color:var(--ink-on-gold);background:var(--gold);border-color:var(--gold)}nav b{position:absolute;top:2px;left:55%;width:9px;height:9px;border-radius:50%;background:var(--lime)}
 #sh{position:fixed;inset:0;height:100dvh;z-index:9;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top) + 12px) 0 calc(24px + env(safe-area-inset-bottom));display:none}
 .back{margin:0 calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left))}.toast{position:fixed;left:calc(16px + env(safe-area-inset-left));right:calc(16px + env(safe-area-inset-right));top:calc(env(safe-area-inset-top) + 10px);z-index:20;background:var(--gold);color:#1a0f07;font-weight:700;border-radius:14px;padding:12px 14px;animation:toast-in 200ms var(--ease-out) both}.toast.leaving{animation:toast-out 200ms var(--ease-out) both}
 @keyframes toast-in{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
@@ -65,6 +98,11 @@ nav button.on{color:#f7dcb1}nav b{position:absolute;top:2px;left:55%;width:9px;h
 @media(max-width:360px){.ann{padding:22px 18px}.ann-controls button{flex:1 1 100%}}
 @media(prefers-reduced-motion:reduce){.btn,.chip,.st,nav button,.ann-controls button{transition:none;transform:none!important}.toast,.splash-mark::before{animation:none!important}.splash,.demo-notice,#v,#nv{transition-duration:120ms}}
 @media(min-width:700px){body{max-width:560px;margin:0 auto}nav{max-width:560px;margin:0 auto}}
+.note-preview,button.cd{width:calc(100% - 32px - env(safe-area-inset-left) - env(safe-area-inset-right));text-align:left}
+.note-preview span{display:block;margin-top:var(--space-2);white-space:pre-wrap}
+#sh{max-width:560px;margin-inline:auto}
+.demo-notice{background:var(--surface);color:var(--m)}
+@media(max-width:350px){nav button{font-size:10px}.ev,.event-open{gap:var(--space-2)}}
 </style></head><body class="loading"><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><div class="demo-notice">Демонстрационная версия · программа предварительная</div><main id="v" tabindex="-1"></main></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
 <nav id="nv" aria-label="Основная навигация"></nav>
 <script src="assets/js/storage.js"></script>
@@ -80,10 +118,10 @@ let backend;try{backend=localStorage}catch{backend={getItem(){return null},setIt
 const L=IFM.storage(backend,location.pathname.replace(/index\.html$/,''),()=>toast('Не удалось сохранить данные. До закрытия вкладки они останутся в памяти.'));
 const T0=Date.parse('2027-01-19T00:00:00+03:00'),hm=t=>+t.slice(0,2)*60+ +t.slice(3);
 const TY={lec:'Лекция',con:'Конкурс',show:'Шоу',party:'After-party 18+',dealer:'Дилерская зона',brk:'Перерыв'};
-const NAV=[['home','home','Главная'],['prog','calendar','Программа'],['sp','people','Спикеры'],['notes','note','Заметки'],['news','bell','Новости']];
+const NAV=[['home','home','Сейчас'],['sp','people','Спикеры'],['prog','calendar','Программа'],['notes','note','Заметки'],['news','bell','Новости']];
 const ICON={home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-13 4h3m-3 3h7"/>',people:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m2-15a3 3 0 0 1 0 6m1 3a5 5 0 0 1 3 5v1"/>',note:'<path d="M5 3h10l4 4v14H5zM15 3v5h4M8 12h8m-8 4h8"/>',bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',star:'<path d="m12 2 3.1 6.4 7.1 1-5.1 5 .9 7.1-6-3.3-6 3.3.9-7.1-5.1-5 7.1-1z"/>'};
 const icon=(name,filled=false)=>`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"${filled?' style="fill:currentColor"':''}>${ICON[name]}</svg>`;
-let D={events:[],speakers:[],links:[],dealers:[]},S=IFM.state(L('s')),fav=IFM.record(L('fav'),v=>typeof v==='boolean'),notes=IFM.record(L('notes'),v=>typeof v==='string'),tab='home',day=0,topic='',seen=Number(L('seen'))||0,adm=0,tp=0,tt,remoteOffline=false;
+let D={events:[],speakers:[],links:[],dealers:[]},S=IFM.state(L('s')),fav=IFM.record(L('fav'),v=>typeof v==='boolean'),notes=IFM.record(L('notes'),v=>typeof v==='string'),tab='home',noteView='notes',day=0,topic='',seen=Number(L('seen'))||0,adm=0,tp=0,tt,remoteOffline=false;
 const tm=t=>new Date(t).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'});
 const EV=()=>[...D.events,...S.add].map(e=>({...e,ts:T0+e.day*864e5+hm(e.t)*6e4+S.shift*6e4})).sort((a,b)=>a.ts-b.ts);
 const SP=id=>D.speakers.find(s=>s?.id===id);
@@ -93,26 +131,59 @@ function av(s,c=''){const name=typeof s?.name==='string'?s.name.trim():'';const 
 function toast(t){const d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=t;document.body.append(d);navigator.vibrate&&navigator.vibrate(120);setTimeout(()=>{d.classList.add('leaving');setTimeout(()=>d.remove(),200)},3800)}
 function card(e){const s=SP(e.sp),off=S.off[e.id];return `<div class="cd ev ${off?'off':''}"><button class="event-open" aria-label="${esc(e.title)}; ${tm(e.ts)}" onclick="openEv('${e.id}')"><span class="tm">${tm(e.ts)}<small>${e.d} мин</small></span><i class="dot ${e.type}" aria-hidden="true"></i><span class="b"><b>${esc(e.title)}</b><br><small>${off?'Отменено':TY[e.type]}${s&&!off?' · '+esc(s.name):''}</small></span></button><button class="st ${fav[e.id]?'on':''}" data-event-id="${e.id}" aria-label="${fav[e.id]?'Удалить из моего расписания':'Добавить в моё расписание'}: ${esc(e.title)}" aria-pressed="${!!fav[e.id]}" onclick="star('${e.id}')">${icon('star',fav[e.id])}</button></div>`}
 const V={
- home(){const n=Date.now(),l=EV().filter(e=>!S.off[e.id]),cur=l.find(e=>e.ts<=n&&n<e.ts+e.d*6e4),nx=l.find(e=>e.ts>n),mine=l.filter(e=>fav[e.id]&&e.ts+e.d*6e4>n).slice(0,4),f=l[0],nw=S.news[0],featured=cur||nx;
- const dd=f&&n<f.ts?Math.ceil((f.ts-n)/864e5):0,day=t=>new Date(t).toLocaleDateString('ru',{day:'numeric',month:'long',timeZone:'Europe/Moscow'});
- return `<div class="hero"></div><div class="pad" style="margin-top:-46px"><h1 class="gold">Международный форум иллюзионистов</h1><p class="m" style="margin:6px 0 0">19–21 января 2027 · КЗ отеля «Санкт-Петербург»</p></div>
- <section class="ann" aria-label="Анонс события"><div class="ann-head"><span>${featured?cur?'Сейчас идёт':dd?`Старт программы · ${day(featured.ts)}`:'Дальше по программе':'Программа форума'}</span>${dd?`<span>Через ${dd} дн.</span>`:''}</div>${featured?`<h2>${esc(featured.title)}</h2><p class="ann-time">${day(featured.ts)} · ${tm(featured.ts)}–${tm(featured.ts+featured.d*6e4)}</p><div class="ann-controls"><button type="button" onclick="openEv('${featured.id}')">О событии</button><button type="button" data-event-id="${featured.id}" onclick="star('${featured.id}')" aria-pressed="${!!fav[featured.id]}">${fav[featured.id]?'Убрать из расписания':'В моё расписание'}</button></div>`:`<h2>${D.events.length||S.add.length?l.length?'Форум завершён':'Нет доступных событий':'Программа скоро появится'}</h2>`}</section>
- ${nw?`<div class="cd" role="button" tabindex="0" onclick="go('news')" onkeydown="keyAction(event,()=>go('news'))"><small>Новость</small><br><b>${esc(nw.t)}</b></div>`:''}
- <h2>Моё расписание</h2>${mine.length?mine.map(card).join(''):D.events.length||S.add.length?'<div class="cd m">Добавьте событие в программе, нажав значок сохранения рядом с ним.</div>':'<div class="cd m">Сохранённые события появятся здесь после публикации программы.</div>'}
- <h2>Дилерская зона</h2><div class="cd">${D.dealers.length?D.dealers.map(d=>`<a href="${esc(d.u)}" target="_blank" rel="noopener">${esc(d.n)}</a>`).join('<br>'):'<span class="m">Более 20 магазинов реквизита. Список и ссылки появятся здесь.</span>'}</div>
- <h2>Ссылки</h2><div class="cd">${D.links.map(x=>`<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.n)}</a>`).join('<br>')}</div>
- <h2>Организаторы</h2><div class="cd row" role="button" tabindex="0" aria-label="Организаторы: вход по шести нажатиям" onclick="sec()" onkeydown="keyAction(event,sec)"><div class="av ph">UCM</div><div class="b"><b>United Club of Magicians</b><br><small>Организатор МФИ. Пироговская наб., 5/2, Санкт-Петербург</small></div></div>
- <p class="m pad" style="text-align:center">@IFM_RUSSIA · #IFM2027 · #МФИ2027<br>Бета-версия, расписание демонстрационное</p>`},
+ home(){
+ const now = Date.now();
+ const schedule = EV().filter(event => !S.off[event.id]);
+ const current = schedule.find(event => event.ts <= now && now < event.ts + event.d * 60000);
+ const next = schedule.find(event => event.ts > now);
+ const featured = current || next;
+ const speaker = featured && SP(featured.sp);
+ const latestNews = S.news[0];
+ const date = time => new Date(time).toLocaleDateString('ru',{day:'numeric',month:'long',timeZone:'Europe/Moscow'});
+ const status = current ? 'Идёт сейчас' : next ? (now < schedule[0]?.ts ? 'Старт программы' : 'Следующее событие') : 'Программа форума';
+ const empty = schedule.length ? 'Форум завершён' : D.events.length || S.add.length ? 'Нет доступных событий' : 'Программа скоро появится';
+ return `<div class="hero"><img src="assets/images/hero.jpg" width="194" height="194" alt="МФИ 2027 — Международный форум иллюзионистов"></div>
+ <header class="pad now-intro"><p>${featured ? date(featured.ts) + ' · Главный зал' : '19–21 января 2027 · Санкт-Петербург'}</p><h1>Сейчас</h1></header>
+ <section class="ann" aria-label="Анонс события">
+  <div class="ann-head"><span class="${current ? 'ann-live' : ''}">${status}</span>${featured ? `<time>${tm(featured.ts)}–${tm(featured.ts + featured.d * 60000)}</time>` : ''}</div>
+  ${featured ? `<h2>${esc(featured.title)}</h2>
+  ${speaker ? `<button type="button" class="ann-speaker" onclick="openSp('${speaker.id}')">${av(speaker)}<span dir="auto">${esc(speakerName(speaker))}</span></button>` : ''}
+  <div class="ann-controls">
+   <button type="button" onclick="openEv('${featured.id}'${current && featured.type === 'lec' ? ',true' : ''})">${current && featured.type === 'lec' ? 'Записать заметку' : 'О событии'}</button>
+   ${current && featured.type === 'lec' ? `<button type="button" onclick="openEv('${featured.id}')">О событии</button>` : `<button type="button" data-event-id="${featured.id}" onclick="star('${featured.id}')" aria-pressed="${!!fav[featured.id]}">${fav[featured.id] ? 'Убрать из расписания' : 'В моё расписание'}</button>`}
+  </div>` : `<h2>${empty}</h2>`}
+ </section>
+ ${current && next ? `<section><h2>Дальше</h2><div class="pad"><button type="button" class="next-event" onclick="openEv('${next.id}')"><time>${tm(next.ts)}</time><strong>${esc(next.title)}</strong></button></div></section>` : ''}
+ ${latestNews ? `<button class="cd" type="button" onclick="go('news')"><small>Новость</small><br><strong>${esc(latestNews.t)}</strong></button>` : ''}
+ <details class="forum-links"><summary>О форуме</summary>
+  <h2>Дилерская зона</h2><div class="cd">${D.dealers.length ? D.dealers.map(d=>`<a href="${esc(d.u)}" target="_blank" rel="noopener">${esc(d.n)}</a>`).join('<br>') : '<span class="m">Список магазинов появится здесь.</span>'}</div>
+  <h2>Ссылки</h2><div class="cd">${D.links.map(x=>`<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.n)}</a>`).join('<br>')}</div>
+  <button class="cd row" type="button" aria-label="Организаторы: вход по шести нажатиям" onclick="sec()"><span class="av ph">UCM</span><span class="b"><strong>United Club of Magicians</strong><br><small>Пироговская наб., 5/2, Санкт-Петербург</small></span></button>
+ </details>`;
+ },
 prog(){const l=EV(),tps=[...new Set([...D.events,...S.add].map(e=>e.topic).filter(Boolean))];
- return `<div style="height:calc(env(safe-area-inset-top) + 14px)"></div><h2 style="margin-top:6px">Программа</h2><div class="tabs">${[0,1,2].map(i=>`<button class="chip ${day==i?'on':''}" aria-pressed="${day==i}" onclick="day=${i};render()">${19+i} янв</button>`).join('')}</div>
+ return `<h1 class="tab-title">Программа</h1><div class="tabs">${[0,1,2].map(i=>`<button class="chip ${day==i?'on':''}" aria-pressed="${day==i}" onclick="day=${i};render()">${19+i} янв</button>`).join('')}</div>
  <div class="tabs"><button class="chip ${!topic?'on':''}" aria-pressed="${!topic}" onclick="topic='';render()">Все темы</button>${tps.map((t,i)=>`<button class="chip ${topic==t?'on':''}" aria-pressed="${topic==t}" onclick="topicAt(${i})">${esc(t)}</button>`).join('')}</div>
  ${l.filter(e=>e.day==day&&(!topic||e.topic==topic)).map(card).join('')||(l.length?'<div class="cd m">Для этого дня ничего не найдено.</div>':'<div class="cd m">Программа пока не опубликована. Загляните сюда позже.</div>')}`},
- sp(){const speakers=D.speakers.filter(s=>s&&/^[a-zA-Z0-9_-]+$/.test(s.id));return `<div style="height:calc(env(safe-area-inset-top) + 14px)"></div><h2 style="margin-top:6px">Спикеры</h2>${speakers.map(s=>`<div class="cd row" role="button" tabindex="0" onclick="openSp('${s.id}')" onkeydown="keyAction(event,()=>openSp('${s.id}'))">${av(s)}<div class="b"><b dir="auto">${esc(speakerName(s))}</b>${speakerRole(s)?`<br><small>${esc(speakerRole(s))}</small>`:''}</div></div>`).join('')||'<div class="cd m">Информация о спикерах скоро появится.</div>'}`},
-notes(){const l=EV().filter(e=>(notes[e.id]||'').trim());return `<div style="height:calc(env(safe-area-inset-top) + 14px)"></div><h2 style="margin-top:6px">Заметки</h2>${l.map(e=>`<div class="cd" role="button" tabindex="0" onclick="openEv('${e.id}')" onkeydown="keyAction(event,()=>openEv('${e.id}'))"><b>${esc(e.title)}</b><br><small>${19+e.day} янв, ${tm(e.ts)}</small><p style="margin:8px 0 0;white-space:pre-wrap">${esc(notes[e.id].slice(0,160))}</p></div>`).join('')||'<div class="cd m">Откройте событие в программе и запишите заметку прямо в нём. Все заметки хранятся только на вашем телефоне.</div>'}${l.length?'<div class="pad"><button class="btn" onclick="exp()">Выгрузить все заметки</button></div>':''}`},
-news(){seen=S.news[0]?.ts||0;L('seen',seen);return `<div style="height:calc(env(safe-area-inset-top) + 14px)"></div><h2 style="margin-top:6px">Новости</h2>${S.news.map(n=>`<div class="cd"><b>${esc(n.t.trim()||'Обновление программы')}</b>${n.x.trim()?`<p style="margin:6px 0">${esc(n.x)}</p>`:''}<small>${new Date(n.ts).toLocaleString('ru',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'})}</small></div>`).join('')||'<div class="cd m">Новостей пока нет. Здесь организаторы сообщат об изменениях в программе.</div>'}`}};
+ sp(){const speakers=D.speakers.filter(s=>s&&/^[a-zA-Z0-9_-]+$/.test(s.id));return `<h1 class="tab-title">Спикеры</h1>${speakers.map(s=>`<div class="cd row" role="button" tabindex="0" onclick="openSp('${s.id}')" onkeydown="keyAction(event,()=>openSp('${s.id}'))">${av(s)}<div class="b"><b dir="auto">${esc(speakerName(s))}</b>${speakerRole(s)?`<br><small>${esc(speakerRole(s))}</small>`:''}</div></div>`).join('')||'<div class="cd m">Информация о спикерах скоро появится.</div>'}`},
+ notes(){
+ const saved = noteView === 'saved';
+ const events = EV().filter(event => saved ? fav[event.id] : (notes[event.id] || '').trim());
+ const controls = `<div class="pad subview" aria-label="Личное"><button class="btn g" aria-pressed="${!saved}" onclick="showNoteView('notes',this)">Записи</button><button class="btn g" aria-pressed="${saved}" onclick="showNoteView('saved',this)">Моё расписание</button></div>`;
+ const content = saved
+  ? events.map(card).join('') || '<div class="cd m">Сохраните событие звёздочкой в программе, и оно появится здесь.</div>'
+  : events.map(e=>`<button class="cd note-preview" type="button" onclick="openEv('${e.id}')"><strong>${esc(e.title)}</strong><br><small>${19+e.day} янв, ${tm(e.ts)}</small><span>${esc(notes[e.id].slice(0,160))}</span></button>`).join('') || '<div class="cd m">Откройте событие в программе и запишите заметку. Записи хранятся на этом устройстве.</div>';
+ return `<h1 class="tab-title">${saved ? 'Моё расписание' : 'Заметки'}</h1>${controls}${content}${!saved && events.length ? '<div class="pad"><button class="btn" onclick="exp()">Выгрузить все заметки</button></div>' : ''}`;
+ },
+news(){seen=S.news[0]?.ts||0;L('seen',seen);return `<h1 class="tab-title">Новости</h1>${S.news.map(n=>`<div class="cd"><b>${esc(n.t.trim()||'Обновление программы')}</b>${n.x.trim()?`<p style="margin:6px 0">${esc(n.x)}</p>`:''}<small>${new Date(n.ts).toLocaleString('ru',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'})}</small></div>`).join('')||'<div class="cd m">Новостей пока нет. Здесь организаторы сообщат об изменениях в программе.</div>'}`}};
 function keyAction(event,action){if(event.target!==event.currentTarget)return;if(event.key==='Enter'||event.key===' '){event.preventDefault();action()}}
 function topicAt(i){topic=[...new Set([...D.events,...S.add].map(e=>e.topic).filter(Boolean))][i]||'';render()}
-function render(){const navFocused=!!document.activeElement?.closest?.('#nv');$('#v').innerHTML=V[tab]();$('#nv').innerHTML=NAV.map(([k,i,t])=>`<button class="${tab==k?'on':''}" aria-current="${tab==k?'page':'false'}" onclick="go('${k}')">${icon(i)}${t}${k=='news'&&S.news[0]?.ts>seen&&tab!='news'?'<b></b>':''}</button>`).join('');if(navFocused)$('#nv').querySelector?.('[aria-current="page"]')?.focus?.();if(adm)admPanel()}
+function render(){const navFocused=!!document.activeElement?.closest?.('#nv');$('#v').innerHTML=V[tab]();$('#nv').innerHTML=NAV.map(([k,i,t])=>`<button class="${tab==k?'on':''}" data-view="${k}" aria-current="${tab==k?'page':'false'}" onclick="go('${k}')">${icon(i)}${t}${k=='news'&&S.news[0]?.ts>seen&&tab!='news'?'<b></b>':''}</button>`).join('');if(navFocused)$('#nv').querySelector?.('[aria-current="page"]')?.focus?.();if(adm)admPanel()}
+function showNoteView(view,button){
+ noteView=view;
+ render();
+ if(button === document.activeElement || !button.isConnected) $(".subview [aria-pressed=\"true\"]")?.focus();
+}
 function go(t){tab=t;closeSh();render();$('#app-scroll').scrollTop=0}
 let focusBeforeSheet=null;
 let sheetScrollY=0;
@@ -124,10 +195,12 @@ function closeSh(){const open=$('#sh').style.display==='block';$('#sh').style.di
 window.addEventListener('popstate',()=>{const open=$('#sh').style.display==='block';$('#sh').style.display='none';adm=0;if(open)unlockSheet();restoreFocus()})
 document.addEventListener('keydown',event=>{const sheet=$('#sh');if(sheet.style.display!=='block')return;if(event.key==='Escape'){event.preventDefault();closeSh();return}if(event.key!=='Tab')return;const els=[...sheet.querySelectorAll('button,a[href],input,select,textarea,[tabindex="0"]')].filter(el=>!el.disabled);if(!els.length)return;const first=els[0],last=els[els.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}})
 function star(id){fav[id]=!fav[id];L('fav',fav);render();document.querySelector(`[data-event-id="${id}"]`)?.focus?.()}
-function openEv(id){const e=EV().find(x=>x.id==id);if(!e)return toast('Событие не найдено');const s=SP(e.sp);sh(`<div class="pad"><small>${19+e.day} января · ${tm(e.ts)}–${tm(e.ts+e.d*6e4)} · ${TY[e.type]}</small><h1 style="margin:6px 0 10px">${esc(e.title)}</h1>${S.off[id]?'<p class="m"><b>Событие отменено</b></p>':''}<p>${esc(e.desc||'Описание появится позже.')}</p>
+function openEv(id,focusNote=false){const e=EV().find(x=>x.id==id);if(!e)return toast('Событие не найдено');const s=SP(e.sp);sh(`<div class="pad"><small>${19+e.day} января · ${tm(e.ts)}–${tm(e.ts+e.d*6e4)} · ${TY[e.type]}</small><h1 style="margin:6px 0 10px">${esc(e.title)}</h1>${S.off[id]?'<p class="m"><b>Событие отменено</b></p>':''}<p>${esc(e.desc||'Описание появится позже.')}</p>
  ${s?`<div class="cd row" role="button" tabindex="0" style="margin:12px 0;width:100%" onclick="openSp('${s.id}')" onkeydown="keyAction(event,()=>openSp('${s.id}'))">${av(s)}<div class="b"><b dir="auto">${esc(speakerName(s))}</b>${speakerRole(s)?`<br><small>${esc(speakerRole(s))}</small>`:''}</div></div>`:''}${prods(s)}
  <button class="btn g" onclick="star('${id}');openEv('${id}')" style="margin:8px 0">${fav[id]?'Удалить из моего расписания':'Добавить в моё расписание'}</button>
- <label for="event-note">Заметки</label><textarea id="event-note" placeholder="Пишите прямо здесь" oninput="notes['${id}']=this.value;L('notes',notes)">${esc(notes[id]||'')}</textarea></div>`)}
+ <label for="event-note">Заметки</label><textarea id="event-note" placeholder="Пишите прямо здесь" oninput="notes['${id}']=this.value;L('notes',notes)">${esc(notes[id]||'')}</textarea></div>`);
+ if(focusNote) $("#event-note")?.focus();
+}
 function prods(s){return Array.isArray(s?.products)&&s.products.length?`<h2 style="margin:16px 0 6px">Реквизит спикера</h2>`+s.products.filter(p=>p&&typeof p==='object').map(p=>{const shops=Array.isArray(p.shops)?p.shops.filter(h=>h&&typeof h.n==='string'&&/^https:\/\//.test(h.u)):[];return `<div class="cd" style="margin:8px 0"><b>${esc(p.n||'Реквизит')}</b>${p.d?`<p class="m" style="margin:4px 0">${esc(p.d)}</p>`:''}${shops.length?'Где купить: '+shops.map(h=>`<a href="${esc(h.u)}" target="_blank" rel="noopener">${esc(h.n)}</a>`).join(' · '):'<span class="m">Ссылка появится позже.</span>'}</div>`}).join(''):''}
 function openSp(id){const s=SP(id);if(!s)return toast('Спикер не найден');const ls=EV().filter(e=>e.sp==id);sh(`<div class="pad" style="text-align:center">${av(s,'big')}<h1 dir="auto">${esc(speakerName(s))}</h1>${speakerRole(s)?`<p class="m">${esc(speakerRole(s))}</p>`:''}</div><div class="pad">${s.bio?`<p>${esc(s.bio)}</p>`:''}${prods(s)}<h2 style="margin:16px 0 0">Выступления</h2></div>${ls.map(card).join('')||'<div class="cd m">Выступления спикера пока не добавлены.</div>'}`)}
 function exp(){const x=EV().filter(e=>(notes[e.id]||'').trim()).map(e=>`${19+e.day} января, ${tm(e.ts)} — ${e.title}\n${notes[e.id]}`).join('\n\n———\n\n');const f=new File([x],'IFM2027-заметки.txt',{type:'text/plain'});
