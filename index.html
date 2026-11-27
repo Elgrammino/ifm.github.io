@@ -53,7 +53,7 @@ small,.m{color:var(--m);font-size:14px}
 .event-note label{font:700 var(--size-subheading)/var(--leading-heading) var(--font-heading);color:var(--color-text)}
 .event-note textarea{display:block;margin-bottom:var(--space-1)}
 .ann-controls button.event-details-link{width:100%;border-color:transparent;color:var(--gold);min-height:44px}
-@media(max-width:350px){nav{padding-inline:max(8px,env(safe-area-inset-left)) max(8px,env(safe-area-inset-right))}nav button{line-height:1.12;overflow-wrap:anywhere}}
+@media(max-width:350px){nav button{padding-inline:0;line-height:1.12;overflow-wrap:anywhere}}
 .ann-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-2); font-size: var(--size-caption); color: var(--m); }
 .ann-head time, .next-event time { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .ann-live { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--lime); font-weight: 700; }
@@ -61,14 +61,14 @@ small,.m{color:var(--m);font-size:14px}
 .ann h2 { font-size: var(--size-heading); margin: var(--space-3) 0; }
 @property --portrait-angle{syntax:"<angle>";inherits:false;initial-value:0turn}
 .now-speaker{display:grid;gap:var(--space-2);width:100%;min-height:44px;margin:0 0 var(--space-4);padding:0;border:0;background:none;text-align:center;font-weight:var(--weight-action)}
-.now-portrait{position:relative;display:block;border-radius:var(--radius-control)}
-.now-portrait img{display:block;width:100%;aspect-ratio:2.12;object-fit:cover;object-position:center 41%;border-radius:inherit}
+.now-portrait{position:relative;display:block;border-radius:var(--radius-control);box-shadow:0 0 12px color-mix(in srgb,var(--vio) 28%,transparent)}
+.now-portrait img{display:block;width:100%;aspect-ratio:1.95;object-fit:cover;object-position:center 47%;border-radius:inherit}
 .now-portrait:empty{display:none}
 .now-portrait::after{content:"";position:absolute;inset:0;border:1px solid var(--color-border);border-radius:inherit;pointer-events:none}
 @supports (mask-composite:exclude){
  .now-portrait::after{
-  border:0;padding:2px;
-  background:conic-gradient(from var(--portrait-angle),var(--gold) 0deg,var(--vio) 23deg,transparent 93deg,#6a319055 170deg,transparent 231deg,var(--lime) 336deg,var(--gold) 360deg);
+  border:0;padding:3px;
+  background:conic-gradient(from var(--portrait-angle),#fff2d9 0deg,var(--vio) 28deg,#a35cff55 95deg,#6a319060 170deg,#d5ff7240 244deg,var(--lime) 328deg,#fff2d9 360deg);
   mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   mask-composite:exclude;
   animation:portrait-orbit 16s linear infinite;
@@ -106,8 +106,8 @@ small,.m{color:var(--m);font-size:14px}
 input,textarea,select{width:100%;min-height:var(--target-touch);background:var(--color-field);border:1px solid var(--color-control-border);border-radius:var(--radius-control);padding:var(--space-3);margin:var(--space-1) 0}
 input::placeholder,textarea::placeholder{color:var(--color-text-muted);opacity:1}
 textarea{min-height:140px;resize:vertical}
-nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:4px calc(4px + env(safe-area-inset-right)) var(--nav-bottom) calc(4px + env(safe-area-inset-left));z-index:5}
-nav button{min-width:0;min-height:48px;flex:1;background:none;border:0;color:var(--m);font-size:var(--size-nav);font-weight:700;padding:var(--space-1);position:relative}nav button svg{display:block;width:22px;height:22px;margin:0 auto 3px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:2px calc(4px + env(safe-area-inset-right)) var(--nav-bottom) calc(4px + env(safe-area-inset-left));z-index:5}
+nav button{min-width:0;min-height:var(--target-touch);line-height:1.15;flex:1;background:none;border:0;color:var(--m);font-size:var(--size-nav);font-weight:700;padding:var(--space-1);position:relative}nav button svg{display:block;width:20px;height:20px;margin:0 auto 2px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);background:var(--surface-strong);border:1px solid var(--ln);border-radius:var(--radius-control)}nav button[data-view="prog"].on{color:var(--ink-on-gold);background:var(--gold);border-color:var(--gold)}nav b{position:absolute;top:2px;left:55%;width:9px;height:9px;border-radius:50%;background:var(--lime)}
 #sh{position:fixed;inset:0;height:100dvh;z-index:9;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top) + 12px) 0 calc(24px + env(safe-area-inset-bottom));display:none}
 .back{margin:0 calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left))}.toast{position:fixed;left:calc(16px + env(safe-area-inset-left));right:calc(16px + env(safe-area-inset-right));top:calc(env(safe-area-inset-top) + 10px);z-index:20;background:var(--gold);color:#1a0f07;font-weight:700;border-radius:14px;padding:12px 14px;animation:toast-in 200ms var(--ease-out) both}.toast.leaving{animation:toast-out 200ms var(--ease-out) both}
@@ -142,9 +142,9 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
 .loading .app-update,.app-update[hidden]{display:none}
 .app-update .btn{flex:none;padding-inline:var(--space-3)}
 .app-update .btn:disabled{opacity:.68}
-:root{--nav-bottom:4px;--nav-clearance:calc(var(--nav-height, calc(53px + var(--nav-bottom))) + var(--space-2))}
-@media(display-mode:standalone){:root{--nav-bottom:max(4px,env(safe-area-inset-bottom))}}
-.ios-standalone{--nav-bottom:max(4px,env(safe-area-inset-bottom))}
+:root{--nav-bottom:2px;--nav-clearance:calc(var(--nav-height, calc(47px + var(--nav-bottom))) + var(--space-2))}
+@media(display-mode:standalone){:root{--nav-bottom:max(2px,calc(env(safe-area-inset-bottom) - 12px))}}
+.ios-standalone{--nav-bottom:max(2px,calc(env(safe-area-inset-bottom) - 12px))}
 .topics{flex-wrap:wrap;overflow:visible}
 .day-tabs{overflow:visible}
 .day-selector{
@@ -223,7 +223,7 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
  </div>
  <p>Если нужного пункта нет, откройте ссылку в Safari на iPhone или в Chrome на Android.</p>
  <a href="?app=1">Открыть программу в браузере</a>
-</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная</div><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
+</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v23</span></div><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
 <nav id="nv" aria-label="Основная навигация"></nav>
 <aside class="app-update" id="app-update" aria-label="Обновление приложения" hidden><span role="status"></span><button class="btn" type="button">Обновить</button></aside>
 <script src="assets/js/storage.js"></script>
@@ -247,7 +247,7 @@ function finishLoading(){setTimeout(revealApp,0)}
 let backend;try{backend=localStorage}catch{backend={getItem(){return null},setItem(){throw Error('Storage unavailable')}}}
 const storageScope=location.pathname.replace(/index\.html$/,'')+(previewLecture?'lecture-preview/':'');
 const installScreen=$('#install');
-if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · отдельные заметки';
+if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v23 · отдельные заметки';
 const installed=navigator.standalone===true || window.matchMedia?.('(display-mode: standalone)').matches;
 if(installed) document.body.classList.add('installed');
 if(installScreen && !installed && !previewLecture && params.get('app')!=='1'){

@@ -118,8 +118,8 @@ test('reorganized assets resolve and are available to the offline installer',asy
  references.push(...manifest.icons.map(i=>i.src),...data.speakers.map(s=>s.photo).filter(Boolean));
  let assets;
  const scope='https://example.com/ifm.github.io/',handlers={};
- let skipCount=0;
- const ctx={URL,Request,Set,Error,self:{registration:{scope},skipWaiting:async()=>{skipCount++},addEventListener:(k,f)=>handlers[k]=f},caches:{open:async()=>({addAll:async requests=>{
+ let skipCount=0, previousCaches=[];
+ const ctx={URL,Request,Set,Error,self:{registration:{scope},skipWaiting:async()=>{skipCount++},addEventListener:(k,f)=>handlers[k]=f},caches:{keys:async()=>previousCaches,open:async()=>({addAll:async requests=>{
   assert.ok(requests.every(request=>request.cache==='reload'));
   assets=requests.map(request=>'./'+request.url.slice(scope.length));
  }})}};
@@ -129,6 +129,12 @@ test('reorganized assets resolve and are available to the offline installer',asy
  handlers.message({data:{type:'OTHER'},waitUntil:()=>assert.fail('Unrelated message was handled')});
  let activation;handlers.message({data:{type:'IFM_ACTIVATE_UPDATE'},waitUntil:p=>activation=p});
  await activation;assert.equal(skipCount,1);
+ previousCaches=['ifm2027:'+scope+':app-22'];
+ handlers.install({waitUntil:p=>install=p});await install;
+ assert.equal(skipCount,1,'a version with an update button waits for user approval');
+ previousCaches=['ifm2027:'+scope+':app-15'];
+ handlers.install({waitUntil:p=>install=p});await install;
+ assert.equal(skipCount,2,'the version without a button can migrate automatically');
  for(const file of assets)assert.ok(fs.existsSync(path.join(root,file==='./'?'index.html':file)),file+' missing from disk');
  for(const file of references){assert.ok(fs.existsSync(path.join(root,file)),file+' missing');assert.ok(assets.includes('./'+file),file+' missing from offline cache');}
  assert.equal(data.speakers.filter(s=>s.photo&&!s.photo.startsWith('assets/participants/')).length,0);
