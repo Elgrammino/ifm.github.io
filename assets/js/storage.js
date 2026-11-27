@@ -12,7 +12,7 @@
       news: Array.isArray(s.news) ? s.news.filter(n => object(n) && typeof n.t === 'string' && typeof n.x === 'string' && Number.isFinite(n.ts)) : []
     };
   };
-  function storage(backend, scope, warn = () => {}) {
+  function storage(backend, scope, warn = () => {}, { migrateLegacy = true } = {}) {
     const memory = new Map();
     let warned = false;
     return (key, value) => {
@@ -22,6 +22,7 @@
         try {
           const current = backend.getItem(name);
           if (current !== null) return JSON.parse(current);
+          if (!migrateLegacy) return null;
           const old = JSON.parse(backend.getItem('d') || 'null');
           if (old && Array.isArray(old.events) && old.events.some(e => e.id === 'a1' && e.title === 'Регистрация участников') && old.events.some(e => e.id === 'c4' && e.title === 'Гала-шоу МФИ')) {
             const previous = JSON.parse(backend.getItem(key) || 'null');

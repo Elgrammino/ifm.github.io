@@ -10,8 +10,8 @@
 :root{--bg:var(--color-background);--ln:var(--color-border);--m:var(--color-text-muted);--lime:var(--color-live);--vio:#a35cff;--gold:var(--color-action);--surface:var(--color-surface);--surface-strong:color-mix(in srgb,var(--surface) 70%,var(--bg));--ink-on-gold:var(--color-on-action);--ease-out:cubic-bezier(.23,1,.32,1)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{position:relative;margin:0;height:100vh;height:100dvh;overflow:hidden;background:var(--bg);color:var(--color-text);font:var(--weight-body) var(--size-body)/var(--leading-body) var(--font-body)}
-.app-scroll{height:100%;overflow-y:auto;overscroll-behavior:contain;scroll-padding-bottom:calc(84px + env(safe-area-inset-bottom));padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-html{overscroll-behavior-y:none;-webkit-text-size-adjust:100%;color-scheme:dark}button,a,[role="button"]{touch-action:manipulation}button,[role="button"]{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}button:active,.cd[onclick]:active{opacity:.8}
+.app-scroll{height:100%;overflow-y:auto;overscroll-behavior:contain;scroll-padding-bottom:var(--nav-clearance);padding-bottom:var(--nav-clearance)}
+html{overscroll-behavior-y:none;-webkit-text-size-adjust:100%;color-scheme:dark;font-kerning:normal}button,a,[role="button"]{touch-action:manipulation}button,[role="button"]{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}button:active,.cd[onclick]:active{opacity:.8}
 .skip{position:absolute;left:16px;top:-100px;z-index:40;padding:10px 14px;background:var(--gold);color:var(--ink-on-gold)}.skip:focus-visible{top:calc(8px + env(safe-area-inset-top))}
 .btn,.chip,.st,nav button,.ann-controls button{transition:transform 120ms var(--ease-out)}
 .btn:active,.chip:active,.st:active,nav button:active,.ann-controls button:active{transform:scale(.97)}
@@ -31,34 +31,51 @@ button,input,textarea,select{font:inherit;color:inherit}
 small,.m{color:var(--m);font-size:14px}
 .cd{background:var(--surface);border:1px solid var(--ln);border-radius:var(--radius-card);padding:14px;margin:10px calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left))}
 .cd[role="button"]{cursor:pointer;text-align:left;color:inherit;font:inherit;width:calc(100% - 32px - env(safe-area-inset-left) - env(safe-area-inset-right))}
-.hero {
-  height: clamp(160px, 49vw, 216px);
-  display: grid;
-  place-items: center;
-  background: radial-gradient(ellipse at 55% 15%, color-mix(in srgb, var(--color-glow) 33%, transparent), transparent 69%);
-}
-.hero img {
-  width: clamp(152px, 48vw, 194px);
-  height: auto;
-  display: block;
-  mask-image: radial-gradient(ellipse at center, #000 45%, transparent 74%);
-}
-.now-intro { margin-block: 0 var(--space-4); }
-.now-intro p { margin: 0 0 var(--space-1); color: var(--m); font-size: var(--size-caption); }
-.now-intro h1 { font-size: clamp(2.2rem, 11vw, 2.65rem); letter-spacing: -.045em; }
-.ann {
-  margin: var(--space-3) calc(var(--space-4) + env(safe-area-inset-right)) var(--space-3) calc(var(--space-4) + env(safe-area-inset-left));
-  padding: var(--space-4);
-  border: 1px solid var(--ln);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-raised);
-  background: radial-gradient(ellipse at top right, color-mix(in srgb, var(--color-glow) 32%, transparent), transparent 75%), var(--surface);
-}
+.hero{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-3) calc(var(--space-4) + env(safe-area-inset-right)) var(--space-3) calc(var(--space-4) + env(safe-area-inset-left));border-bottom:1px solid var(--ln);font-weight:750}
+.hero img{width:40px;height:40px;object-fit:cover;border-radius:50%;display:block}
+.hero time{margin-inline-start:auto;color:var(--m);font-size:var(--size-caption)}
+.now-intro{margin-block:var(--space-4)}
+.now-intro p{margin:0;color:var(--m);font-size:var(--size-caption)}
+.now-intro h1{font-size:var(--size-heading);letter-spacing:-.025em}
+.ann{margin:var(--space-3) calc(var(--space-4) + env(safe-area-inset-right)) var(--space-3) calc(var(--space-4) + env(safe-area-inset-left))}
+.event-ticket{padding:var(--space-4);border:1px solid var(--ln);border-inline-start:4px solid var(--gold);border-radius:var(--radius-card);background:var(--surface)}
+.ann > .event-ticket{border:0}
+.ann .event-cue{padding-block:var(--space-2) var(--space-3)}
+.ann .event-cue time{font-size:clamp(1.35rem,7vw,1.75rem)}
+.event-cue{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--space-1) var(--space-2);padding-block:var(--space-1) var(--space-2);border-bottom:1px solid var(--ln)}
+.event-cue time{font-size:var(--size-subheading);font-weight:750;color:var(--gold);white-space:nowrap;font-variant-numeric:tabular-nums}
+.event-cue span,.event-status{font-size:var(--size-caption)}
+.event-detail-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--space-1) var(--space-2)}
+.event-date{white-space:nowrap;color:var(--m);font-size:var(--size-caption)}
+.event-ticket h1,.ann h2{font-size:var(--size-heading);margin:var(--space-3) 0}
+.event-detail-save{width:100%}
+.event-note{margin-top:var(--space-4)}
+.event-note label{font:700 var(--size-subheading)/var(--leading-heading) var(--font-heading);color:var(--color-text)}
+.event-note textarea{display:block;margin-bottom:var(--space-1)}
+.ann-controls button.event-details-link{width:100%;border-color:transparent;color:var(--gold);min-height:44px}
+@media(max-width:350px){nav{padding-inline:max(8px,env(safe-area-inset-left)) max(8px,env(safe-area-inset-right))}nav button{line-height:1.12;overflow-wrap:anywhere}}
 .ann-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-2); font-size: var(--size-caption); color: var(--m); }
 .ann-head time, .next-event time { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .ann-live { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--lime); font-weight: 700; }
 .ann-live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .ann h2 { font-size: var(--size-heading); margin: var(--space-3) 0; }
+@property --portrait-angle{syntax:"<angle>";inherits:false;initial-value:0turn}
+.now-speaker{display:grid;gap:var(--space-2);width:100%;min-height:44px;margin:0 0 var(--space-4);padding:0;border:0;background:none;text-align:center;font-weight:var(--weight-action)}
+.now-portrait{position:relative;display:block;border-radius:var(--radius-control)}
+.now-portrait img{display:block;width:100%;aspect-ratio:2.12;object-fit:cover;object-position:center 41%;border-radius:inherit}
+.now-portrait:empty{display:none}
+.now-portrait::after{content:"";position:absolute;inset:0;border:1px solid var(--color-border);border-radius:inherit;pointer-events:none}
+@supports (mask-composite:exclude){
+ .now-portrait::after{
+  border:0;padding:2px;
+  background:conic-gradient(from var(--portrait-angle),var(--gold) 0deg,var(--vio) 23deg,transparent 93deg,#6a319055 170deg,transparent 231deg,var(--lime) 336deg,var(--gold) 360deg);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask-composite:exclude;
+  animation:portrait-orbit 16s linear infinite;
+ }
+}
+@keyframes portrait-orbit{to{--portrait-angle:1turn}}
+@media(prefers-reduced-motion:reduce){.now-portrait::after{animation:none}}
 .ann-speaker { display: flex; gap: var(--space-3); align-items: center; min-height: 44px; padding: 0; border: 0; background: none; text-align: left; font-weight: 700; margin-bottom: var(--space-3); }
 .ann-speaker .av { width: 36px; height: 36px; font-size: var(--size-caption); }
 .ann-controls { display: flex; flex-wrap: wrap; gap: var(--space-2); }
@@ -66,7 +83,7 @@ small,.m{color:var(--m);font-size:14px}
 .ann-controls button:first-child { flex: 1 0 100%; background: var(--gold); border-color: var(--gold); color: var(--ink-on-gold); font-weight: var(--weight-action); }
 .ann-controls button[aria-pressed=true] { border-color: var(--lime); color: var(--lime); }
 .next-event { display: flex; gap: var(--space-3); align-items: baseline; width: 100%; min-height: 44px; padding: var(--space-3) 0; border: 0; border-top: 1px solid var(--ln); background: none; text-align: left; }
-.next-event time { color: var(--m); font-size: var(--size-caption); }
+.next-event time { color: var(--m); font-size: var(--size-body); font-weight: var(--weight-action); }
 .subview { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-4); }
 .subview .btn[aria-pressed=true] { background: var(--gold); color: var(--ink-on-gold); }
 .tab-title { font-size: var(--size-title); margin: var(--space-4) calc(var(--space-4) + env(safe-area-inset-right)) var(--space-4) calc(var(--space-4) + env(safe-area-inset-left)); }
@@ -75,64 +92,205 @@ small,.m{color:var(--m);font-size:14px}
 .forum-links .cd { margin-inline: 0; width: 100%; }
 .row{display:flex;gap:12px;align-items:center}.b{flex:1;min-width:0;overflow-wrap:anywhere}
 .tabs{display:flex;gap:8px;overflow:auto;padding:4px calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left));scrollbar-width:none;overscroll-behavior-x:contain}.tabs::-webkit-scrollbar{display:none}
-.chip{flex:none;min-height:44px;border:1px solid var(--ln);background:var(--surface);border-radius:99px;padding:8px 15px;font-weight:700}
+.chip{flex:none;min-height:var(--target-touch);border:1px solid var(--color-control-border);background:var(--surface);border-radius:99px;padding:var(--space-2) var(--space-4);font-weight:700}
 .chip.on{background:var(--gold);color:#1a0f07;border-color:transparent}
-.ev{display:flex;gap:12px;align-items:center;padding:13px 14px}.ev.off .b{color:var(--m)}.ev.off b{text-decoration:line-through}.event-open{display:flex;align-items:center;gap:12px;flex:1;min-width:0;min-height:48px;border:0;padding:0;background:none;color:inherit;text-align:left;font:inherit;cursor:pointer}
-.tm{flex:none;width:6ch;white-space:nowrap;font-weight:750;font-size:17px;line-height:1.1;font-variant-numeric:tabular-nums}.tm small{display:block;font-weight:500;font-size:12px}
+.ev{display:flex;gap:12px;align-items:center;padding:var(--space-3) var(--space-4)}.ev.off .b{color:var(--m)}.ev.off b{text-decoration:line-through}.event-open{display:flex;align-items:center;gap:12px;flex:1;min-width:0;min-height:48px;border:0;padding:0;background:none;color:inherit;text-align:left;font:inherit;cursor:pointer}
+.tm{flex:none;width:6ch;white-space:nowrap;font-weight:750;font-size:var(--size-body);line-height:1.1;font-variant-numeric:tabular-nums}.tm small{display:block;font-weight:500;font-size:12px}
 .dot{flex:none;width:10px;height:44px;border-radius:5px;background:var(--vio)}
 .con{background:var(--lime)}.show{background:#f7dcb1}.party{background:#ff5fa8}.dealer{background:#5fd4ff}.brk{background:#555}
-.st{flex:none;display:grid;place-items:center;width:44px;height:44px;background:none;border:0;color:var(--m);padding:0}.st.on{color:#f7dcb1}.st svg{width:26px;height:26px;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round;fill:none}
+.st{flex:none;display:grid;place-items:center;width:var(--target-touch);height:var(--target-touch);background:none;border:0;color:var(--m);padding:0}.st.on{color:#f7dcb1}.st svg{width:26px;height:26px;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round;fill:none}
 .av{width:64px;height:64px;border-radius:50%;flex:none;position:relative;overflow:hidden;display:grid;place-items:center;font-weight:800;font-size:20px;background:#20142e;color:var(--gold)}.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ph{display:grid;place-items:center;font-weight:800;font-size:20px;background:#20142e;border:2px solid var(--lime);color:var(--gold)}
 .big{width:112px;height:112px;margin:0 auto 10px;display:grid}
-.btn{border:0;border-radius:14px;min-height:44px;padding:12px 18px;background:var(--gold);color:var(--ink-on-gold);font-weight:800}.btn.g{background:var(--surface-strong);color:#fff;border:1px solid var(--ln)}
-input,textarea,select{width:100%;background:#00000066;border:1px solid var(--ln);border-radius:12px;padding:12px;margin:5px 0}textarea{min-height:140px;resize:vertical}
-nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:6px calc(4px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(4px + env(safe-area-inset-left));z-index:5}
-nav button{min-width:0;min-height:52px;flex:1;background:none;border:0;color:var(--m);font-size:12px;font-weight:700;padding:6px 1px;position:relative}nav button svg{display:block;width:22px;height:22px;margin:0 auto 3px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.btn{border:0;border-radius:var(--radius-control);min-height:var(--target-touch);padding:var(--space-3) var(--space-4);background:var(--gold);color:var(--ink-on-gold);font-weight:800}.btn.g{background:var(--surface-strong);color:var(--color-text);border:1px solid var(--color-control-border)}
+input,textarea,select{width:100%;min-height:var(--target-touch);background:var(--color-field);border:1px solid var(--color-control-border);border-radius:var(--radius-control);padding:var(--space-3);margin:var(--space-1) 0}
+input::placeholder,textarea::placeholder{color:var(--color-text-muted);opacity:1}
+textarea{min-height:140px;resize:vertical}
+nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:4px calc(4px + env(safe-area-inset-right)) var(--nav-bottom) calc(4px + env(safe-area-inset-left));z-index:5}
+nav button{min-width:0;min-height:48px;flex:1;background:none;border:0;color:var(--m);font-size:var(--size-nav);font-weight:700;padding:var(--space-1);position:relative}nav button svg{display:block;width:22px;height:22px;margin:0 auto 3px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);background:var(--surface-strong);border:1px solid var(--ln);border-radius:var(--radius-control)}nav button[data-view="prog"].on{color:var(--ink-on-gold);background:var(--gold);border-color:var(--gold)}nav b{position:absolute;top:2px;left:55%;width:9px;height:9px;border-radius:50%;background:var(--lime)}
 #sh{position:fixed;inset:0;height:100dvh;z-index:9;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top) + 12px) 0 calc(24px + env(safe-area-inset-bottom));display:none}
 .back{margin:0 calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left))}.toast{position:fixed;left:calc(16px + env(safe-area-inset-left));right:calc(16px + env(safe-area-inset-right));top:calc(env(safe-area-inset-top) + 10px);z-index:20;background:var(--gold);color:#1a0f07;font-weight:700;border-radius:14px;padding:12px 14px;animation:toast-in 200ms var(--ease-out) both}.toast.leaving{animation:toast-out 200ms var(--ease-out) both}
 @keyframes toast-in{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes toast-out{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-12px)}}
-.demo-notice{padding:calc(env(safe-area-inset-top) + 10px) calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left));background:#20152f;color:#e0d7ef;font-size:14px;text-align:center}button{cursor:pointer}button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--lime);outline-offset:3px}.ev{min-width:0}.ev .b{overflow-wrap:anywhere}.cd{overflow-wrap:anywhere}#sh .row{flex-wrap:wrap}#sh .row input,#sh .row select{flex:1 1 90px;min-width:0}#sh .row .btn{min-width:120px}a{overflow-wrap:anywhere}.pr{border-top:1px solid var(--ln);padding-top:10px;margin-top:10px}a{color:#f7dcb1}label{display:block;margin:12px 0 2px;font-size:14px;font-weight:700;color:#e0d7ef}::selection{background:var(--vio);color:#fff}
-@media(max-width:360px){.ann{padding:22px 18px}.ann-controls button{flex:1 1 100%}}
+.demo-notice{padding:calc(env(safe-area-inset-top) + 10px) calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left));background:#20152f;color:#e0d7ef;font-size:14px;text-align:center}button{cursor:pointer}button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--lime);outline-offset:3px}.ev{min-width:0}.ev .b{overflow-wrap:anywhere}.cd{overflow-wrap:anywhere}#sh .row{flex-wrap:wrap}#sh .row input,#sh .row select{flex:1 1 90px;min-width:0}#sh .row .btn{min-width:120px}a{overflow-wrap:anywhere}.pr{border-top:1px solid var(--ln);padding-top:10px;margin-top:10px}a{color:#f7dcb1}label{display:block;margin:12px 0 2px;font-size:14px;font-weight:700;color:#e0d7ef}::selection{background:var(--gold);color:var(--ink-on-gold)}
+@media(max-width:360px){.ann > .event-ticket{padding:var(--space-3)}.ann-controls button{flex:1 1 100%}}
 @media(prefers-reduced-motion:reduce){.btn,.chip,.st,nav button,.ann-controls button{transition:none;transform:none!important}.toast,.splash-mark::before{animation:none!important}.splash,.demo-notice,#v,#nv{transition-duration:120ms}}
 @media(min-width:700px){body{max-width:560px;margin:0 auto}nav{max-width:560px;margin:0 auto}}
 .note-preview,button.cd{width:calc(100% - 32px - env(safe-area-inset-left) - env(safe-area-inset-right));text-align:left}
 .note-preview span{display:block;margin-top:var(--space-2);white-space:pre-wrap}
 #sh{max-width:560px;margin-inline:auto}
 .demo-notice{background:var(--surface);color:var(--m)}
-@media(max-width:350px){nav button{font-size:10px}.ev,.event-open{gap:var(--space-2)}}
-</style></head><body class="loading"><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><div class="demo-notice">Демонстрационная версия · программа предварительная</div><main id="v" tabindex="-1"></main></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
+@media(max-width:350px){nav button{font-size:var(--size-nav-compact)}.ev,.event-open{gap:var(--space-2)}}
+.app-update {
+ position:fixed;
+ left:max(var(--space-3),calc((100vw - 536px)/2));
+ right:max(var(--space-3),calc((100vw - 536px)/2));
+ bottom:var(--nav-clearance);
+ z-index:6;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:var(--space-3);
+ padding:var(--space-3);
+ border:1px solid var(--color-border);
+ border-radius:var(--radius-card);
+ background:var(--color-surface);
+ box-shadow:var(--shadow-raised);
+ font-size:var(--size-caption);
+}
+.loading .app-update,.app-update[hidden]{display:none}
+.app-update .btn{flex:none;padding-inline:var(--space-3)}
+.app-update .btn:disabled{opacity:.68}
+:root{--nav-bottom:4px;--nav-clearance:calc(var(--nav-height, calc(53px + var(--nav-bottom))) + var(--space-2))}
+@media(display-mode:standalone){:root{--nav-bottom:max(4px,env(safe-area-inset-bottom))}}
+.ios-standalone{--nav-bottom:max(4px,env(safe-area-inset-bottom))}
+.topics{flex-wrap:wrap;overflow:visible}
+.day-tabs{overflow:visible}
+.day-selector{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:var(--space-1);
+ width:100%;
+ padding:var(--space-1);
+ background:var(--surface);
+ border-radius:var(--radius-control);
+}
+.day-selector .chip{
+ min-inline-size:0;
+ border-radius:calc(var(--radius-control) - var(--space-1));
+ padding-inline:var(--space-2);
+ border-color:transparent;
+ background:transparent;
+ color:var(--m);
+ overflow-wrap:anywhere;
+}
+.day-selector .chip[aria-pressed=true]{
+ color:var(--gold);
+ background:var(--bg);
+ border-color:var(--color-control-border);
+}
+.day-selector .chip span{white-space:nowrap}
+.day-selector .chip:focus-visible{outline-offset:1px}
+.next-event time,.tm,.event-cue time,.program-status{font-variant-numeric:tabular-nums}
+.event-note textarea,.event-note small,#sh .pad>p,.cd>p{max-inline-size:65ch}
+@media(max-width:350px){.event-cue time{font-size:var(--size-body)}}
+.topics .chip{max-inline-size:100%;white-space:normal;overflow-wrap:anywhere}
+.program-status{margin:var(--space-3) var(--space-4);padding:var(--space-3);background:var(--surface);border:1px solid var(--ln);border-radius:var(--radius-control);font-size:var(--size-caption)}
+.program-status p{margin:0 0 var(--space-2)}
+.loading .program-status,.program-status[hidden]{display:none}
+.install-screen{max-width:560px;height:100%;overflow:auto;padding:calc(env(safe-area-inset-top) + 32px) 24px calc(env(safe-area-inset-bottom) + 28px)}
+.install-screen[hidden],.install-view .app-scroll,.install-view .splash,.install-view nav,.install-view .skip,.install-view .app-update,.installed .splash,.sheet-open .app-update{display:none}
+.installed #v,.installed #nv,.installed .demo-notice{transition:none}
+.install-logo{width:88px;height:88px;border-radius:50%;display:block;margin-bottom:var(--space-4)}
+.install-screen h1{font-size:var(--size-title)}
+.install-screen p{margin:var(--space-3) 0;color:var(--m)}
+.install-steps{padding:var(--space-4);margin-block:var(--space-4);background:var(--surface);border:1px solid var(--ln);border-radius:var(--radius-card)}
+.install-steps h2{margin:0 0 var(--space-2)}
+.install-steps p{color:var(--color-text)}
+.install-steps ol{padding-inline-start:1.35em;margin-bottom:0}
+.install-steps li + li{margin-top:var(--space-2)}
+.install-arrow{display:inline-block;color:var(--lime);font-size:1.45em;line-height:1;vertical-align:middle;margin-inline-end:var(--space-2)}
+.install-first .install-logo{animation:install-mark 220ms var(--ease-out) both}
+.install-first .install-arrow{animation:install-hint 180ms var(--ease-out) 80ms both}
+@keyframes install-mark{from{opacity:.25;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes install-hint{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+.install-control{display:inline-grid;place-items:center;min-width:30px;min-height:30px;border:1px solid var(--color-control-border);border-radius:8px;margin-inline-end:var(--space-2);color:var(--gold)}
+.install-screen a{display:inline-flex;align-items:center;min-height:44px}
+#sh{touch-action:pan-y pinch-zoom}
+#sh[inert]{pointer-events:none}
+.app-update.is-new:not([hidden]){animation:update-enter 160ms var(--ease-out) both}
+@keyframes update-enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){
+ .install-first .install-logo,.install-first .install-arrow,.app-update.is-new:not([hidden]){animation:gentle-enter 90ms var(--ease-out) both}
+ @keyframes gentle-enter{from{opacity:.55}to{opacity:1}}
+}
+</style></head><body class="loading">
+<section id="install" class="install-screen" aria-labelledby="install-title" hidden>
+ <img class="install-logo" src="assets/images/hero.jpg" width="88" height="88" alt="МФИ 2027">
+ <h1 id="install-title">Помощник форума МФИ</h1>
+ <p>Программа, спикеры и заметки к лекциям.</p>
+ <div class="install-steps">
+  <h2>Добавьте на экран «Домой»</h2>
+  <div id="install-ios">
+   <p><span class="install-arrow" aria-hidden="true">→</span><span class="install-control" aria-hidden="true">↑</span><strong>В Safari нажмите «Поделиться»</strong></p>
+   <ol><li>Выберите «На экран “Домой”».</li><li>Если есть переключатель «Открыть как веб-приложение», включите его.</li><li>Нажмите «Добавить».</li></ol>
+  </div>
+  <div id="install-android">
+   <p><span class="install-arrow" aria-hidden="true">→</span><span class="install-control" aria-hidden="true">⋮</span><strong>В Chrome откройте меню ⋮</strong></p>
+   <ol><li>Выберите «Установить приложение» или «Добавить на главный экран».</li><li>Подтвердите установку.</li></ol>
+  </div>
+ </div>
+ <p>Если нужного пункта нет, откройте ссылку в Safari на iPhone или в Chrome на Android.</p>
+ <a href="?app=1">Открыть программу в браузере</a>
+</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная</div><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
 <nav id="nv" aria-label="Основная навигация"></nav>
+<aside class="app-update" id="app-update" aria-label="Обновление приложения" hidden><span role="status"></span><button class="btn" type="button">Обновить</button></aside>
 <script src="assets/js/storage.js"></script>
 <script src="assets/js/firebase-config.js"></script>
 <script src="assets/js/remote.js"></script>
 <script>
-const REMOTE=IFM_REMOTE(window.IFM_FIREBASE);
+const params=new URL(location.href).searchParams;
+const previewLecture=params.get('preview')==='lecture';
+const REMOTE=IFM_REMOTE(previewLecture ? null : window.IFM_FIREBASE);
+if(typeof ResizeObserver === "function") {
+ const nav=document.querySelector("#nv");
+ new ResizeObserver(() => {
+  const height=Math.ceil(nav.getBoundingClientRect().height);
+  if(height) document.documentElement.style.setProperty("--nav-height", height+"px");
+ }).observe(nav);
+}
+if(navigator.standalone === true) document.body.classList.add("ios-standalone");
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function revealApp(){const splash=$('#splash');if(!splash||document.body.classList.contains('app-ready'))return;document.body.classList.remove('loading');document.body.classList.add('app-ready');splash.classList.add('done');splash.setAttribute('aria-hidden','true');setTimeout(()=>splash.remove(),350)}
-const splashStarted=Date.now();
-function finishLoading(){setTimeout(()=>{if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>requestAnimationFrame(revealApp));else revealApp()},Math.max(0,480-(Date.now()-splashStarted)))}
+function finishLoading(){setTimeout(revealApp,0)}
 let backend;try{backend=localStorage}catch{backend={getItem(){return null},setItem(){throw Error('Storage unavailable')}}}
-const L=IFM.storage(backend,location.pathname.replace(/index\.html$/,''),()=>toast('Не удалось сохранить данные. До закрытия вкладки они останутся в памяти.'));
+const storageScope=location.pathname.replace(/index\.html$/,'')+(previewLecture?'lecture-preview/':'');
+const installScreen=$('#install');
+if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · отдельные заметки';
+const installed=navigator.standalone===true || window.matchMedia?.('(display-mode: standalone)').matches;
+if(installed) document.body.classList.add('installed');
+if(installScreen && !installed && !previewLecture && params.get('app')!=='1'){
+ const ua=navigator.userAgent||'';
+ const apple=/iPhone|iPad|iPod/i.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+ $('#install-ios').hidden=/Android/i.test(ua);
+ $('#install-android').hidden=apple;
+ try{
+  const key='ifm2027:'+storageScope+':install-intro';
+  if(!backend.getItem(key)){installScreen.classList.add('install-first');backend.setItem(key,'1')}
+ }catch{}
+ installScreen.hidden=false;
+ document.body.classList.add('install-view');
+}
+const forumNow=()=>previewLecture ? Date.parse('2027-01-20T17:10:00+03:00') : Date.now();
+const L=IFM.storage(backend,storageScope,()=>toast('Не удалось сохранить данные. До закрытия вкладки они останутся в памяти.'),{migrateLegacy:!previewLecture});
 const T0=Date.parse('2027-01-19T00:00:00+03:00'),hm=t=>+t.slice(0,2)*60+ +t.slice(3);
 const TY={lec:'Лекция',con:'Конкурс',show:'Шоу',party:'After-party 18+',dealer:'Дилерская зона',brk:'Перерыв'};
 const NAV=[['home','home','Сейчас'],['sp','people','Спикеры'],['prog','calendar','Программа'],['notes','note','Заметки'],['news','bell','Новости']];
 const ICON={home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-13 4h3m-3 3h7"/>',people:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m2-15a3 3 0 0 1 0 6m1 3a5 5 0 0 1 3 5v1"/>',note:'<path d="M5 3h10l4 4v14H5zM15 3v5h4M8 12h8m-8 4h8"/>',bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',star:'<path d="m12 2 3.1 6.4 7.1 1-5.1 5 .9 7.1-6-3.3-6 3.3.9-7.1-5.1-5 7.1-1z"/>'};
 const icon=(name,filled=false)=>`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"${filled?' style="fill:currentColor"':''}>${ICON[name]}</svg>`;
-let D={events:[],speakers:[],links:[],dealers:[]},S=IFM.state(L('s')),fav=IFM.record(L('fav'),v=>typeof v==='boolean'),notes=IFM.record(L('notes'),v=>typeof v==='string'),tab='home',noteView='notes',day=0,topic='',seen=Number(L('seen'))||0,adm=0,tp=0,tt,remoteOffline=false;
+let D={events:[],speakers:[],links:[],dealers:[]},S=IFM.state(L('s')),fav=IFM.record(L('fav'),v=>typeof v==='boolean'),notes=IFM.record(L('notes'),v=>typeof v==='string'),tab='home',noteView='notes',day=0,topic='',seen=Number(L('seen'))||0,adm=0,tp=0,tt,launchOffline=navigator.onLine===false;
 const tm=t=>new Date(t).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'});
 const EV=()=>[...D.events,...S.add].map(e=>({...e,ts:T0+e.day*864e5+hm(e.t)*6e4+S.shift*6e4})).sort((a,b)=>a.ts-b.ts);
 const SP=id=>D.speakers.find(s=>s?.id===id);
 const speakerName=s=>typeof s?.name==='string'&&s.name.trim()?s.name.trim():'Имя спикера уточняется';
 const speakerRole=s=>typeof s?.role==='string'?s.role.trim():'';
-function av(s,c=''){const name=typeof s?.name==='string'?s.name.trim():'';const words=name.split(/\s+/).filter(Boolean),first=w=>Intl.Segmenter?[...new Intl.Segmenter('ru',{granularity:'grapheme'}).segment(w)][0]?.segment:[...w][0];const initials=words.length?[first(words[0]),...(words.length>1?[first(words.at(-1))]:[])].join(''):'?';const photo=typeof s?.photo==='string'&&/^[a-zA-Z0-9_./-]+$/.test(s.photo)&&!s.photo.includes('..')?s.photo:'';return `<span class="av ${photo?'':'ph'} ${c}" aria-hidden="true">${esc(initials)}${photo?`<img src="${esc(photo)}" width="64" height="64" alt="" onerror="this.remove()">`:''}</span>`}
+const speakerPhoto=s=>typeof s?.photo==='string'&&/^[a-zA-Z0-9_./-]+$/.test(s.photo)&&!s.photo.includes('..')?s.photo:'';
+function nowSpeaker(s){
+ const photo=speakerPhoto(s);
+ return `<button type="button" class="now-speaker" onclick="openSp('${s.id}')">${photo?`<span class="now-portrait"><img src="${esc(photo)}" alt="" onerror="this.parentElement.remove()"></span>`:''}<span dir="auto">${esc(speakerName(s))}</span></button>`;
+}
+function av(s,c=''){const name=typeof s?.name==='string'?s.name.trim():'';const words=name.split(/\s+/).filter(Boolean),first=w=>Intl.Segmenter?[...new Intl.Segmenter('ru',{granularity:'grapheme'}).segment(w)][0]?.segment:[...w][0];const initials=words.length?[first(words[0]),...(words.length>1?[first(words.at(-1))]:[])].join(''):'?';const photo=speakerPhoto(s);return `<span class="av ${photo?'':'ph'} ${c}" aria-hidden="true">${esc(initials)}${photo?`<img src="${esc(photo)}" width="64" height="64" alt="" onerror="this.remove()">`:''}</span>`}
 function toast(t){const d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=t;document.body.append(d);navigator.vibrate&&navigator.vibrate(120);setTimeout(()=>{d.classList.add('leaving');setTimeout(()=>d.remove(),200)},3800)}
-function card(e){const s=SP(e.sp),off=S.off[e.id];return `<div class="cd ev ${off?'off':''}"><button class="event-open" aria-label="${esc(e.title)}; ${tm(e.ts)}" onclick="openEv('${e.id}')"><span class="tm">${tm(e.ts)}<small>${e.d} мин</small></span><i class="dot ${e.type}" aria-hidden="true"></i><span class="b"><b>${esc(e.title)}</b><br><small>${off?'Отменено':TY[e.type]}${s&&!off?' · '+esc(s.name):''}</small></span></button><button class="st ${fav[e.id]?'on':''}" data-event-id="${e.id}" aria-label="${fav[e.id]?'Удалить из моего расписания':'Добавить в моё расписание'}: ${esc(e.title)}" aria-pressed="${!!fav[e.id]}" onclick="star('${e.id}')">${icon('star',fav[e.id])}</button></div>`}
+function card(e){const s=SP(e.sp),off=S.off[e.id];return `<div class="cd ev ${off?'off':''}"><button class="event-open" data-open-event="${e.id}" aria-label="${esc(e.title)}; ${tm(e.ts)}" onclick="openEv('${e.id}')"><span class="tm">${tm(e.ts)}<small>${e.d}&nbsp;мин</small></span><i class="dot ${e.type}" aria-hidden="true"></i><span class="b"><b>${esc(e.title)}</b><br><small>${off?'Отменено':TY[e.type]}${s&&!off?' · '+esc(s.name):''}</small></span></button><button class="st ${fav[e.id]?'on':''}" data-event-id="${e.id}" aria-label="${fav[e.id]?'Удалить из моего расписания':'Добавить в моё расписание'}: ${esc(e.title)}" aria-pressed="${!!fav[e.id]}" onclick="star('${e.id}')">${icon('star',fav[e.id])}</button></div>`}
+function eventCue(event){
+ const room=typeof event.room==="string" && event.room.trim() ? event.room.trim()
+  : ["lec","con","show"].includes(event.type) ? "Главный зал" : "";
+ return `<div class="event-cue"><time>${tm(event.ts)}–${tm(event.ts+event.d*60000)}</time>${room ? `<span>${esc(room)}</span>` : ""}</div>`;
+}
 const V={
  home(){
- const now = Date.now();
+ const now = forumNow();
  const schedule = EV().filter(event => !S.off[event.id]);
  const current = schedule.find(event => event.ts <= now && now < event.ts + event.d * 60000);
  const next = schedule.find(event => event.ts > now);
@@ -142,17 +300,19 @@ const V={
  const date = time => new Date(time).toLocaleDateString('ru',{day:'numeric',month:'long',timeZone:'Europe/Moscow'});
  const status = current ? 'Идёт сейчас' : next ? (now < schedule[0]?.ts ? 'Старт программы' : 'Следующее событие') : 'Программа форума';
  const empty = schedule.length ? 'Форум завершён' : D.events.length || S.add.length ? 'Нет доступных событий' : 'Программа скоро появится';
- return `<div class="hero"><img src="assets/images/hero.jpg" width="194" height="194" alt="МФИ 2027 — Международный форум иллюзионистов"></div>
- <header class="pad now-intro"><p>${featured ? date(featured.ts) + ' · Главный зал' : '19–21 января 2027 · Санкт-Петербург'}</p><h1>Сейчас</h1></header>
+ return `<div class="hero"><img src="assets/images/hero.jpg" width="40" height="40" alt=""><span aria-label="Международный форум иллюзионистов">МФИ 2027</span>${featured ? `<time>${date(featured.ts)}</time>` : ""}</div>
+ <header class="pad now-intro"><h1>Сейчас</h1>${featured ? "" : "<p>19–21 января 2027 · Санкт-Петербург</p>"}</header>
  <section class="ann" aria-label="Анонс события">
-  <div class="ann-head"><span class="${current ? 'ann-live' : ''}">${status}</span>${featured ? `<time>${tm(featured.ts)}–${tm(featured.ts + featured.d * 60000)}</time>` : ''}</div>
+  <div class="event-ticket">
+   <div class="ann-head"><span class="${current ? 'ann-live' : ''}">${status}</span></div>
+   ${featured ? eventCue(featured) : ""}
   ${featured ? `<h2>${esc(featured.title)}</h2>
-  ${speaker ? `<button type="button" class="ann-speaker" onclick="openSp('${speaker.id}')">${av(speaker)}<span dir="auto">${esc(speakerName(speaker))}</span></button>` : ''}
+  ${speaker ? nowSpeaker(speaker) : ''}
   <div class="ann-controls">
    <button type="button" onclick="openEv('${featured.id}'${current && featured.type === 'lec' ? ',true' : ''})">${current && featured.type === 'lec' ? 'Записать заметку' : 'О событии'}</button>
-   ${current && featured.type === 'lec' ? `<button type="button" onclick="openEv('${featured.id}')">О событии</button>` : `<button type="button" data-event-id="${featured.id}" onclick="star('${featured.id}')" aria-pressed="${!!fav[featured.id]}">${fav[featured.id] ? 'Убрать из расписания' : 'В моё расписание'}</button>`}
+   ${current && featured.type === 'lec' ? `<button class="event-details-link" type="button" onclick="openEv('${featured.id}')">О событии</button>` : `<button type="button" data-event-id="${featured.id}" onclick="star('${featured.id}')" aria-pressed="${!!fav[featured.id]}">${fav[featured.id] ? 'Убрать из расписания' : 'В моё расписание'}</button>`}
   </div>` : `<h2>${empty}</h2>`}
- </section>
+ </div></section>
  ${current && next ? `<section><h2>Дальше</h2><div class="pad"><button type="button" class="next-event" onclick="openEv('${next.id}')"><time>${tm(next.ts)}</time><strong>${esc(next.title)}</strong></button></div></section>` : ''}
  ${latestNews ? `<button class="cd" type="button" onclick="go('news')"><small>Новость</small><br><strong>${esc(latestNews.t)}</strong></button>` : ''}
  <details class="forum-links"><summary>О форуме</summary>
@@ -162,9 +322,9 @@ const V={
  </details>`;
  },
 prog(){const l=EV(),tps=[...new Set([...D.events,...S.add].map(e=>e.topic).filter(Boolean))];
- return `<h1 class="tab-title">Программа</h1><div class="tabs">${[0,1,2].map(i=>`<button class="chip ${day==i?'on':''}" aria-pressed="${day==i}" onclick="day=${i};render()">${19+i} янв</button>`).join('')}</div>
- <div class="tabs"><button class="chip ${!topic?'on':''}" aria-pressed="${!topic}" onclick="topic='';render()">Все темы</button>${tps.map((t,i)=>`<button class="chip ${topic==t?'on':''}" aria-pressed="${topic==t}" onclick="topicAt(${i})">${esc(t)}</button>`).join('')}</div>
- ${l.filter(e=>e.day==day&&(!topic||e.topic==topic)).map(card).join('')||(l.length?'<div class="cd m">Для этого дня ничего не найдено.</div>':'<div class="cd m">Программа пока не опубликована. Загляните сюда позже.</div>')}`},
+ return `<h1 class="tab-title">Программа</h1><div class="tabs day-tabs" role="group" aria-label="День форума"><div class="day-selector">${[0,1,2].map(i=>`<button class="chip ${day==i?'on':''}" aria-pressed="${day==i}" data-filter-key="day-${i}" onclick="selectDay(${i})"><span>${19+i}</span> <span>янв</span></button>`).join('')}</div></div>
+ <div class="tabs topics" role="group" aria-label="Темы"><button class="chip ${!topic?'on':''}" aria-pressed="${!topic}" id="all-topics" data-filter-key="all-topics" onclick="resetTopic()">Все темы</button>${tps.map((t,i)=>`<button class="chip ${topic==t?'on':''}" aria-pressed="${topic==t}" data-filter-key="topic-${i}" onclick="topicAt(${i})">${esc(t)}</button>`).join('')}</div>
+ ${l.filter(e=>e.day==day&&(!topic||e.topic==topic)).map(card).join('')||(l.length?(topic?'<div class="cd m">В этот день нет событий по выбранной теме.<br><button type="button" class="btn g" onclick="resetTopic()">Сбросить тему</button></div>':'<div class="cd m">На этот день пока нет событий.</div>'):'<div class="cd m">Программа пока не опубликована. Загляните сюда позже.</div>')}`},
  sp(){const speakers=D.speakers.filter(s=>s&&/^[a-zA-Z0-9_-]+$/.test(s.id));return `<h1 class="tab-title">Спикеры</h1>${speakers.map(s=>`<div class="cd row" role="button" tabindex="0" onclick="openSp('${s.id}')" onkeydown="keyAction(event,()=>openSp('${s.id}'))">${av(s)}<div class="b"><b dir="auto">${esc(speakerName(s))}</b>${speakerRole(s)?`<br><small>${esc(speakerRole(s))}</small>`:''}</div></div>`).join('')||'<div class="cd m">Информация о спикерах скоро появится.</div>'}`},
  notes(){
  const saved = noteView === 'saved';
@@ -172,33 +332,167 @@ prog(){const l=EV(),tps=[...new Set([...D.events,...S.add].map(e=>e.topic).filte
  const controls = `<div class="pad subview" aria-label="Личное"><button class="btn g" aria-pressed="${!saved}" onclick="showNoteView('notes',this)">Записи</button><button class="btn g" aria-pressed="${saved}" onclick="showNoteView('saved',this)">Моё расписание</button></div>`;
  const content = saved
   ? events.map(card).join('') || '<div class="cd m">Сохраните событие звёздочкой в программе, и оно появится здесь.</div>'
-  : events.map(e=>`<button class="cd note-preview" type="button" onclick="openEv('${e.id}')"><strong>${esc(e.title)}</strong><br><small>${19+e.day} янв, ${tm(e.ts)}</small><span>${esc(notes[e.id].slice(0,160))}</span></button>`).join('') || '<div class="cd m">Откройте событие в программе и запишите заметку. Записи хранятся на этом устройстве.</div>';
+  : events.map(e=>`<button class="cd note-preview" type="button" onclick="openEv('${e.id}')"><strong>${esc(e.title)}</strong><br><small>${19+e.day}&nbsp;янв, ${tm(e.ts)}</small><span>${esc(notes[e.id].slice(0,160))}</span></button>`).join('') || '<div class="cd m">Откройте событие в программе и запишите заметку. Записи хранятся на этом устройстве.</div>';
  return `<h1 class="tab-title">${saved ? 'Моё расписание' : 'Заметки'}</h1>${controls}${content}${!saved && events.length ? '<div class="pad"><button class="btn" onclick="exp()">Выгрузить все заметки</button></div>' : ''}`;
  },
 news(){seen=S.news[0]?.ts||0;L('seen',seen);return `<h1 class="tab-title">Новости</h1>${S.news.map(n=>`<div class="cd"><b>${esc(n.t.trim()||'Обновление программы')}</b>${n.x.trim()?`<p style="margin:6px 0">${esc(n.x)}</p>`:''}<small>${new Date(n.ts).toLocaleString('ru',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'})}</small></div>`).join('')||'<div class="cd m">Новостей пока нет. Здесь организаторы сообщат об изменениях в программе.</div>'}`}};
 function keyAction(event,action){if(event.target!==event.currentTarget)return;if(event.key==='Enter'||event.key===' '){event.preventDefault();action()}}
+function selectDay(index){
+ day=index;
+ render();
+}
+function resetTopic(){
+ topic="";
+ render();
+ $("#all-topics")?.focus();
+}
 function topicAt(i){topic=[...new Set([...D.events,...S.add].map(e=>e.topic).filter(Boolean))][i]||'';render()}
-function render(){const navFocused=!!document.activeElement?.closest?.('#nv');$('#v').innerHTML=V[tab]();$('#nv').innerHTML=NAV.map(([k,i,t])=>`<button class="${tab==k?'on':''}" data-view="${k}" aria-current="${tab==k?'page':'false'}" onclick="go('${k}')">${icon(i)}${t}${k=='news'&&S.news[0]?.ts>seen&&tab!='news'?'<b></b>':''}</button>`).join('');if(navFocused)$('#nv').querySelector?.('[aria-current="page"]')?.focus?.();if(adm)admPanel()}
+function render(){const active=document.activeElement;const navFocused=!!active?.closest?.('#nv');const filterKey=active?.dataset?.filterKey;$('#v').innerHTML=V[tab]();$('#nv').innerHTML=NAV.map(([k,i,t])=>`<button class="${tab==k?'on':''}" data-view="${k}" aria-current="${tab==k?'page':'false'}" onclick="go('${k}')">${icon(i)}${t}${k=='news'&&S.news[0]?.ts>seen&&tab!='news'?'<b></b>':''}</button>`).join('');if(navFocused)$('#nv').querySelector?.('[aria-current="page"]')?.focus?.();if(filterKey) $(`[data-filter-key="${filterKey}"]`)?.focus({preventScroll:true});if(adm)admPanel()}
 function showNoteView(view,button){
  noteView=view;
  render();
  if(button === document.activeElement || !button.isConnected) $(".subview [aria-pressed=\"true\"]")?.focus();
 }
-function go(t){tab=t;closeSh();render();$('#app-scroll').scrollTop=0}
-let focusBeforeSheet=null;
-let sheetScrollY=0;
-function lockSheet(){const scroller=$('#app-scroll');sheetScrollY=scroller.scrollTop;scroller.style.overflowY='hidden'}
-function unlockSheet(){const scroller=$('#app-scroll');scroller.style.overflowY='';scroller.scrollTop=sheetScrollY}
-function sh(h){const e=$('#sh');if(e.style.display!=='block'){focusBeforeSheet=document.activeElement;lockSheet()}e.innerHTML='<button class="btn g back" onclick="closeSh()">‹ Назад</button>'+h;e.style.display='block';e.scrollTop=0;e.querySelector?.('button')?.focus?.();if(location.hash!=='#detail')history.pushState({sheet:true},'','#detail')}
-function restoreFocus(){if(focusBeforeSheet?.isConnected)focusBeforeSheet.focus();focusBeforeSheet=null}
-function closeSh(){const open=$('#sh').style.display==='block';$('#sh').style.display='none';adm=0;if(open){unlockSheet();if(location.hash==='#detail')history.back()}restoreFocus()}
-window.addEventListener('popstate',()=>{const open=$('#sh').style.display==='block';$('#sh').style.display='none';adm=0;if(open)unlockSheet();restoreFocus()})
-document.addEventListener('keydown',event=>{const sheet=$('#sh');if(sheet.style.display!=='block')return;if(event.key==='Escape'){event.preventDefault();closeSh();return}if(event.key!=='Tab')return;const els=[...sheet.querySelectorAll('button,a[href],input,select,textarea,[tabindex="0"]')].filter(el=>!el.disabled);if(!els.length)return;const first=els[0],last=els[els.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}})
+function go(t){tab=t;closeSh(false);render();$('#app-scroll').scrollTop=0}
+let focusBeforeSheet=null, sheetScrollY=0, sheetMotion, sheetClosing=false, swipe;
+let pendingViewRefresh=false;
+const motionEase='cubic-bezier(.23,1,.32,1)';
+const reduceMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+function lockSheet(){
+ const scroller=$('#app-scroll');
+ sheetScrollY=scroller.scrollTop;
+ scroller.style.overflowY='hidden';
+ scroller.toggleAttribute?.('inert',true);
+ $('#nv').toggleAttribute?.('inert',true);
+ document.body.classList.add('sheet-open');
+}
+function unlockSheet(){
+ const scroller=$('#app-scroll');
+ scroller.style.overflowY='';
+ scroller.scrollTop=sheetScrollY;
+ scroller.toggleAttribute?.('inert',false);
+ $('#nv').toggleAttribute?.('inert',false);
+ document.body.classList.remove('sheet-open');
+}
+function sheetFrames(sheet){
+ if(reduceMotion())return [{opacity:.7},{opacity:1}];
+ const source=focusBeforeSheet?.getBoundingClientRect?.();
+ const bounds=sheet.getBoundingClientRect();
+ const x=source?Math.max(-14,Math.min(14,source.x+source.width/2-bounds.x-bounds.width/2)):0;
+ const y=source?Math.max(-16,Math.min(16,source.y+source.height/2-bounds.y-bounds.height/2)):12;
+ return [{opacity:.7,transform:'translate('+x+'px,'+y+'px) scale(.97)'},{opacity:1,transform:'none'}];
+}
+function animateSheet(sheet,frames,duration){
+ sheetMotion?.cancel();
+ if(!sheet.animate)return;
+ const animation=sheet.animate(frames,{duration,easing:motionEase,fill:'both'});
+ sheetMotion=animation;
+ animation.finished.then(()=>{if(sheetMotion===animation){animation.cancel();sheetMotion=null}},()=>{});
+ return animation;
+}
+function sh(h,instant=false){
+ const sheet=$('#sh');
+ const first=sheet.style.display!=='block';
+ if(first){focusBeforeSheet=document.activeElement;lockSheet()}
+ sheetMotion?.cancel();
+ sheetClosing=false;
+ sheet.toggleAttribute?.('inert',false);
+ sheet.innerHTML='<button class="btn g back" onclick="closeSh(event.detail !== 0)">‹ Назад</button>'+h;
+ sheet.style.display='block';
+ sheet.scrollTop=0;
+ if(!instant) sheet.querySelector?.('button')?.focus?.({preventScroll:true});
+ if(first && !instant && sheet.animate && !focusBeforeSheet?.matches?.(':focus-visible'))
+  animateSheet(sheet,sheetFrames(sheet),reduceMotion()?90:240);
+ if(location.hash!=='#detail')history.pushState({sheet:true},'','#detail');
+}
+function dismissSheet(){
+ const sheet=$('#sh');
+ if(sheet.style.display!=='block')return false;
+ sheetMotion?.cancel();
+ sheetMotion=null;
+ sheetClosing=false;
+ swipe=undefined;
+ sheet.toggleAttribute?.('inert',false);
+ sheet.style.transform='';
+ sheet.style.display='none';
+ adm=0;
+ if(pendingViewRefresh){pendingViewRefresh=false;render()}
+ const eventId=focusBeforeSheet?.dataset?.openEvent;
+ const target=focusBeforeSheet?.isConnected ? focusBeforeSheet
+  : (eventId && $('[data-open-event="'+eventId+'"]')) || $('#v');
+ unlockSheet();
+ if(focusBeforeSheet) target?.focus?.({preventScroll:true});
+ focusBeforeSheet=null;
+ return true;
+}
+function closeSh(animate=true,swipeFrom=0,updateHistory=true){
+ const sheet=$('#sh');
+ if(sheet.style.display!=='block' || (sheetClosing && animate))return;
+ const finish=()=>{if(dismissSheet() && updateHistory && location.hash==='#detail')history.back()};
+ if(!animate || !sheet.animate){finish();return}
+ sheetClosing=true;
+ sheet.toggleAttribute('inert',true);
+ const frames=swipeFrom && !reduceMotion()
+  ? [{transform:'translateX('+swipeFrom+'px)'},{transform:'translateX(100%)'}]
+  : sheetFrames(sheet).reverse();
+ animateSheet(sheet,frames,reduceMotion()?90:180).finished.then(finish,()=>{});
+}
+window.addEventListener('popstate',()=>closeSh(false,0,false));
+const swipeSheet=$('#sh');
+swipeSheet.addEventListener?.('pointerdown',event=>{
+ if(!event.isPrimary || event.pointerType==='mouse' || sheetClosing || reduceMotion())return;
+ if(event.clientX<28 || event.clientX>window.innerWidth*.6 || event.target.closest('input,textarea,select,[contenteditable],button,a'))return;
+ swipe={id:event.pointerId,x:event.clientX,y:event.clientY,time:event.timeStamp,dx:0};
+});
+swipeSheet.addEventListener?.('pointermove',event=>{
+ if(event.pointerId!==swipe?.id)return;
+ const dx=event.clientX-swipe.x,dy=event.clientY-swipe.y;
+ if(!swipe.dx){
+  if((Math.abs(dy)>10 && Math.abs(dy)>=dx) || dx < -10){swipe=undefined;return}
+  if(dx<10 || dx<Math.abs(dy)*1.3)return;
+  sheetMotion?.cancel();
+  swipeSheet.setPointerCapture(event.pointerId);
+ }
+ swipe.dx=Math.max(1,dx);
+ swipeSheet.style.transform='translateX('+swipe.dx+'px)';
+});
+function endSwipe(event){
+ if(event.pointerId!==swipe?.id)return;
+ const {dx,time}=swipe;
+ swipe=undefined;
+ if(!dx)return;
+ const speed=dx/Math.max(1,event.timeStamp-time);
+ if(event.type==='pointerup' && (dx>=swipeSheet.clientWidth*.32 || (dx>=32 && speed>=.55))){closeSh(true,dx);return}
+ swipeSheet.style.transform='';
+ animateSheet(swipeSheet,[{transform:'translateX('+dx+'px)'},{transform:'none'}],160);
+}
+for(const type of ['pointerup','pointercancel','lostpointercapture']) swipeSheet.addEventListener?.(type,endSwipe);
+document.addEventListener('keydown',event=>{const sheet=$('#sh');if(sheet.style.display!=='block')return;if(event.key==='Escape'){event.preventDefault();closeSh(false);return}if(event.key!=='Tab')return;const els=[...sheet.querySelectorAll('button,a[href],input,select,textarea,[tabindex="0"]')].filter(el=>!el.disabled);if(!els.length)return;const first=els[0],last=els[els.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}})
 function star(id){fav[id]=!fav[id];L('fav',fav);render();document.querySelector(`[data-event-id="${id}"]`)?.focus?.()}
-function openEv(id,focusNote=false){const e=EV().find(x=>x.id==id);if(!e)return toast('Событие не найдено');const s=SP(e.sp);sh(`<div class="pad"><small>${19+e.day} января · ${tm(e.ts)}–${tm(e.ts+e.d*6e4)} · ${TY[e.type]}</small><h1 style="margin:6px 0 10px">${esc(e.title)}</h1>${S.off[id]?'<p class="m"><b>Событие отменено</b></p>':''}<p>${esc(e.desc||'Описание появится позже.')}</p>
- ${s?`<div class="cd row" role="button" tabindex="0" style="margin:12px 0;width:100%" onclick="openSp('${s.id}')" onkeydown="keyAction(event,()=>openSp('${s.id}'))">${av(s)}<div class="b"><b dir="auto">${esc(speakerName(s))}</b>${speakerRole(s)?`<br><small>${esc(speakerRole(s))}</small>`:''}</div></div>`:''}${prods(s)}
- <button class="btn g" onclick="star('${id}');openEv('${id}')" style="margin:8px 0">${fav[id]?'Удалить из моего расписания':'Добавить в моё расписание'}</button>
- <label for="event-note">Заметки</label><textarea id="event-note" placeholder="Пишите прямо здесь" oninput="notes['${id}']=this.value;L('notes',notes)">${esc(notes[id]||'')}</textarea></div>`);
+function toggleEventFavourite(id,button){
+ fav[id]=!fav[id];
+ L("fav",fav);
+ button.setAttribute("aria-pressed",String(fav[id]));
+ button.textContent=fav[id]?"Удалить из моего расписания":"Добавить в моё расписание";
+ refreshVisitorView();
+}
+function openEv(id,focusNote=false){
+ const event=EV().find(item=>item.id===id);
+ if(!event) return toast("Событие не найдено");
+ const speaker=SP(event.sp);
+ const now=forumNow();
+ const live=!S.off[id] && event.ts<=now && now<event.ts+event.d*60000;
+ const date=new Date(event.ts).toLocaleDateString("ru",{day:"numeric",month:"long",timeZone:"Europe/Moscow"});
+ const status=S.off[id] ? "Событие отменено" : live ? "Идёт сейчас" : TY[event.type];
+ sh(`<div class="pad"><article class="event-ticket" aria-label="Событие">
+  <div class="event-detail-meta"><span class="event-status ${live ? "ann-live" : "m"}">${status}</span><time class="event-date">${date}</time></div>
+  ${eventCue(event)}<h1>${esc(event.title)}</h1>
+  ${speaker ? `<button type="button" class="ann-speaker" onclick="openSp('${speaker.id}')">${av(speaker)}<span dir="auto">${esc(speakerName(speaker))}</span></button>` : ""}
+  ${event.topic ? `<p class="m">Тема · ${esc(event.topic)}</p>` : ""}
+  <button type="button" class="btn g event-detail-save" aria-pressed="${!!fav[id]}" onclick="toggleEventFavourite('${id}',this)">${fav[id] ? "Удалить из моего расписания" : "Добавить в моё расписание"}</button>
+ </article>
+ <div class="event-note"><label for="event-note">${event.type==="lec"?"Заметка к лекции":"Заметка к событию"}</label><textarea id="event-note" aria-describedby="event-note-hint" placeholder="Что хочется запомнить?" oninput="notes['${id}']=this.value;L('notes',notes)">${esc(notes[id]||"")}</textarea><small id="event-note-hint">Записи хранятся на этом устройстве.</small></div>
+ ${event.desc ? `<p>${esc(event.desc)}</p>` : ""}${prods(speaker)}</div>`,focusNote);
  if(focusNote) $("#event-note")?.focus();
 }
 function prods(s){return Array.isArray(s?.products)&&s.products.length?`<h2 style="margin:16px 0 6px">Реквизит спикера</h2>`+s.products.filter(p=>p&&typeof p==='object').map(p=>{const shops=Array.isArray(p.shops)?p.shops.filter(h=>h&&typeof h.n==='string'&&/^https:\/\//.test(h.u)):[];return `<div class="cd" style="margin:8px 0"><b>${esc(p.n||'Реквизит')}</b>${p.d?`<p class="m" style="margin:4px 0">${esc(p.d)}</p>`:''}${shops.length?'Где купить: '+shops.map(h=>`<a href="${esc(h.u)}" target="_blank" rel="noopener">${esc(h.n)}</a>`).join(' · '):'<span class="m">Ссылка появится позже.</span>'}</div>`}).join(''):''}
@@ -212,17 +506,207 @@ function admPanel(){$('#sh').innerHTML='<button class="btn g back" onclick="clos
  <h2 style="margin:16px 0 4px">Сдвинуть всё расписание</h2><label for="n">Минуты сдвига</label><input id="n" type="number" min="1" max="720" value="10" inputmode="numeric"><div class="row"><button class="btn b" onclick="shift(1)">Позже на N мин</button><button class="btn g b" onclick="shift(-1)">Раньше на N мин</button></div>
  <h2 style="margin:20px 0 4px">Новость</h2><label for="nt">Заголовок</label><input id="nt"><label for="nx">Текст новости</label><textarea id="nx" style="min-height:80px"></textarea><button class="btn" onclick="pub()">Опубликовать</button>
  <h2 style="margin:20px 0 4px">Добавить событие</h2><label for="at">Название</label><input id="at"><div class="row"><div class="b"><label for="ad">День</label><select id="ad"><option value="0">19 янв</option><option value="1">20 янв</option><option value="2">21 янв</option></select></div><div class="b"><label for="ah">Время</label><input id="ah" type="time" value="12:00"></div><div class="b"><label for="am">Минуты</label><input id="am" type="number" min="1" max="1440" value="30"></div></div><label for="ay">Тип события</label><select id="ay">${Object.entries(TY).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><button class="btn" onclick="addE()">Добавить</button>
- <h2 style="margin:20px 0 4px">Отмена событий</h2>${EV().map(e=>`<div class="row pr"><div class="b"><b>${esc(e.title)}</b><br><small>${19+e.day} янв, ${tm(e.ts)}</small></div><button class="btn g" onclick="save(null,s=>{s.off['${e.id}']=!s.off['${e.id}']})">${S.off[e.id]?'Вернуть':'Отменить'}</button></div>`).join('')}
+ <h2 style="margin:20px 0 4px">Отмена событий</h2>${EV().map(e=>`<div class="row pr"><div class="b"><b>${esc(e.title)}</b><br><small>${19+e.day}&nbsp;янв, ${tm(e.ts)}</small></div><button class="btn g" onclick="save(null,s=>{s.off['${e.id}']=!s.off['${e.id}']})">${S.off[e.id]?'Вернуть':'Отменить'}</button></div>`).join('')}
  <button class="btn g" style="margin:20px 0" onclick="if(confirm('Сбросить все изменения?')){save(null,()=>({shift:0,off:{},add:[],news:[]}))}">Сбросить всё</button><button class="btn g" onclick="REMOTE.logout();closeSh()">Выйти</button></div>`}
 function shift(k){const n=+$('#n').value;if(!Number.isInteger(n)||n<1||n>720||Math.abs(S.shift+k*n)>1440)return toast('Введите от 1 до 720 минут. Общий сдвиг — не больше суток.');save('Расписание сдвинуто',s=>{if(Math.abs(s.shift+k*n)>1440)throw Error('Слишком большой сдвиг');s.shift+=k*n;s.news.unshift({t:'Расписание изменено',x:'Все события ' + (k>0?'сдвинуты на '+n+' минут позже':'начинаются на '+n+' минут раньше') + '.',ts:Date.now()})})}
 function pub(){const t=$('#nt').value.trim(),x=$('#nx').value;if(!t)return toast('Введите заголовок');save('Новость опубликована',s=>{s.news.unshift({t,x,ts:Date.now()})})}
 function addE(){const t=$('#at').value.trim();if(!t)return toast('Введите название');const e={id:'x'+Date.now()+'_'+Math.random().toString(36).slice(2,7),day:+$('#ad').value,t:$('#ah').value,d:+$('#am').value,type:$('#ay').value,title:t};if(!IFM.validEvent(e))return toast('Проверьте время и длительность: от 1 до 1440 минут.');save('Событие добавлено',s=>{s.add.push(e)})}
 let saving=false;
 async function save(message,change){if(!REMOTE.ready||!REMOTE.signedIn())return toast('Войдите как организатор');if(saving)return; saving=true;try{const next=await REMOTE.update(raw=>{const state=IFM.state(raw);return IFM.state(change(state)||state)});S=IFM.state(next);L('s',S);if(message)toast(message);render()}catch(e){if(!REMOTE.signedIn())REMOTE.logout();toast('Не удалось опубликовать. Изменения не сохранены, попробуйте снова.')}finally{saving=false}}
-async function sync(){if(!REMOTE.ready)return;try{const raw=await REMOTE.read(),next=IFM.state(raw);const latest=S.news[0]?.ts;S=next;L('s',S);if(remoteOffline){remoteOffline=false;toast('Связь восстановлена. Программа обновлена.')}if(S.news[0]&&S.news[0].ts!==latest&&latest&&tab!=='news'&&!adm)toast('Новость: '+S.news[0].t);if(!adm)render()}catch(e){if(!remoteOffline){remoteOffline=true;toast('Нет связи с общей программой. Показаны последние сохранённые данные.')}}}
+let lastSync=Number(L('program-sync-at')) || 0;
+let statusVisible=false;
+let syncInFlight;
+function showProgramStatus(){
+ statusVisible=true;
+ const status=$('#program-status');
+ if(!status) return;
+ const when=lastSync ? new Date(lastSync).toLocaleString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'}) : '';
+ $('#program-status-text').textContent='Показана сохранённая программа.'+(when?' Последняя проверка: '+when+'.':'')+' Подключитесь к интернету, чтобы проверить изменения.';
+ status.hidden=false;
+}
+function hideProgramStatus(){
+ statusVisible=false;
+ const status=$('#program-status');
+ if(status) status.hidden=true;
+}
+function refreshVisitorView(){
+ if($('#sh').style.display==='block') pendingViewRefresh=true;
+ else if(!adm) render();
+}
+function sync({initial=false}={}){
+ if(navigator.onLine===false){
+  if(initial || statusVisible) showProgramStatus();
+  return Promise.resolve(false);
+ }
+ if(!REMOTE.ready) return Promise.resolve(!launchOffline);
+ if(syncInFlight) return syncInFlight;
+ syncInFlight=(async()=>{
+  try{
+   const next=IFM.state(await REMOTE.read());
+   const changed=JSON.stringify(next)!==JSON.stringify(S);
+   const latest=S.news[0]?.ts;
+   S=next;
+   L('s',S);
+   lastSync=Date.now();
+   L('program-sync-at',lastSync);
+   hideProgramStatus();
+   if($('#sh').style.display!=='block' && !adm && tab!=='news' && latest && S.news[0] && S.news[0].ts!==latest) toast('Новость: '+S.news[0].t);
+   if(changed) refreshVisitorView();
+   return true;
+  }catch{
+   if(initial || statusVisible) showProgramStatus();
+   return false;
+  }finally{
+   syncInFlight=undefined;
+  }
+ })();
+ return syncInFlight;
+}
+async function readProgram(){
+ const response=await fetch('data.json');
+ if(!response.ok) throw Error('HTTP '+response.status);
+ const data=program(await response.json());
+ if(!data) throw Error('Invalid data');
+ return data;
+}
+async function retryProgram(){
+ const button=$('#program-retry');
+ if(button.disabled) return;
+ button.disabled=true;
+ button.textContent='Проверяем связь…';
+ try{
+  if(navigator.onLine===false) return showProgramStatus();
+  const data=await readProgram();
+  if(JSON.stringify(data)!==JSON.stringify(D)){
+   D=data;
+   L('d',D);
+   refreshVisitorView();
+  }
+  launchOffline=false;
+  if(await sync()) hideProgramStatus();
+  else showProgramStatus();
+ }catch{
+  showProgramStatus();
+ }finally{
+  button.disabled=false;
+  button.textContent='Обновить программу';
+ }
+}
 const loadDeadline=setTimeout(()=>{if(!document.body.classList.contains('loading'))return;$('#v').innerHTML='<div class=cd><h1>Программа загружается слишком долго</h1><p>Проверьте соединение или попробуйте ещё раз.</p><button class=btn onclick=location.reload()>Повторить</button></div>';finishLoading()},10000);
 function program(raw){if(!raw||!Array.isArray(raw.events)||!raw.events.every(IFM.validEvent)||!Array.isArray(raw.speakers)||!Array.isArray(raw.links)||!Array.isArray(raw.dealers))return null;const links=a=>a.filter(x=>x&&typeof x.n==='string'&&typeof x.u==='string'&&/^https:\/\//.test(x.u));return {...raw,speakers:raw.speakers.filter(s=>s&&typeof s.id==='string'&&/^[a-zA-Z0-9_-]+$/.test(s.id)),links:links(raw.links),dealers:links(raw.dealers)}}
-(async()=>{try{const response=await fetch('data.json');if(!response.ok)throw Error('HTTP '+response.status);const data=program(await response.json());if(!data)throw Error('Invalid data');D=data;L('d',D)}catch(e){const cached=program(L('d'));if(cached){D=cached;toast('Открыта сохранённая программа. Обновление пока недоступно.')}else{clearTimeout(loadDeadline);$('#v').innerHTML='<div class=cd><h1>Программа не загрузилась</h1><p>Проверьте соединение и попробуйте ещё раз.</p><button class=btn onclick=location.reload()>Повторить</button></div>';finishLoading();return}}clearTimeout(loadDeadline);render();finishLoading();sync();setInterval(sync,20000);document.addEventListener('visibilitychange',()=>!document.hidden&&sync())})();
+(async()=>{
+ try{
+  D=await readProgram();
+  L('d',D);
+ }catch{
+  const cached=program(L('d'));
+  if(!cached){
+   clearTimeout(loadDeadline);
+   $('#v').innerHTML='<div class=cd><h1>Программа не загрузилась</h1><p>Проверьте соединение или попробуйте ещё раз.</p><button class=btn onclick=location.reload()>Повторить</button></div>';
+   finishLoading();
+   return;
+  }
+  D=cached;
+  launchOffline=true;
+ }
+ clearTimeout(loadDeadline);
+ if(launchOffline) showProgramStatus();
+ render();
+ finishLoading();
+ sync({initial:true});
+ setInterval(sync,20000);
+ document.addEventListener('visibilitychange',()=>!document.hidden&&sync());
+})();
 async function retireDemo(){if(!navigator.serviceWorker.getRegistrations)return;const scope=new URL('./demo/',location.href).href;const registrations=await navigator.serviceWorker.getRegistrations();await Promise.all(registrations.filter(registration=>registration.scope===scope).map(registration=>registration.unregister()))}
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').then(()=>retireDemo().catch(()=>{})).catch(()=>toast('Офлайн-режим недоступен. Приложение продолжит работать с интернетом.'));
+async function registerAppWorker() {
+ const serviceWorker = navigator.serviceWorker;
+ const registration = await serviceWorker.register('sw.js', {updateViaCache:'none'});
+ retireDemo().catch(() => {});
+ const banner = $('#app-update');
+ if (!banner) return;
+ const message = banner.querySelector('[role="status"]');
+ const button = banner.querySelector('button');
+ banner.addEventListener('animationend',event=>{
+  if(event.target===banner)banner.classList.remove('is-new');
+ });
+ let hadController = Boolean(serviceWorker.controller);
+ let applying = false;
+ let restartReady = false;
+ let retryTimer;
+
+ function offerUpdate() {
+  if (!registration.waiting && !restartReady) return;
+  message.textContent = 'Доступна новая версия приложения';
+  if(banner.hidden)banner.classList.add('is-new');
+  banner.hidden = false;
+ }
+
+ function applyUpdate() {
+  const worker = registration.waiting;
+  if (applying || (!worker && !restartReady)) return;
+  // If storage was unavailable, a reload could discard an in-memory note.
+  try {
+   const saved = JSON.parse(backend.getItem('ifm2027:' + storageScope + ':notes') || '{}');
+   if (Object.entries(notes).some(([id, note]) => note.trim() && saved?.[id] !== note)) {
+    message.textContent = 'Заметка не сохранилась. Скопируйте её перед обновлением.';
+    return;
+   }
+  } catch {
+   if (Object.values(notes).some(note => note.trim())) {
+    message.textContent = 'Заметка не сохранилась. Скопируйте её перед обновлением.';
+    return;
+   }
+  }
+  if (restartReady) {
+   window.location.reload();
+   return;
+  }
+  applying = true;
+  button.disabled = true;
+  message.textContent = 'Обновляем приложение…';
+  retryTimer = setTimeout(() => {
+   if (!applying) return;
+   applying = false;
+   button.disabled = false;
+   message.textContent = 'Не удалось обновить. Попробуйте ещё раз.';
+  }, 12000);
+  worker.postMessage({type:'IFM_ACTIVATE_UPDATE'});
+ }
+
+ button.addEventListener('click', applyUpdate);
+ serviceWorker.addEventListener('controllerchange', () => {
+  if (applying) {
+   clearTimeout(retryTimer);
+   window.location.reload();
+   return;
+  }
+  if (hadController) {
+   restartReady = true;
+   offerUpdate();
+  }
+  hadController = Boolean(serviceWorker.controller);
+ });
+
+ function watchInstall() {
+  const worker = registration.installing;
+  if (!worker) return;
+  const ready = () => {
+   if (worker.state === 'installed' && (serviceWorker.controller || registration.active)) offerUpdate();
+  };
+  worker.addEventListener('statechange', ready);
+  ready();
+ }
+ registration.addEventListener('updatefound', watchInstall);
+ watchInstall();
+ if (serviceWorker.controller || registration.active) offerUpdate();
+
+ const checkForUpdate = () => registration.update().catch(() => {});
+ document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) checkForUpdate();
+ });
+ window.addEventListener('online', checkForUpdate);
+}
+if ('serviceWorker' in navigator) {
+ registerAppWorker().catch(() => toast('Офлайн-режим недоступен. Приложение продолжит работать с интернетом.'));
+}
 </script></body></html>

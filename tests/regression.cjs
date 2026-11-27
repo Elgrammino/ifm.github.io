@@ -16,10 +16,11 @@ test('partial state and invalid event input recover',()=>{
  assert.deepEqual(api.state({shift:'bad',off:null,add:[{}],news:[{}]}),{shift:0,off:{},add:[],news:[]});
  assert.ok(data.events.every(api.validEvent));assert.equal(api.validEvent({...data.events[0],t:'25:00'}),false);assert.equal(api.validEvent({...data.events[0],d:-1}),false);
 });
-function app(response,values={},serviceWorker){
+function app(response,values={},serviceWorker,options={}){
  const classes=new Set(['loading']);
- const elements=Object.fromEntries(['#v','#nv','#sh','#splash','#app-scroll'].map(k=>[k,{innerHTML:'',style:{},scrollTop:k==='#app-scroll'?120:0,classList:{add(n){this.value=n}},setAttribute(){},remove(){this.removed=true}}]));
- const ctx={URL,window:{scrollY:120,listeners:{},addEventListener(k,fn){this.listeners[k]=fn}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/',href:'https://example.com/ifm.github.io/'},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){},classList:{add(){}}}),body:{style:{},classList:{contains:n=>classes.has(n),add:n=>classes.add(n),remove:n=>classes.delete(n)},append(){}},addEventListener(){}},navigator:serviceWorker?{serviceWorker}:{},fetch:async()=>response,setTimeout(fn,delay){(ctx.timers??=[]).push({fn,delay});return ctx.timers.length},setInterval:()=>0,clearTimeout(id){if(ctx.timers?.[id-1])ctx.timers[id-1].cancelled=true},scrollTo(x,y){ctx.lastScroll=[x,y]},console};
+ const elements=Object.fromEntries(['#v','#nv','#sh','#splash','#app-scroll','#install','#install-ios','#install-android','#demo-notice'].map(k=>[k,{innerHTML:'',style:{},scrollTop:k==='#app-scroll'?120:0,classList:{add(n){this.value=n}},setAttribute(){},remove(){this.removed=true}}]));
+ const ctx={URL,window:{scrollY:120,innerWidth:390,listeners:{},addEventListener(k,fn){this.listeners[k]=fn}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/',href:'https://example.com/ifm.github.io/'+(options.search||'')},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){},classList:{add(){}}}),body:{style:{},classList:{contains:n=>classes.has(n),add:n=>classes.add(n),remove:n=>classes.delete(n)},append(){}},addEventListener(){}},navigator:{serviceWorker,...options.navigator},fetch:async()=>response,setTimeout(fn,delay){(ctx.timers??=[]).push({fn,delay});return ctx.timers.length},setInterval:()=>0,clearTimeout(id){if(ctx.timers?.[id-1])ctx.timers[id-1].cancelled=true},scrollTo(x,y){ctx.lastScroll=[x,y]},console};
+ const sheet=elements['#sh'];sheet.listeners={};sheet.clientWidth=390;sheet.addEventListener=(name,fn)=>sheet.listeners[name]=fn;sheet.setPointerCapture=()=>{};
  vm.createContext(ctx);vm.runInContext(script,ctx);return {ctx,elements};
 }
 const flush=()=>new Promise(r=>setImmediate(r));
@@ -117,9 +118,17 @@ test('reorganized assets resolve and are available to the offline installer',asy
  references.push(...manifest.icons.map(i=>i.src),...data.speakers.map(s=>s.photo).filter(Boolean));
  let assets;
  const scope='https://example.com/ifm.github.io/',handlers={};
- const ctx={URL,Set,Error,self:{registration:{scope},skipWaiting:async()=>{},addEventListener:(k,f)=>handlers[k]=f},caches:{open:async()=>({addAll:async paths=>{assets=paths}})}};
+ let skipCount=0;
+ const ctx={URL,Request,Set,Error,self:{registration:{scope},skipWaiting:async()=>{skipCount++},addEventListener:(k,f)=>handlers[k]=f},caches:{open:async()=>({addAll:async requests=>{
+  assert.ok(requests.every(request=>request.cache==='reload'));
+  assets=requests.map(request=>'./'+request.url.slice(scope.length));
+ }})}};
  vm.runInNewContext(fs.readFileSync(path.join(root,'sw.js'),'utf8'),ctx);
  let install;handlers.install({waitUntil:p=>install=p});await install;
+ assert.equal(skipCount,0);
+ handlers.message({data:{type:'OTHER'},waitUntil:()=>assert.fail('Unrelated message was handled')});
+ let activation;handlers.message({data:{type:'IFM_ACTIVATE_UPDATE'},waitUntil:p=>activation=p});
+ await activation;assert.equal(skipCount,1);
  for(const file of assets)assert.ok(fs.existsSync(path.join(root,file==='./'?'index.html':file)),file+' missing from disk');
  for(const file of references){assert.ok(fs.existsSync(path.join(root,file)),file+' missing');assert.ok(assets.includes('./'+file),file+' missing from offline cache');}
  assert.equal(data.speakers.filter(s=>s.photo&&!s.photo.startsWith('assets/participants/')).length,0);
@@ -131,4 +140,35 @@ test('opening main unregisters only the retired demo worker',async()=>{
  const worker={register:async()=>({}),getRegistrations:async()=>[base,base+'demo/','https://example.com/other/demo/'].map(scope=>({scope,unregister:async()=>removed.push(scope)}))};
  app({ok:true,json:async()=>data},{},worker);await flush();
  assert.deepEqual(removed,[base+'demo/']);
+});
+
+test('QR shows platform-appropriate installation and the installed app opens home',async()=>{
+ const response={ok:true,json:async()=>data};
+ const ios=app(response,{},undefined,{navigator:{userAgent:'iPhone'}});
+ assert.equal(ios.elements['#install'].hidden,false);
+ assert.equal(ios.elements['#install-ios'].hidden,false);
+ assert.equal(ios.elements['#install-android'].hidden,true);
+ const android=app(response,{},undefined,{navigator:{userAgent:'Android'}});
+ assert.equal(android.elements['#install-ios'].hidden,true);
+ assert.equal(android.elements['#install-android'].hidden,false);
+ const installed=app(response,{},undefined,{navigator:{standalone:true}});
+ assert.equal(installed.ctx.document.body.classList.contains('install-view'),false);
+ await flush();assert.match(installed.elements['#v'].innerHTML,/<h1>Сейчас<\/h1>/);
+});
+test('lecture preview isolates old notes and sheet swipe accepts only qualifying right gestures',async()=>{
+ const {ctx,elements}=app({ok:true,json:async()=>data},{d:JSON.stringify(data),notes:'{"b5":"Private note"}'},undefined,{search:'?preview=lecture'});
+ await flush();
+ assert.match(elements['#v'].innerHTML,/Идёт сейчас[\s\S]*Asi Wind/);
+ vm.runInContext("openEv('b5')",ctx);
+ const sheet=elements['#sh'];
+ assert.doesNotMatch(sheet.innerHTML,/Private note/);
+ const {pointerdown,pointermove,pointerup}=sheet.listeners;
+ const gesture=(start,end,ms)=>{
+  const seed={pointerId:1,isPrimary:true,pointerType:'touch',clientY:150,target:{closest:()=>null},timeStamp:0};
+  pointerdown({...seed,clientX:start});pointermove({...seed,clientX:end,timeStamp:ms-10});
+  pointerup({...seed,clientX:end,type:'pointerup',timeStamp:ms});
+ };
+ gesture(15,190,210);assert.equal(sheet.style.display,'block');
+ gesture(50,85,350);assert.equal(sheet.style.display,'block');assert.equal(sheet.style.transform,'');
+ gesture(50,220,300);assert.equal(sheet.style.display,'none');
 });
