@@ -53,7 +53,7 @@ small,.m{color:var(--m);font-size:14px}
 .event-note label{font:700 var(--size-subheading)/var(--leading-heading) var(--font-heading);color:var(--color-text)}
 .event-note textarea{display:block;margin-bottom:var(--space-1)}
 .ann-controls button.event-details-link{width:100%;border-color:transparent;color:var(--gold);min-height:44px}
-@media(max-width:350px){nav button{padding-inline:0;line-height:1.12;overflow-wrap:anywhere}}
+@media(max-width:350px){nav button{overflow-wrap:anywhere}}
 .ann-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-2); font-size: var(--size-caption); color: var(--m); }
 .ann-head time, .next-event time { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .ann-live { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--lime); font-weight: 700; }
@@ -121,7 +121,7 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
 .note-preview span{display:block;margin-top:var(--space-2);white-space:pre-wrap}
 #sh{max-width:560px;margin-inline:auto}
 .demo-notice{background:var(--surface);color:var(--m)}
-@media(max-width:350px){nav button{font-size:var(--size-nav-compact)}.ev,.event-open{gap:var(--space-2)}}
+@media(max-width:350px){nav button{font-size:var(--size-nav-compact);padding-inline:0;line-height:1.12}.ev,.event-open{gap:var(--space-2)}}
 .app-update {
  position:fixed;
  left:max(var(--space-3),calc((100vw - 536px)/2));
@@ -223,7 +223,7 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
  </div>
  <p>Если нужного пункта нет, откройте ссылку в Safari на iPhone или в Chrome на Android.</p>
  <a href="?app=1">Открыть программу в браузере</a>
-</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v23</span></div><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
+</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v24</span></div><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
 <nav id="nv" aria-label="Основная навигация"></nav>
 <aside class="app-update" id="app-update" aria-label="Обновление приложения" hidden><span role="status"></span><button class="btn" type="button">Обновить</button></aside>
 <script src="assets/js/storage.js"></script>
@@ -247,7 +247,7 @@ function finishLoading(){setTimeout(revealApp,0)}
 let backend;try{backend=localStorage}catch{backend={getItem(){return null},setItem(){throw Error('Storage unavailable')}}}
 const storageScope=location.pathname.replace(/index\.html$/,'')+(previewLecture?'lecture-preview/':'');
 const installScreen=$('#install');
-if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v23 · отдельные заметки';
+if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v24 · отдельные заметки';
 const installed=navigator.standalone===true || window.matchMedia?.('(display-mode: standalone)').matches;
 if(installed) document.body.classList.add('installed');
 if(installScreen && !installed && !previewLecture && params.get('app')!=='1'){
