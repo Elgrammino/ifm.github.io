@@ -178,3 +178,28 @@ test('lecture preview isolates old notes and sheet swipe accepts only qualifying
  gesture(50,85,350);assert.equal(sheet.style.display,'block');assert.equal(sheet.style.transform,'');
  gesture(50,220,300);assert.equal(sheet.style.display,'none');
 });
+
+test('closing a card keeps the final rendered frame until the sheet is hidden',async()=>{
+ const {ctx,elements}=app({ok:true,json:async()=>data});await flush();
+ const sheet=elements['#sh'];
+ const animationRuns=[];
+ ctx.getComputedStyle=()=>({opacity:'0.8',transform:'matrix(1, 0, 0, 1, 0, 20)'});
+ sheet.getBoundingClientRect=()=>({x:0,y:0,width:390,height:844});
+ sheet.toggleAttribute=()=>{};
+ sheet.animate=(frames,options)=>{
+  let finish;
+  const animation={frames,options,finished:new Promise(resolve=>{finish=resolve}),finish:()=>finish(),cancel(){this.cancelledWhen=sheet.style.display}};
+  animationRuns.push(animation);
+  return animation;
+ };
+ vm.runInContext("openEv('b5')",ctx);
+ assert.equal(animationRuns[0].frames[0].opacity,0);
+ vm.runInContext('closeSh()',ctx);
+ const close=animationRuns[1];
+ assert.equal(close.frames[0].opacity,0.8);
+ assert.equal(close.frames[1].opacity,0);
+ assert.equal(sheet.style.display,'block');
+ close.finish();await flush();
+ assert.equal(sheet.style.display,'none');
+ assert.equal(close.cancelledWhen,'none');
+});
