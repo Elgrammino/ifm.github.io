@@ -262,6 +262,13 @@ small.eta{display:inline;margin:0}
 .ann-controls button:first-child{min-height:48px;font-size:1.0625rem}
 .ann-controls button.event-details-link{font-weight:700}
 .stage-demo{margin-inline-start:auto;font-size:.75rem;color:var(--m)}
+.speaker-notes{margin-block:var(--space-4) var(--space-5)}
+.speaker-notes h2{margin:0 0 var(--space-2)}
+.speaker-notes .event-note{margin:0}
+.speaker-notes .event-note label{font:700 var(--size-caption)/var(--leading-body) var(--font-body)}
+.speaker-note + .speaker-note{border-top:1px solid var(--ln)}
+.speaker-note summary{min-height:44px;padding:var(--space-3) 0;cursor:pointer;color:var(--gold)}
+.speaker-note[open]{padding-bottom:var(--space-3)}
 .speaker-stage{margin-bottom:24px}
 .speaker-stage h1{font-size:var(--size-title)}
 .speaker-stage .now-portrait{margin-bottom:12px}
@@ -312,7 +319,7 @@ small.eta{display:inline;margin:0}
  </div>
  <p>Если нужного пункта нет, откройте ссылку в Safari на iPhone или в Chrome на Android.</p>
  <a href="?app=1">Открыть программу в браузере</a>
-</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v29</span></div></div><div id="sheet-backdrop" class="sheet-backdrop" aria-hidden="true"></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
+</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v30</span></div></div><div id="sheet-backdrop" class="sheet-backdrop" aria-hidden="true"></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
 <nav id="nv" aria-label="Основная навигация">
  <div class="nav-track">
   <span class="nav-pill" aria-hidden="true"></span>
@@ -389,7 +396,7 @@ function finishLoading(){setTimeout(revealApp,0)}
 let backend;try{backend=localStorage}catch{backend={getItem(){return null},setItem(){throw Error('Storage unavailable')}}}
 const storageScope=location.pathname.replace(/index\.html$/,'')+(previewLecture?'lecture-preview/':'');
 const installScreen=$('#install');
-if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v29 · отдельные заметки';
+if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v30 · отдельные заметки';
 const installed=navigator.standalone===true || window.matchMedia?.('(display-mode: standalone)').matches;
 if(installed) document.body.classList.add('installed');
 if(installScreen && !installed && !previewLecture && params.get('app')!=='1'){
@@ -842,6 +849,19 @@ function toggleEventFavourite(id,button){
  acknowledgeFavourite(button,fav[id]);
  refreshVisitorView();
 }
+function eventNote(event,fieldId="event-note",label=event.type==="lec"?"Заметка к лекции":"Заметка к событию"){
+ return `<div class="event-note"><label for="${fieldId}">${esc(label)}</label><textarea id="${fieldId}" aria-describedby="${fieldId}-hint" placeholder="Что хочется запомнить?" oninput="saveNote('${event.id}',this.value)">${esc(notes[event.id]||"")}</textarea><small id="${fieldId}-hint">Записи хранятся на этом устройстве.</small></div>`;
+}
+function speakerNotes(events){
+ if(!events.length)return '';
+ const fields=events.map(event=>{
+  const label=(event.type==="lec"?"Заметка к лекции «":"Заметка к событию «")+event.title+"»";
+  const field=eventNote(event,"speaker-note-"+event.id,events.length===1?label:undefined);
+  return events.length===1?field:
+   `<details class="speaker-note"><summary>${esc(event.title)}</summary>${field}</details>`;
+ }).join("");
+ return `<section class="speaker-notes" aria-labelledby="speaker-notes-heading"><h2 id="speaker-notes-heading">Мои заметки</h2>${fields}</section>`;
+}
 function openEv(id,focusNote=false){
  const event=EV().find(item=>item.id===id);
  if(!event) return toast("Событие не найдено");
@@ -857,7 +877,7 @@ function openEv(id,focusNote=false){
   ${event.topic ? `<p class="m">Тема · ${esc(event.topic)}</p>` : ""}
   <button type="button" class="btn g event-detail-save" aria-pressed="${!!fav[id]}" onclick="toggleEventFavourite('${id}',this)">${fav[id] ? "В расписании" : "В моё расписание"}</button>
  </article>
- <div class="event-note"><label for="event-note">${event.type==="lec"?"Заметка к лекции":"Заметка к событию"}</label><textarea id="event-note" aria-describedby="event-note-hint" placeholder="Что хочется запомнить?" oninput="saveNote('${id}',this.value)">${esc(notes[id]||"")}</textarea><small id="event-note-hint">Записи хранятся на этом устройстве.</small></div>
+ ${eventNote(event)}
  ${event.desc ? `<p>${esc(event.desc)}</p>` : ""}${prods(speaker)}</div>`,focusNote);
  if(focusNote) $("#event-note")?.focus();
 }
@@ -874,7 +894,7 @@ function prods(s){
  const list=[...own,...added];
  return list.length?`<h2 style="margin:16px 0 6px">Реквизит спикера</h2>`+list.filter(p=>p&&typeof p==='object').map(p=>{const shops=Array.isArray(p.shops)?p.shops.filter(h=>h&&typeof h.n==='string'&&/^https:\/\//.test(h.u)):[];return `<div class="cd" style="margin:8px 0"><b>${esc(p.n||'Реквизит')}</b>${p.d?`<p class="m" style="margin:4px 0">${esc(p.d)}</p>`:''}${shops.length?'Где купить: '+shops.map(h=>`<a href="${esc(h.u)}" target="_blank" rel="noopener">${esc(h.n)}</a>`).join(' · '):`<span class="m">${p.wait?'Ссылка появится после лекции.':'Ссылка появится позже.'}</span>`}</div>`}).join(''):'';
 }
-function openSp(id){const s=SP(id);if(!s)return toast('Спикер не найден');const ls=EV().filter(e=>e.sp==id);sh(`<div class="pad speaker-stage" style="text-align:center">${stagePortrait(s)}<h1 dir="auto">${esc(speakerName(s))}</h1>${speakerRole(s)?`<p class="m">${esc(speakerRole(s))}</p>`:''}</div><div class="pad">${s.bio && s.bio!=='Описание появится позже.' ? `<p>${esc(s.bio)}</p>`:''}${prods(s)}<h2 style="margin:16px 0 0">Выступления</h2></div>${ls.map(card).join('')||'<div class="cd m">Выступления спикера пока не добавлены.</div>'}`)}
+function openSp(id){const s=SP(id);if(!s)return toast('Спикер не найден');const ls=EV().filter(e=>e.sp==id);sh(`<div class="pad speaker-stage" style="text-align:center">${stagePortrait(s)}<h1 dir="auto">${esc(speakerName(s))}</h1>${speakerRole(s)?`<p class="m">${esc(speakerRole(s))}</p>`:''}</div><div class="pad">${s.bio && s.bio!=='Описание появится позже.' ? `<p>${esc(s.bio)}</p>`:''}${speakerNotes(ls)}${prods(s)}<h2 style="margin:16px 0 0">Выступления</h2></div>${ls.map(card).join('')||'<div class="cd m">Выступления спикера пока не добавлены.</div>'}`)}
 function saveNote(id,value){
  notes[id]=value;
  if(!value.trim()&&isFree(id))delete notes[id];

@@ -326,3 +326,15 @@ test('a cancelled swipe restores the original position and returns backdrop cont
  assert.equal(backdrop.style.opacity,'');
  assert.equal(backdrop.style.transition,'');
 });
+
+test('speaker notes display existing lecture text and edit the same record used by the lecture and export',async()=>{
+ const {ctx,elements}=app({ok:true,json:async()=>data},{'ifm2027:/ifm.github.io/:notes':'{"b5":"Уже есть"}'});
+ await flush();
+ vm.runInContext("openSp('asi')",ctx);
+ assert.match(elements['#sh'].innerHTML,/Мои заметки[\s\S]*id="speaker-note-b5"[\s\S]*Уже есть/);
+ const writer=elements['#sh'].innerHTML.match(/id="speaker-note-b5"[^>]+oninput="([^"]+)"/)[1];
+ vm.runInContext(writer.replace('this.value',JSON.stringify('Дополнено из спикера')),ctx);
+ vm.runInContext("openEv('b5')",ctx);
+ assert.match(elements['#sh'].innerHTML,/id="event-note"[\s\S]*Дополнено из спикера/);
+ assert.match(vm.runInContext('buildExport()',ctx),/Спикер: Asi Wind[\s\S]*Дополнено из спикера/);
+});
