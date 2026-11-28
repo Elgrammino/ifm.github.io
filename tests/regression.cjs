@@ -39,14 +39,15 @@ test('loader waits for program and reveals either content or retry screen',async
  assert.equal(stalled.ctx.document.body.classList.contains('app-ready'),true);
 });
 test('home announcement follows live schedule, cancellation and favourites',async()=>{
- const {ctx,elements}=app({ok:true,json:async()=>data});await flush();
+ const actualProgramme={...data,showcaseEvent:null};
+ const {ctx,elements}=app({ok:true,json:async()=>actualProgramme});await flush();
  assert.match(elements['#v'].innerHTML,/class="ann"/);
  assert.match(elements['#v'].innerHTML,/Регистрация участников/);
  assert.match(elements['#v'].innerHTML,/О событии/);
  vm.runInContext("star('a1')",ctx);
  assert.match(elements['#v'].innerHTML,/aria-pressed="true">Убрать из расписания/);
  const state={'ifm2027:/ifm.github.io/:s':JSON.stringify({shift:0,off:{a1:true},add:[],news:[]})};
- const cancelled=app({ok:true,json:async()=>data},state);await flush();
+ const cancelled=app({ok:true,json:async()=>actualProgramme},state);await flush();
  assert.match(cancelled.elements['#v'].innerHTML,/<section class="ann"[^>]*>[\s\S]*?<h2>Открытие форума<\/h2>/);
  assert.doesNotMatch(cancelled.elements['#v'].innerHTML,/<h2>Регистрация участников<\/h2>/);
 });
@@ -76,7 +77,7 @@ test('short tabs keep navigation outside scroll area; sheet restores its scroll 
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
  assert.ok(html.indexOf('<nav id="nv"')>html.indexOf('</main></div>'));
  assert.match(html,/body\{position:relative;[^}]*height:100dvh/);
- assert.match(html,/nav\{position:absolute;left:0;right:0;bottom:0/);
+ assert.match(html,/nav\{position:fixed;left:0;right:0;bottom:0/);
  vm.runInContext("openEv('a1')",ctx);
  assert.equal(elements['#app-scroll'].style.overflowY,'hidden');
  assert.equal(elements['#sh'].style.display,'block');
@@ -202,4 +203,14 @@ test('closing a card keeps the final rendered frame until the sheet is hidden',a
  close.finish();await flush();
  assert.equal(sheet.style.display,'none');
  assert.equal(close.cancelledWhen,'none');
+});
+
+test('installed demo presents the agreed lecture and reuses its photograph in the speaker card',async()=>{
+ const {ctx,elements}=app({ok:true,json:async()=>data},{},undefined,{navigator:{standalone:true}});
+ await flush();
+ assert.match(elements['#v'].innerHTML,/Демо форума/);
+ assert.match(elements['#v'].innerHTML,/Идёт сейчас[\s\S]*Asi Wind[\s\S]*Записать заметку/);
+ vm.runInContext("openSp('asi')",ctx);
+ assert.match(elements['#sh'].innerHTML,/now-portrait[\s\S]*<h1 dir="auto">Asi Wind<\/h1>/);
+ assert.equal((elements['#sh'].innerHTML.match(/<img\b/g)||[]).length,1);
 });

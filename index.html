@@ -106,7 +106,7 @@ small,.m{color:var(--m);font-size:14px}
 input,textarea,select{width:100%;min-height:var(--target-touch);background:var(--color-field);border:1px solid var(--color-control-border);border-radius:var(--radius-control);padding:var(--space-3);margin:var(--space-1) 0}
 input::placeholder,textarea::placeholder{color:var(--color-text-muted);opacity:1}
 textarea{min-height:140px;resize:vertical}
-nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:2px calc(4px + env(safe-area-inset-right)) var(--nav-bottom) calc(4px + env(safe-area-inset-left));z-index:5}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:2px calc(4px + env(safe-area-inset-right)) var(--nav-bottom) calc(4px + env(safe-area-inset-left));z-index:5}
 nav button{min-width:0;min-height:var(--target-touch);line-height:1.15;flex:1;background:none;border:0;color:var(--m);font-size:var(--size-nav);font-weight:700;padding:var(--space-1);position:relative}nav button svg{display:block;width:20px;height:20px;margin:0 auto 2px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);background:var(--surface-strong);border:1px solid var(--ln);border-radius:var(--radius-control)}nav button[data-view="prog"].on{color:var(--ink-on-gold);background:var(--gold);border-color:var(--gold)}nav b{position:absolute;top:2px;left:55%;width:9px;height:9px;border-radius:50%;background:var(--lime)}
 #sh{position:fixed;inset:0;height:100dvh;z-index:9;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top) + 12px) 0 calc(24px + env(safe-area-inset-bottom));display:none}
@@ -145,6 +145,8 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
 :root{--nav-bottom:2px;--nav-clearance:calc(var(--nav-height, calc(47px + var(--nav-bottom))) + var(--space-2))}
 @media(display-mode:standalone){:root{--nav-bottom:max(2px,calc(env(safe-area-inset-bottom) - 12px))}}
 .ios-standalone{--nav-bottom:max(2px,calc(env(safe-area-inset-bottom) - 12px))}
+.ios-standalone.has-system-gutter{--nav-bottom:4px}
+.has-system-gutter #sh{padding-bottom:24px}
 .topics{flex-wrap:wrap;overflow:visible}
 .day-tabs{overflow:visible}
 .day-selector{
@@ -227,6 +229,12 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
 .ann-controls{gap:4px}
 .ann-controls button:first-child{min-height:48px;font-size:1.0625rem}
 .ann-controls button.event-details-link{font-weight:700}
+.stage-demo{margin-inline-start:auto;font-size:.75rem;color:var(--m)}
+.speaker-stage{margin-bottom:24px}
+.speaker-stage h1{font-size:var(--size-title)}
+.speaker-stage .now-portrait{margin-bottom:12px}
+.speaker-stage p{margin:6px 0 0}
+#sh > .back{min-height:44px;background:none;border:0;color:var(--gold);padding-inline:0}
 .next-section h2{font-size:1.4375rem;margin-top:17px;margin-bottom:8px}
 .next-event{gap:14px}
 .next-event time,.next-event strong{font-size:1.0625rem}
@@ -270,7 +278,7 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
  </div>
  <p>Если нужного пункта нет, откройте ссылку в Safari на iPhone или в Chrome на Android.</p>
  <a href="?app=1">Открыть программу в браузере</a>
-</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v25</span></div></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
+</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v26</span></div></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
 <nav id="nv" aria-label="Основная навигация"></nav>
 <aside class="app-update" id="app-update" aria-label="Обновление приложения" hidden><span role="status"></span><button class="btn" type="button">Обновить</button></aside>
 <script src="assets/js/storage.js"></script>
@@ -287,14 +295,22 @@ if(typeof ResizeObserver === "function") {
   if(height) document.documentElement.style.setProperty("--nav-height", height+"px");
  }).observe(nav);
 }
-if(navigator.standalone === true) document.body.classList.add("ios-standalone");
+if(navigator.standalone === true){
+ document.body.classList.add("ios-standalone");
+ const syncSystemGutter=()=>{
+  const outside=window.screen?.height-window.innerHeight;
+  document.body.classList.toggle?.("has-system-gutter",outside>=48 && outside<=96);
+ };
+ syncSystemGutter();
+ window.addEventListener("resize",syncSystemGutter);
+}
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function revealApp(){const splash=$('#splash');if(!splash||document.body.classList.contains('app-ready'))return;document.body.classList.remove('loading');document.body.classList.add('app-ready');splash.classList.add('done');splash.setAttribute('aria-hidden','true');setTimeout(()=>splash.remove(),350)}
 function finishLoading(){setTimeout(revealApp,0)}
 let backend;try{backend=localStorage}catch{backend={getItem(){return null},setItem(){throw Error('Storage unavailable')}}}
 const storageScope=location.pathname.replace(/index\.html$/,'')+(previewLecture?'lecture-preview/':'');
 const installScreen=$('#install');
-if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v25 · отдельные заметки';
+if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v26 · отдельные заметки';
 const installed=navigator.standalone===true || window.matchMedia?.('(display-mode: standalone)').matches;
 if(installed) document.body.classList.add('installed');
 if(installScreen && !installed && !previewLecture && params.get('app')!=='1'){
@@ -319,14 +335,22 @@ const icon=(name,filled=false)=>`<svg viewBox="0 0 24 24" aria-hidden="true" foc
 let D={events:[],speakers:[],links:[],dealers:[]},S=IFM.state(L('s')),fav=IFM.record(L('fav'),v=>typeof v==='boolean'),notes=IFM.record(L('notes'),v=>typeof v==='string'),tab='home',noteView='notes',day=0,topic='',seen=Number(L('seen'))||0,adm=0,tp=0,tt,launchOffline=navigator.onLine===false;
 const tm=t=>new Date(t).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'});
 const EV=()=>[...D.events,...S.add].map(e=>({...e,ts:T0+e.day*864e5+hm(e.t)*6e4+S.shift*6e4})).sort((a,b)=>a.ts-b.ts);
+function demoEvent(schedule){
+ if(Date.now()>=T0 || !D.showcaseEvent)return;
+ return schedule.find(event=>event.id===D.showcaseEvent && !S.off[event.id]);
+}
 const SP=id=>D.speakers.find(s=>s?.id===id);
 const speakerName=s=>typeof s?.name==='string'&&s.name.trim()?s.name.trim():'Имя спикера уточняется';
 const speakerRole=s=>typeof s?.role==='string'?s.role.trim():'';
 const speakerPhoto=s=>typeof s?.photo==='string'&&/^[a-zA-Z0-9_./-]+$/.test(s.photo)&&!s.photo.includes('..')?s.photo:'';
-function nowSpeaker(s){
+function stagePortrait(s){
  const photo=speakerPhoto(s);
+ if(!photo)return "";
  const asiPortrait=photo==='assets/participants/asi.jpg';
- return `<button type="button" class="now-speaker" onclick="openSp('${s.id}')">${photo?`<span class="now-portrait${asiPortrait?' now-portrait--asi':''}"${asiPortrait?' style="--portrait-image:url(assets/participants/asi.jpg)"':''}><img src="${esc(photo)}" alt="" onerror="this.parentElement.remove()"></span>`:''}<span dir="auto">${esc(speakerName(s))}</span></button>`;
+ return `<span class="now-portrait${asiPortrait?' now-portrait--asi':''}"${asiPortrait?' style="--portrait-image:url(assets/participants/asi.jpg)"':''}><img src="${esc(photo)}" alt="" onerror="this.parentElement.remove()"></span>`;
+}
+function nowSpeaker(s){
+ return `<button type="button" class="now-speaker" onclick="openSp('${s.id}')">${stagePortrait(s)}<span dir="auto">${esc(speakerName(s))}</span></button>`;
 }
 function av(s,c=''){const name=typeof s?.name==='string'?s.name.trim():'';const words=name.split(/\s+/).filter(Boolean),first=w=>Intl.Segmenter?[...new Intl.Segmenter('ru',{granularity:'grapheme'}).segment(w)][0]?.segment:[...w][0];const initials=words.length?[first(words[0]),...(words.length>1?[first(words.at(-1))]:[])].join(''):'?';const photo=speakerPhoto(s);return `<span class="av ${photo?'':'ph'} ${c}" aria-hidden="true">${esc(initials)}${photo?`<img src="${esc(photo)}" width="64" height="64" alt="" onerror="this.remove()">`:''}</span>`}
 function toast(t){const d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=t;document.body.append(d);navigator.vibrate&&navigator.vibrate(120);setTimeout(()=>{d.classList.add('leaving');setTimeout(()=>d.remove(),200)},3800)}
@@ -343,9 +367,10 @@ function nowTitle(event){
 }
 const V={
  home(){
- const now = forumNow();
  const schedule = EV().filter(event => !S.off[event.id]);
- const current = schedule.find(event => event.ts <= now && now < event.ts + event.d * 60000);
+ const showcase = !previewLecture && demoEvent(schedule);
+ const now = showcase ? showcase.ts : forumNow();
+ const current = showcase || schedule.find(event => event.ts <= now && now < event.ts + event.d * 60000);
  const next = schedule.find(event => event.ts > now);
  const featured = current || next;
  const speaker = featured && SP(featured.sp);
@@ -357,7 +382,7 @@ const V={
  <header class="pad now-intro"><h1>Сейчас</h1>${featured ? "" : "<p>19–21 января 2027 · Санкт-Петербург</p>"}</header>
  <section class="ann" aria-label="Анонс события">
   <div class="event-ticket">
-   <div class="ann-head"><span class="${current ? 'ann-live' : ''}">${status}</span></div>
+   <div class="ann-head"><span class="${current ? 'ann-live' : ''}">${status}</span>${showcase ? '<span class="stage-demo">Демо форума</span>' : ''}</div>
    ${featured ? eventCue(featured) : ""}
   ${featured ? `<h2>${nowTitle(featured)}</h2>
   ${speaker ? nowSpeaker(speaker) : ''}
@@ -551,7 +576,7 @@ function openEv(id,focusNote=false){
  if(!event) return toast("Событие не найдено");
  const speaker=SP(event.sp);
  const now=forumNow();
- const live=!S.off[id] && event.ts<=now && now<event.ts+event.d*60000;
+ const live=!S.off[id] && (event.id===demoEvent([event])?.id || (event.ts<=now && now<event.ts+event.d*60000));
  const date=new Date(event.ts).toLocaleDateString("ru",{day:"numeric",month:"long",timeZone:"Europe/Moscow"});
  const status=S.off[id] ? "Событие отменено" : live ? "Идёт сейчас" : TY[event.type];
  sh(`<div class="pad"><article class="event-ticket" aria-label="Событие">
@@ -566,7 +591,7 @@ function openEv(id,focusNote=false){
  if(focusNote) $("#event-note")?.focus();
 }
 function prods(s){return Array.isArray(s?.products)&&s.products.length?`<h2 style="margin:16px 0 6px">Реквизит спикера</h2>`+s.products.filter(p=>p&&typeof p==='object').map(p=>{const shops=Array.isArray(p.shops)?p.shops.filter(h=>h&&typeof h.n==='string'&&/^https:\/\//.test(h.u)):[];return `<div class="cd" style="margin:8px 0"><b>${esc(p.n||'Реквизит')}</b>${p.d?`<p class="m" style="margin:4px 0">${esc(p.d)}</p>`:''}${shops.length?'Где купить: '+shops.map(h=>`<a href="${esc(h.u)}" target="_blank" rel="noopener">${esc(h.n)}</a>`).join(' · '):'<span class="m">Ссылка появится позже.</span>'}</div>`}).join(''):''}
-function openSp(id){const s=SP(id);if(!s)return toast('Спикер не найден');const ls=EV().filter(e=>e.sp==id);sh(`<div class="pad" style="text-align:center">${av(s,'big')}<h1 dir="auto">${esc(speakerName(s))}</h1>${speakerRole(s)?`<p class="m">${esc(speakerRole(s))}</p>`:''}</div><div class="pad">${s.bio?`<p>${esc(s.bio)}</p>`:''}${prods(s)}<h2 style="margin:16px 0 0">Выступления</h2></div>${ls.map(card).join('')||'<div class="cd m">Выступления спикера пока не добавлены.</div>'}`)}
+function openSp(id){const s=SP(id);if(!s)return toast('Спикер не найден');const ls=EV().filter(e=>e.sp==id);sh(`<div class="pad speaker-stage" style="text-align:center">${stagePortrait(s)}<h1 dir="auto">${esc(speakerName(s))}</h1>${speakerRole(s)?`<p class="m">${esc(speakerRole(s))}</p>`:''}</div><div class="pad">${s.bio && s.bio!=='Описание появится позже.' ? `<p>${esc(s.bio)}</p>`:''}${prods(s)}<h2 style="margin:16px 0 0">Выступления</h2></div>${ls.map(card).join('')||'<div class="cd m">Выступления спикера пока не добавлены.</div>'}`)}
 function exp(){const x=EV().filter(e=>(notes[e.id]||'').trim()).map(e=>`${19+e.day} января, ${tm(e.ts)} — ${e.title}\n${notes[e.id]}`).join('\n\n———\n\n');const f=new File([x],'IFM2027-заметки.txt',{type:'text/plain'});
  if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f]}).catch(()=>{});else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),30000)}}
 /* ===== скрытая админка: 6 касаний по фото организаторов ===== */
