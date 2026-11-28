@@ -18,8 +18,8 @@ test('partial state and invalid event input recover',()=>{
 });
 function app(response,values={},serviceWorker,options={}){
  const classes=new Set(['loading']);
- const elements=Object.fromEntries(['#v','#nv','#sh','#splash','#app-scroll','#install','#install-ios','#install-android','#demo-notice'].map(k=>[k,{innerHTML:'',style:{},scrollTop:k==='#app-scroll'?120:0,classList:{add(n){this.value=n}},setAttribute(){},remove(){this.removed=true}}]));
- const ctx={URL,window:{scrollY:120,innerWidth:390,listeners:{},addEventListener(k,fn){this.listeners[k]=fn}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/',href:'https://example.com/ifm.github.io/'+(options.search||'')},document:{querySelector:k=>elements[k],createElement:()=>({setAttribute(){},remove(){},classList:{add(){}}}),body:{style:{},classList:{contains:n=>classes.has(n),add:n=>classes.add(n),remove:n=>classes.delete(n)},append(){}},addEventListener(){}},navigator:{serviceWorker,...options.navigator},fetch:async()=>response,setTimeout(fn,delay){(ctx.timers??=[]).push({fn,delay});return ctx.timers.length},setInterval:()=>0,clearTimeout(id){if(ctx.timers?.[id-1])ctx.timers[id-1].cancelled=true},scrollTo(x,y){ctx.lastScroll=[x,y]},console};
+ const elements=Object.fromEntries(['#v','#nv','#sh','#sheet-backdrop','#splash','#app-scroll','#install','#install-ios','#install-android','#demo-notice'].map(k=>[k,{innerHTML:'',style:{},scrollTop:k==='#app-scroll'?120:0,classList:{add(n){this.value=n}},setAttribute(){},remove(){this.removed=true}}]));
+ const ctx={URL,window:{scrollY:120,innerWidth:390,listeners:{},addEventListener(k,fn){this.listeners[k]=fn}},history:{pushState(){},back(){}},IFM:api,IFM_REMOTE:()=>({ready:false}),localStorage:backend(values),location:{pathname:'/ifm.github.io/',href:'https://example.com/ifm.github.io/'+(options.search||'')},document:{querySelector:k=>elements[k],querySelectorAll:()=>options.navButtons||[],createElement:()=>({setAttribute(){},remove(){},classList:{add(){}}}),body:{style:{},classList:{contains:n=>classes.has(n),add:n=>classes.add(n),remove:n=>classes.delete(n)},append(){}},addEventListener(){}},navigator:{serviceWorker,...options.navigator},fetch:async()=>response,setTimeout(fn,delay){(ctx.timers??=[]).push({fn,delay});return ctx.timers.length},setInterval:()=>0,clearTimeout(id){if(ctx.timers?.[id-1])ctx.timers[id-1].cancelled=true},scrollTo(x,y){ctx.lastScroll=[x,y]},console};
  const sheet=elements['#sh'];sheet.listeners={};sheet.clientWidth=390;sheet.addEventListener=(name,fn)=>sheet.listeners[name]=fn;sheet.setPointerCapture=()=>{};
  vm.createContext(ctx);vm.runInContext(script,ctx);return {ctx,elements};
 }
@@ -77,7 +77,7 @@ test('short tabs keep navigation outside scroll area; sheet restores its scroll 
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
  assert.ok(html.indexOf('<nav id="nv"')>html.indexOf('</main></div>'));
  assert.match(html,/body\{position:relative;[^}]*height:100dvh/);
- assert.match(html,/nav\{position:fixed;left:0;right:0;bottom:0/);
+ assert.match(html,/nav\{position:fixed;left:0;right:0;bottom:calc\(0px - var\(--ios-bottom-shift\)/);
  vm.runInContext("openEv('a1')",ctx);
  assert.equal(elements['#app-scroll'].style.overflowY,'hidden');
  assert.equal(elements['#sh'].style.display,'block');
@@ -86,9 +86,7 @@ test('short tabs keep navigation outside scroll area; sheet restores its scroll 
  vm.runInContext("openEv('a1')",ctx);ctx.window.listeners.popstate();
  assert.equal(elements['#sh'].style.display,'none');assert.equal(elements['#app-scroll'].style.overflowY,'');
  vm.runInContext("go('notes')",ctx);assert.equal(elements['#app-scroll'].scrollTop,0);
- ctx.document.activeElement={closest:k=>k==='#nv'?{}:null};elements['#nv'].querySelector=()=>({focus(){ctx.restoredFocus=true}});
  vm.runInContext("go('news')",ctx);assert.match(elements['#v'].innerHTML,/Новости/);
- assert.equal(ctx.restoredFocus,true);
 });
 test('program, speaker, saved note and favourite render',async()=>{
  const {ctx,elements}=app({ok:true,json:async()=>data},{'ifm2027:/ifm.github.io/:notes':'{"a3":"Сохранено"}'});await flush();
@@ -273,4 +271,58 @@ test('installed demo presents the agreed lecture and reuses its photograph in th
  vm.runInContext("openSp('asi')",ctx);
  assert.match(elements['#sh'].innerHTML,/now-portrait[\s\S]*<h1 dir="auto">Asi Wind<\/h1>/);
  assert.equal((elements['#sh'].innerHTML.match(/<img\b/g)||[]).length,1);
+});
+
+test('cached programme is rendered before a slow network response',async()=>{
+ let resolve;
+ const pending=new Promise(r=>{resolve=r});
+ const {ctx,elements}=app(pending,{'ifm2027:/ifm.github.io/:d':JSON.stringify(data)});
+ assert.match(elements['#v'].innerHTML,/Asi Wind/);
+ const altered={...data,showcaseEvent:null};
+ resolve({ok:true,json:async()=>altered});await flush();
+ assert.match(elements['#v'].innerHTML,/Регистрация участников/);
+ assert.equal(vm.runInContext('D.showcaseEvent',ctx),null);
+});
+test('the installed iOS viewport correction ignores keyboard-size and unchanged viewports',()=>{
+ const {ctx}=app(new Promise(()=>{}));
+ assert.equal(vm.runInContext('iosViewportGap(430,932,870,false)',ctx),62);
+ assert.equal(vm.runInContext('iosViewportGap(430,932,932,false)',ctx),0);
+ assert.equal(vm.runInContext('iosViewportGap(430,932,580,false)',ctx),0);
+ assert.equal(vm.runInContext('iosViewportGap(430,932,380,true)',ctx),50);
+});
+
+test('tab changes keep the same controls, move aria-current and restore keyboard focus',async()=>{
+ const navButtons=['home','sp','prog','notes','news'].map(view=>({
+  dataset:{view},attributes:{},classList:{toggle(){}},
+  setAttribute(k,v){this.attributes[k]=v},removeAttribute(k){delete this.attributes[k]},
+  toggleAttribute(k,on){if(on)this.attributes[k]='';else delete this.attributes[k]},
+  focus(){focused=this}
+ }));
+ let focused;
+ const {ctx,elements}=app({ok:true,json:async()=>data},{},undefined,{navButtons});
+ await flush();
+ assert.equal(navButtons[0].attributes['aria-current'],'page');
+ ctx.document.activeElement={closest:k=>k==='#nv'?elements['#nv']:null};
+ vm.runInContext("go('notes')",ctx);
+ assert.equal(navButtons[0].attributes['aria-current'],undefined);
+ assert.equal(navButtons[3].attributes['aria-current'],'page');
+ assert.equal(focused,navButtons[3]);
+ assert.equal(elements['#nv'].innerHTML,'');
+});
+
+test('a cancelled swipe restores the original position and returns backdrop control to CSS',async()=>{
+ const {ctx,elements}=app({ok:true,json:async()=>data});await flush();
+ const sheet=elements['#sh'],backdrop=elements['#sheet-backdrop'];
+ vm.runInContext("openEv('b5')",ctx);
+ const touch={isPrimary:true,pointerType:'touch',pointerId:5,clientY:120,target:{closest:()=>null}};
+ sheet.listeners.pointerdown({...touch,clientX:60,timeStamp:0});
+ sheet.listeners.pointermove({...touch,clientX:138,timeStamp:55});
+ assert.equal(sheet.style.transform,'translateX(78px)');
+ assert.ok(Math.abs(Number(backdrop.style.opacity)-.432)<.00001);
+ assert.equal(backdrop.style.transition,'none');
+ sheet.listeners.pointercancel({...touch,type:'pointercancel',timeStamp:65});
+ assert.equal(sheet.style.display,'block');
+ assert.equal(sheet.style.transform,'');
+ assert.equal(backdrop.style.opacity,'');
+ assert.equal(backdrop.style.transition,'');
 });

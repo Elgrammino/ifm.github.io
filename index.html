@@ -4,6 +4,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="IFM 2027">
 <link rel="apple-touch-icon" href="assets/icons/icon-180.png"><link rel="icon" href="assets/icons/icon-192.png">
+<link rel="preload" href="assets/fonts/onest-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/literata-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="assets/fonts/ifm-fonts.css">
 <style>
@@ -59,23 +61,19 @@ small,.m{color:var(--m);font-size:14px}
 .ann-live { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--lime); font-weight: 700; }
 .ann-live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .ann h2 { font-size: var(--size-heading); margin: var(--space-3) 0; }
-@property --portrait-angle{syntax:"<angle>";inherits:false;initial-value:0turn}
 .now-speaker{display:grid;gap:var(--space-2);width:100%;min-height:44px;margin:0 0 var(--space-4);padding:0;border:0;background:none;text-align:center;font-weight:var(--weight-action)}
 .now-portrait{position:relative;display:block;border-radius:var(--radius-control);box-shadow:0 0 12px color-mix(in srgb,var(--vio) 28%,transparent)}
 .now-portrait img{display:block;width:100%;aspect-ratio:1.95;object-fit:cover;object-position:center 47%;border-radius:inherit}
 .now-portrait:empty{display:none}
 .now-portrait::after{content:"";position:absolute;inset:0;border:1px solid var(--color-border);border-radius:inherit;pointer-events:none}
+.portrait-shine{display:none}
 @supports (mask-composite:exclude){
- .now-portrait::after{
-  border:0;padding:3px;
-  background:conic-gradient(from var(--portrait-angle),#fff2d9 0deg,var(--vio) 28deg,#a35cff55 95deg,#6a319060 170deg,#d5ff7240 244deg,var(--lime) 328deg,#fff2d9 360deg);
-  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  mask-composite:exclude;
-  animation:portrait-orbit 16s linear infinite;
- }
+ .portrait-shine{display:block;position:absolute;inset:0;overflow:hidden;border-radius:inherit;padding:3px;pointer-events:none;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+ .portrait-shine::before{content:"";position:absolute;left:50%;top:50%;width:160%;aspect-ratio:1;background:conic-gradient(#fff2d9 0deg,var(--vio) 28deg,#a35cff55 95deg,#6a319060 170deg,#d5ff7240 244deg,var(--lime) 328deg,#fff2d9 360deg);animation:portrait-orbit 16s linear infinite}
 }
-@keyframes portrait-orbit{to{--portrait-angle:1turn}}
-@media(prefers-reduced-motion:reduce){.now-portrait::after{animation:none}}
+@keyframes portrait-orbit{from{transform:translate(-50%,-50%) rotate(0turn)}to{transform:translate(-50%,-50%) rotate(1turn)}}
+.sheet-open #v .portrait-shine::before{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){.portrait-shine::before{animation:none;transform:translate(-50%,-50%)}}
 .ann-speaker { display: flex; gap: var(--space-3); align-items: center; min-height: 44px; padding: 0; border: 0; background: none; text-align: left; font-weight: 700; margin-bottom: var(--space-3); }
 .ann-speaker .av { width: 36px; height: 36px; font-size: var(--size-caption); }
 .ann-controls { display: flex; flex-wrap: wrap; gap: var(--space-2); }
@@ -88,7 +86,11 @@ small,.m{color:var(--m);font-size:14px}
 .subview .btn[aria-pressed=true] { background: var(--gold); color: var(--ink-on-gold); }
 .tab-title { font-size: var(--size-title); margin: var(--space-4) calc(var(--space-4) + env(safe-area-inset-right)) var(--space-4) calc(var(--space-4) + env(safe-area-inset-left)); }
 .forum-links { margin: var(--space-5) calc(var(--space-4) + env(safe-area-inset-right)) 0 calc(var(--space-4) + env(safe-area-inset-left)); border-top: 1px solid var(--ln); }
-.forum-links summary { cursor: pointer; min-height: 44px; padding-block: var(--space-3); color: var(--m); }
+.forum-links summary{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);min-height:44px;padding-block:var(--space-3);color:var(--m);list-style:none}
+.forum-links summary::-webkit-details-marker{display:none}
+.forum-links summary::after{content:"";flex:none;width:8px;height:8px;margin-inline-end:3px;border-right:1.5px solid;border-bottom:1.5px solid;transform:translateY(-2px) rotate(45deg);transition:transform var(--motion-ui) var(--ease-out)}
+.forum-links[open] summary::after{transform:translateY(2px) rotate(225deg)}
+@media(prefers-reduced-motion:reduce){.forum-links summary::after{transition:none}}
 .forum-links .cd { margin-inline: 0; width: 100%; }
 .row{display:flex;gap:12px;align-items:center}.b{flex:1;min-width:0;overflow-wrap:anywhere}
 .tabs{display:flex;gap:8px;overflow:auto;padding:4px calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left));scrollbar-width:none;overscroll-behavior-x:contain}.tabs::-webkit-scrollbar{display:none}
@@ -103,19 +105,38 @@ small,.m{color:var(--m);font-size:14px}
 .ph{display:grid;place-items:center;font-weight:800;font-size:20px;background:#20142e;border:2px solid var(--lime);color:var(--gold)}
 .big{width:112px;height:112px;margin:0 auto 10px;display:grid}
 .btn{border:0;border-radius:var(--radius-control);min-height:var(--target-touch);padding:var(--space-3) var(--space-4);background:var(--gold);color:var(--ink-on-gold);font-weight:800}.btn.g{background:var(--surface-strong);color:var(--color-text);border:1px solid var(--color-control-border)}
-input,textarea,select{width:100%;min-height:var(--target-touch);background:var(--color-field);border:1px solid var(--color-control-border);border-radius:var(--radius-control);padding:var(--space-3);margin:var(--space-1) 0}
+input,textarea,select{width:100%;font-size:max(16px,1rem);min-height:var(--target-touch);background:var(--color-field);border:1px solid var(--color-control-border);border-radius:var(--radius-control);padding:var(--space-3);margin:var(--space-1) 0}
 input::placeholder,textarea::placeholder{color:var(--color-text-muted);opacity:1}
 textarea{min-height:140px;resize:vertical}
-nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:2px calc(4px + env(safe-area-inset-right)) var(--nav-bottom) calc(4px + env(safe-area-inset-left));z-index:5}
-nav button{min-width:0;min-height:var(--target-touch);line-height:1.15;flex:1;background:none;border:0;color:var(--m);font-size:var(--size-nav);font-weight:700;padding:var(--space-1);position:relative}nav button svg{display:block;width:20px;height:20px;margin:0 auto 2px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);background:var(--surface-strong);border:1px solid var(--ln);border-radius:var(--radius-control)}nav button[data-view="prog"].on{color:var(--ink-on-gold);background:var(--gold);border-color:var(--gold)}nav b{position:absolute;top:2px;left:55%;width:9px;height:9px;border-radius:50%;background:var(--lime)}
+nav{position:fixed;left:0;right:0;bottom:calc(0px - var(--ios-bottom-shift));background:var(--bg);border-top:1px solid var(--ln);padding:2px calc(4px + env(safe-area-inset-right)) var(--nav-bottom) calc(4px + env(safe-area-inset-left));z-index:5}
+.nav-track{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));isolation:isolate}
+.nav-pill{position:absolute;inset-block:0;inset-inline-start:0;width:20%;transform:translateX(0);pointer-events:none;z-index:-1}
+.nav-pill::before{content:"";position:absolute;inset:2px;border-radius:var(--radius-control);background:#312044;border:1px solid #705182}
+.app-ready .nav-pill{transition:transform var(--motion-slide) var(--ease-drawer)}
+@media(prefers-reduced-motion:reduce){.app-ready .nav-pill{transition:none}}
+nav button{min-width:0;min-height:var(--target-touch);line-height:1.15;background:none;border:0;color:var(--m);font-size:var(--size-nav);font-weight:750;padding:var(--space-1);position:relative}
+nav button.on{color:var(--lime)}
+nav button[data-view="prog"]{color:var(--gold)}
+nav button[data-view="prog"]::before{content:"";position:absolute;inset:2px;border:1px solid var(--ln);border-radius:var(--radius-control);pointer-events:none}
+nav button[data-view="prog"].on::before{border-color:transparent}
+nav button[data-unread]::after{content:"";position:absolute;top:4px;right:12%;width:7px;height:7px;border-radius:50%;background:var(--lime)}
+.sheet-backdrop{position:fixed;inset:0 0 calc(0px - var(--ios-bottom-shift));z-index:8;background:#07040d;opacity:0;pointer-events:none;transition:opacity var(--motion-ui) var(--ease-out)}
+.sheet-open .sheet-backdrop{opacity:.54}
+.sheet-open.sheet-leaving .sheet-backdrop{opacity:0}
+@media(prefers-reduced-motion:reduce){.sheet-backdrop{transition-duration:110ms}}
 #sh{position:fixed;inset:0;height:100dvh;z-index:9;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top) + 12px) 0 calc(24px + env(safe-area-inset-bottom));display:none}
-.back{margin:0 calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left))}.toast{position:fixed;left:calc(16px + env(safe-area-inset-left));right:calc(16px + env(safe-area-inset-right));top:calc(env(safe-area-inset-top) + 10px);z-index:20;background:var(--gold);color:#1a0f07;font-weight:700;border-radius:14px;padding:12px 14px;animation:toast-in 200ms var(--ease-out) both}.toast.leaving{animation:toast-out 200ms var(--ease-out) both}
-@keyframes toast-in{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes toast-out{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-12px)}}
+.back{margin:0 calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left))}
+.toast{position:fixed;left:max(16px,calc((100vw - 500px)/2),env(safe-area-inset-left));right:max(16px,calc((100vw - 500px)/2),env(safe-area-inset-right));bottom:calc(var(--nav-clearance) - var(--ios-bottom-shift) + 4px);z-index:20;pointer-events:none;background:var(--surface);border:1px solid var(--gold);color:var(--color-text);box-shadow:var(--shadow-raised);font-weight:700;border-radius:14px;padding:12px 14px;transition:transform var(--motion-ui) var(--ease-out),opacity var(--motion-ui) var(--ease-out)}
+.toast.leaving{opacity:0;transform:translateY(14px);transition-duration:var(--motion-exit)}
+.sheet-open .toast,.install-view .toast,body:has(.app-update:not([hidden])) .toast{top:calc(env(safe-area-inset-top) + 10px);bottom:auto}
+@starting-style{.toast{opacity:0;transform:translateY(14px)}}
+@media(prefers-reduced-motion:reduce){
+ .toast,.toast.leaving{transform:none;transition-property:opacity;transition-duration:110ms}
+ @starting-style{.toast{transform:none}}
+}
 .demo-notice{padding:calc(env(safe-area-inset-top) + 10px) calc(16px + env(safe-area-inset-right)) 10px calc(16px + env(safe-area-inset-left));background:#20152f;color:#e0d7ef;font-size:14px;text-align:center}button{cursor:pointer}button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--lime);outline-offset:3px}.ev{min-width:0}.ev .b{overflow-wrap:anywhere}.cd{overflow-wrap:anywhere}#sh .row{flex-wrap:wrap}#sh .row input,#sh .row select{flex:1 1 90px;min-width:0}#sh .row .btn{min-width:120px}a{overflow-wrap:anywhere}.pr{border-top:1px solid var(--ln);padding-top:10px;margin-top:10px}a{color:#f7dcb1}label{display:block;margin:12px 0 2px;font-size:14px;font-weight:700;color:#e0d7ef}::selection{background:var(--gold);color:var(--ink-on-gold)}
 @media(max-width:360px){.ann > .event-ticket{padding:var(--space-3)}.ann-controls button{flex:1 1 100%}}
-@media(prefers-reduced-motion:reduce){.btn,.chip,.st,nav button,.ann-controls button{transition:none;transform:none!important}.toast,.splash-mark::before{animation:none!important}.splash,.demo-notice,#v,#nv{transition-duration:120ms}}
+@media(prefers-reduced-motion:reduce){.btn,.chip,.st,nav button,.ann-controls button{transition:none;transform:none!important}.splash-mark::before{animation:none!important}.splash,.demo-notice,#v,#nv{transition-duration:120ms}}
 @media(min-width:700px){body{max-width:560px;margin:0 auto}nav{max-width:560px;margin:0 auto}}
 .note-preview,button.cd{width:calc(100% - 32px - env(safe-area-inset-left) - env(safe-area-inset-right));text-align:left}
 .note-preview span{display:block;margin-top:var(--space-2);white-space:pre-wrap}
@@ -142,12 +163,14 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
 .loading .app-update,.app-update[hidden]{display:none}
 .app-update .btn{flex:none;padding-inline:var(--space-3)}
 .app-update .btn:disabled{opacity:.68}
-:root{--nav-bottom:2px;--nav-clearance:calc(var(--nav-height, calc(47px + var(--nav-bottom))) + var(--space-2))}
+:root{--ios-bottom-shift:0px;--nav-bottom:2px;--nav-clearance:calc(var(--nav-height, calc(47px + var(--nav-bottom))) + var(--space-2))}
 @media(display-mode:standalone){:root{--nav-bottom:max(2px,calc(env(safe-area-inset-bottom) - 12px))}}
-.ios-standalone{--nav-bottom:max(2px,calc(env(safe-area-inset-bottom) - 12px))}
-.ios-standalone.has-system-gutter{--nav-bottom:4px}
-.has-system-gutter #sh{padding-bottom:24px}
-.topics{flex-wrap:wrap;overflow:visible}
+html.ios-pwa{min-height:calc(100% + var(--ios-bottom-shift))}
+.ios-standalone{height:calc(100dvh + var(--ios-bottom-shift));--nav-bottom:max(2px,calc(env(safe-area-inset-bottom) - 12px))}
+.ios-standalone #sh{height:var(--sheet-viewport-height,calc(100dvh + var(--ios-bottom-shift)))}
+#sh{top:var(--sheet-viewport-top,0px);height:var(--sheet-viewport-height,100dvh)}
+html{overscroll-behavior:none}
+.app-update{bottom:calc(var(--nav-clearance) - var(--ios-bottom-shift))}
 .topics{flex-wrap:wrap;overflow:visible}
 .day-tabs{overflow:visible}
 .day-selector{
@@ -234,7 +257,7 @@ small.eta{display:inline;margin:0}
 .now-portrait img{position:absolute;inset:0;margin-inline:auto;width:100%;height:100%;aspect-ratio:auto;object-position:center}
 .now-portrait--asi img{width:78%;object-position:center 46%;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
 .now-portrait--asi::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--portrait-image) center 46% / cover;filter:blur(10px);opacity:.8}
-.now-portrait::after{filter:brightness(1.22)}
+
 .ann-controls{gap:4px}
 .ann-controls button:first-child{min-height:48px;font-size:1.0625rem}
 .ann-controls button.event-details-link{font-weight:700}
@@ -251,24 +274,26 @@ small.eta{display:inline;margin:0}
 .app-scroll{padding-top:env(safe-area-inset-top)}
 .now-date{white-space:nowrap}
 .now-title-subject{display:block}
-#nv button svg{display:none}
-#nv button{font-size:var(--size-nav);font-weight:750}
-@media(max-width:350px){#nv button{font-size:var(--size-nav-compact)}}
-.app-ready #v:has(.now-intro){animation:ready-stage 420ms var(--ease-out) both}
+
+.launch-motion #v:has(.now-intro){animation:ready-stage 420ms var(--ease-out) both}
 @keyframes ready-stage{from{transform:translateY(12px);opacity:.82}to{transform:none;opacity:1}}
 .install-brand{position:relative;isolation:isolate;width:108px;margin:0 0 22px}
 .install-brand::after{content:"";position:absolute;z-index:-1;inset:-6px;border-radius:100%;background:conic-gradient(from 40deg,#a35cff,#20142e 31%,#d5ff72 64%,#f7dcb1 82%,#a35cff);filter:blur(11px);opacity:.55}
 .install-logo{width:108px;height:108px;margin:0}
 .install-first .install-brand::after{animation:mark-halo 900ms var(--ease-out) both}
 .install-first .install-logo{animation:install-mark 760ms var(--ease-out) both}
+.install-first .install-steps{animation:install-steps-in 260ms var(--ease-out) 45ms both}
 .install-first .install-arrow{transform-origin:left center;animation:install-hint 340ms var(--ease-out) 180ms both}
+.install-first .install-control{animation:install-target 220ms var(--ease-out) 360ms both}
+@keyframes install-steps-in{from{transform:translateY(5px);opacity:.94}to{transform:none;opacity:1}}
+@keyframes install-target{0%,100%{transform:none}52%{transform:scale(1.08)}}
 .install-arrow{font-size:0;width:37px;height:12px;position:relative}
 .install-arrow::before{content:"";position:absolute;top:5px;left:0;right:2px;height:1px;background:currentColor}
 .install-arrow::after{content:"";position:absolute;top:2px;right:0;width:6px;height:6px;border-top:1px solid;border-right:1px solid;transform:rotate(45deg)}
 @keyframes mark-halo{0%{opacity:0;transform:scale(.65) rotate(-70deg)}35%{opacity:.96}100%{opacity:.55;transform:scale(1) rotate(0)}}
 @keyframes install-mark{0%{opacity:0;transform:scale(.84)}60%{opacity:1}100%{opacity:1;transform:scale(1)}}
 @keyframes install-hint{from{opacity:0;transform:scaleX(.12)}to{opacity:1;transform:scaleX(1)}}
-@media(prefers-reduced-motion:reduce){.app-ready #v:has(.now-intro),.install-first .install-brand::after{animation:none}.install-first .install-logo,.install-first .install-arrow{animation:gentle-enter 90ms var(--ease-out) both}}
+@media(prefers-reduced-motion:reduce){.launch-motion #v:has(.now-intro),.install-first .install-brand::after,.install-first .install-steps,.install-first .install-control{animation:none}.install-first .install-logo,.install-first .install-arrow{animation:gentle-enter 90ms var(--ease-out) both}}
 </style></head><body class="loading">
 <section id="install" class="install-screen" aria-labelledby="install-title" hidden>
  <div class="install-brand"><img class="install-logo" src="assets/images/hero.jpg" width="108" height="108" alt="МФИ 2027"></div>
@@ -287,8 +312,17 @@ small.eta{display:inline;margin:0}
  </div>
  <p>Если нужного пункта нет, откройте ссылку в Safari на iPhone или в Chrome на Android.</p>
  <a href="?app=1">Открыть программу в браузере</a>
-</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v27</span></div></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
-<nav id="nv" aria-label="Основная навигация"></nav>
+</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v29</span></div></div><div id="sheet-backdrop" class="sheet-backdrop" aria-hidden="true"></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
+<nav id="nv" aria-label="Основная навигация">
+ <div class="nav-track">
+  <span class="nav-pill" aria-hidden="true"></span>
+  <button type="button" class="on" data-view="home" aria-current="page" onclick="go('home')">Сейчас</button>
+  <button type="button" data-view="sp" onclick="go('sp')">Спикеры</button>
+  <button type="button" data-view="prog" onclick="go('prog')">Программа</button>
+  <button type="button" data-view="notes" onclick="go('notes')">Заметки</button>
+  <button type="button" data-view="news" onclick="go('news')">Новости</button>
+ </div>
+</nav>
 <aside class="app-update" id="app-update" aria-label="Обновление приложения" hidden><span role="status"></span><button class="btn" type="button">Обновить</button></aside>
 <script src="assets/js/storage.js"></script>
 <script src="assets/js/firebase-config.js"></script>
@@ -304,22 +338,58 @@ if(typeof ResizeObserver === "function") {
   if(height) document.documentElement.style.setProperty("--nav-height", height+"px");
  }).observe(nav);
 }
-if(navigator.standalone === true){
+function iosViewportGap(width,height,innerHeight,landscape){
+ const screenHeight=landscape?Math.min(width,height):Math.max(width,height);
+ const gap=screenHeight-innerHeight;
+ return gap>=45 && gap<=100?Math.round(gap):0;
+}
+if(navigator.standalone===true){
  document.body.classList.add("ios-standalone");
+ const root=document.documentElement;
+ root?.classList.add("ios-pwa");
+ let appliedGap=-1;
  const syncSystemGutter=()=>{
-  const outside=window.screen?.height-window.innerHeight;
-  document.body.classList.toggle?.("has-system-gutter",outside>=48 && outside<=96);
+  if(document.activeElement?.matches?.("input,textarea,select,[contenteditable]"))return;
+  const screen=window.screen;
+  if(!screen || (window.visualViewport && (window.visualViewport.scale??1)!==1))return;
+  const landscape=window.matchMedia?.("(orientation: landscape)").matches;
+  const gap=iosViewportGap(screen.width,screen.height,window.innerHeight,landscape);
+  if(gap!==appliedGap){root?.style.setProperty("--ios-bottom-shift",gap+"px");appliedGap=gap}
  };
  syncSystemGutter();
- window.addEventListener("resize",syncSystemGutter);
+ for(const event of ["resize","load","pageshow"])window.addEventListener(event,syncSystemGutter);
+ window.visualViewport?.addEventListener("resize",syncSystemGutter);
+ window.addEventListener("orientationchange",()=>setTimeout(syncSystemGutter,300));
+ document.addEventListener("focusout",()=>setTimeout(syncSystemGutter,120));
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(syncSystemGutter,100)});
+ for(const delay of [150,500,1500])setTimeout(syncSystemGutter,delay);
 }
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function revealApp(){const splash=$('#splash');if(!splash||document.body.classList.contains('app-ready'))return;document.body.classList.remove('loading');document.body.classList.add('app-ready');splash.classList.add('done');splash.setAttribute('aria-hidden','true');setTimeout(()=>splash.remove(),350)}
+function revealApp(){
+ const splash=$("#splash");
+ if(!splash||document.body.classList.contains("app-ready"))return;
+ document.body.classList.remove("loading");
+ document.body.classList.add("app-ready");
+ if(!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches){
+  const view=$("#v");
+  const finishIntro=event=>{
+   if(event.target===view && event.animationName==="ready-stage"){
+    document.body.classList.remove("launch-motion");
+    view.removeEventListener("animationend",finishIntro);
+   }
+  };
+  document.body.classList.add("launch-motion");
+  view.addEventListener?.("animationend",finishIntro);
+ }
+ splash.classList.add("done");
+ splash.setAttribute("aria-hidden","true");
+ setTimeout(()=>splash.remove(),350);
+}
 function finishLoading(){setTimeout(revealApp,0)}
 let backend;try{backend=localStorage}catch{backend={getItem(){return null},setItem(){throw Error('Storage unavailable')}}}
 const storageScope=location.pathname.replace(/index\.html$/,'')+(previewLecture?'lecture-preview/':'');
 const installScreen=$('#install');
-if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v27 · отдельные заметки';
+if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v29 · отдельные заметки';
 const installed=navigator.standalone===true || window.matchMedia?.('(display-mode: standalone)').matches;
 if(installed) document.body.classList.add('installed');
 if(installScreen && !installed && !previewLecture && params.get('app')!=='1'){
@@ -338,11 +408,14 @@ const forumNow=()=>previewLecture ? Date.parse('2027-01-20T17:10:00+03:00') : Da
 const L=IFM.storage(backend,storageScope,()=>toast('Не удалось сохранить данные. До закрытия вкладки они останутся в памяти.'),{migrateLegacy:!previewLecture});
 const T0=Date.parse('2027-01-19T00:00:00+03:00'),hm=t=>+t.slice(0,2)*60+ +t.slice(3);
 const TY={lec:'Лекция',con:'Конкурс',show:'Шоу',party:'After-party 18+',dealer:'Дилерская зона',brk:'Перерыв'};
-const NAV=[['home','home','Сейчас'],['sp','people','Спикеры'],['prog','calendar','Программа'],['notes','note','Заметки'],['news','bell','Новости']];
-const ICON={home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-13 4h3m-3 3h7"/>',people:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m2-15a3 3 0 0 1 0 6m1 3a5 5 0 0 1 3 5v1"/>',note:'<path d="M5 3h10l4 4v14H5zM15 3v5h4M8 12h8m-8 4h8"/>',bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',star:'<path d="m12 2 3.1 6.4 7.1 1-5.1 5 .9 7.1-6-3.3-6 3.3.9-7.1-5.1-5 7.1-1z"/>'};
+const navButtons=Array.from(document.querySelectorAll?.("#nv [data-view]")||[]);
+const navPill=$("#nv .nav-pill");
+const ICON={star:'<path d="m12 2 3.1 6.4 7.1 1-5.1 5 .9 7.1-6-3.3-6 3.3.9-7.1-5.1-5 7.1-1z"/>'};
 const icon=(name,filled=false)=>`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"${filled?' style="fill:currentColor"':''}>${ICON[name]}</svg>`;
 let D={events:[],speakers:[],links:[],dealers:[]},S=IFM.state(L('s')),fav=IFM.record(L('fav'),v=>typeof v==='boolean'),notes=IFM.record(L('notes'),v=>typeof v==='string'),tab='home',noteView='notes',day=0,topic='',seen=Number(L('seen'))||0,adm=0,tp=0,tt,launchOffline=navigator.onLine===false;
-const tm=t=>new Date(t).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'});
+const moscowTime=new Intl.DateTimeFormat("ru",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Moscow"});
+const moscowDate=new Intl.DateTimeFormat("ru",{day:"numeric",month:"long",timeZone:"Europe/Moscow"});
+const tm=t=>moscowTime.format(t);
 const plural=(n,a,b,c)=>{const m=n%100,k=n%10;return m>10&&m<20?c:k===1?a:k>1&&k<5?b:c};
 /* Пересчёт дня: плановая пауза между событиями сохраняется, отметки администратора (S.live) сдвигают остаток дня. */
 function build(state,now=forumNow()){
@@ -392,13 +465,35 @@ function stagePortrait(s){
  const photo=speakerPhoto(s);
  if(!photo)return "";
  const asiPortrait=photo==='assets/participants/asi.jpg';
- return `<span class="now-portrait${asiPortrait?' now-portrait--asi':''}"${asiPortrait?' style="--portrait-image:url(assets/participants/asi.jpg)"':''}><img src="${esc(photo)}" alt="" onerror="this.parentElement.remove()"></span>`;
+ return `<span class="now-portrait${asiPortrait?' now-portrait--asi':''}"${asiPortrait?' style="--portrait-image:url(assets/participants/asi.jpg)"':''}><img src="${esc(photo)}" alt="" onerror="this.parentElement.remove()"><span class="portrait-shine" aria-hidden="true"></span></span>`;
 }
 function nowSpeaker(s){
  return `<button type="button" class="now-speaker" onclick="openSp('${s.id}')">${stagePortrait(s)}<span dir="auto">${esc(speakerName(s))}</span></button>`;
 }
-function av(s,c=''){const name=typeof s?.name==='string'?s.name.trim():'';const words=name.split(/\s+/).filter(Boolean),first=w=>Intl.Segmenter?[...new Intl.Segmenter('ru',{granularity:'grapheme'}).segment(w)][0]?.segment:[...w][0];const initials=words.length?[first(words[0]),...(words.length>1?[first(words.at(-1))]:[])].join(''):'?';const photo=speakerPhoto(s);return `<span class="av ${photo?'':'ph'} ${c}" aria-hidden="true">${esc(initials)}${photo?`<img src="${esc(photo)}" width="64" height="64" alt="" onerror="this.remove()">`:''}</span>`}
-function toast(t){const d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=t;document.body.append(d);navigator.vibrate&&navigator.vibrate(120);setTimeout(()=>{d.classList.add('leaving');setTimeout(()=>d.remove(),200)},3800)}
+function av(s,c=''){const name=typeof s?.name==='string'?s.name.trim():'';const words=name.split(/\s+/).filter(Boolean),first=w=>Intl.Segmenter?[...new Intl.Segmenter('ru',{granularity:'grapheme'}).segment(w)][0]?.segment:[...w][0];const initials=words.length?[first(words[0]),...(words.length>1?[first(words.at(-1))]:[])].join(''):'?';const photo=speakerPhoto(s);return `<span class="av ${photo?'':'ph'} ${c}" aria-hidden="true">${esc(initials)}${photo?`<img src="${esc(photo)}" width="64" height="64" loading="lazy" decoding="async" alt="" onerror="this.remove()">`:''}</span>`}
+let activeToast,toastTimer;
+function toast(text){
+ activeToast?.remove();
+ clearTimeout(toastTimer);
+ const message=document.createElement("div");
+ message.className="toast";
+ message.setAttribute("role","status");
+ message.textContent=text;
+ document.body.append(message);
+ activeToast=message;
+ navigator.vibrate?.(24);
+ toastTimer=setTimeout(()=>{
+  message.classList.add("leaving");
+  const remove=()=>{
+   message.remove();
+   if(activeToast===message)activeToast=undefined;
+  };
+  message.addEventListener?.("transitionend",event=>{
+   if(event.propertyName==="opacity")remove();
+  });
+  setTimeout(remove,170);
+ },3800);
+}
 function card(e){const s=SP(e.sp),off=S.off[e.id];return `<div class="cd ev ${off?'off':''}"><button class="event-open" data-open-event="${e.id}" aria-label="${esc(e.title)}; ${tm(e.ts)}" onclick="openEv('${e.id}')"><span class="tm">${tm(e.ts)}<small>${e.d}&nbsp;мин</small></span><i class="dot ${e.type}" aria-hidden="true"></i><span class="b"><b>${esc(e.title)}</b><br><small>${off?'Отменено':TY[e.type]}${s&&!off?' · '+esc(s.name):''}</small>${etaText(e)?`<br><small class="eta">${esc(etaText(e))}</small>`:''}</span></button><button class="st ${fav[e.id]?'on':''}" data-event-id="${e.id}" aria-label="${fav[e.id]?'Удалить из моего расписания':'Добавить в моё расписание'}: ${esc(e.title)}" aria-pressed="${!!fav[e.id]}" onclick="star('${e.id}')">${icon('star',fav[e.id])}</button></div>`}
 function eventCue(event){
  const room=typeof event.room==="string" && event.room.trim() ? event.room.trim()
@@ -421,7 +516,7 @@ const V={
  const featured = current || next;
  const speaker = featured && SP(featured.sp);
  const latestNews = S.news[0];
- const date = time => new Date(time).toLocaleDateString('ru',{day:'numeric',month:'long',timeZone:'Europe/Moscow'});
+ const date=time=>moscowDate.format(time);
  const status = current ? 'Идёт сейчас' : next ? (now < schedule[0]?.ts ? 'Старт программы' : 'Следующее событие') : 'Программа форума';
  const empty = schedule.length ? 'Форум завершён' : D.events.length || S.add.length ? 'Нет доступных событий' : 'Программа скоро появится';
  const days = Math.ceil((T0 - now) / 864e5);
@@ -480,13 +575,48 @@ function resetTopic(){
  $("#all-topics")?.focus();
 }
 function topicAt(i){topic=[...new Set([...D.events,...S.add].map(e=>e.topic).filter(Boolean))][i]||'';render();saveResume()}
-function render(){const active=document.activeElement;const navFocused=!!active?.closest?.('#nv');const filterKey=active?.dataset?.filterKey;$('#v').innerHTML=V[tab]();$('#nv').innerHTML=NAV.map(([k,i,t])=>`<button class="${tab==k?'on':''}" data-view="${k}" aria-current="${tab==k?'page':'false'}" onclick="go('${k}')">${icon(i)}${t}${k=='news'&&S.news[0]?.ts>seen&&tab!='news'?'<b></b>':''}</button>`).join('');if(navFocused)$('#nv').querySelector?.('[aria-current="page"]')?.focus?.();if(filterKey) $(`[data-filter-key="${filterKey}"]`)?.focus({preventScroll:true});if(adm)admPanel()}
+function updateNav(){
+ navButtons.forEach((button,index)=>{
+  const view=button.dataset.view;
+  const selected=view===tab;
+  button.classList.toggle("on",selected);
+  if(selected){
+   button.setAttribute("aria-current","page");
+   if(navPill)navPill.style.transform="translateX("+(index*100)+"%)";
+  }else button.removeAttribute("aria-current");
+  if(view==="news")button.toggleAttribute("data-unread",S.news[0]?.ts>seen && tab!=="news");
+ });
+}
+let lastViewMarkup;
+function render(){
+ const active=document.activeElement;
+ const filterKey=active?.dataset?.filterKey;
+ const html=V[tab]();
+ if(html!==lastViewMarkup){
+  $("#v").innerHTML=html;
+  lastViewMarkup=html;
+  if(filterKey) $("[data-filter-key="+JSON.stringify(filterKey)+"]")?.focus({preventScroll:true});
+ }
+ updateNav();
+ if(adm)admPanel();
+}
 function showNoteView(view,button){
  noteView=view;
  render();
  if(button === document.activeElement || !button.isConnected) $(".subview [aria-pressed=\"true\"]")?.focus();
 }
-function go(t){tab=t;closeSh(false);render();$('#app-scroll').scrollTop=0;saveResume()}
+function go(t){
+ if(t!==tab){
+  const tabHadFocus=document.activeElement?.closest?.("#nv");
+  document.body.classList.remove("launch-motion");
+  tab=t;
+  closeSh(false);
+  if(tabHadFocus) navButtons.find(button=>button.dataset.view===tab)?.focus({preventScroll:true});
+  saveResume();
+ }
+ render();
+ $("#app-scroll").scrollTop=0;
+}
 let focusBeforeSheet=null, sheetScrollY=0, sheetMotion, sheetClosing=false, swipe;
 let pendingViewRefresh=false;
 let sheetTrigger, triggerFromKeyboard=false;
@@ -503,7 +633,8 @@ function lockSheet(){
  scroller.style.overflowY='hidden';
  scroller.toggleAttribute?.('inert',true);
  $('#nv').toggleAttribute?.('inert',true);
- document.body.classList.add('sheet-open');
+ document.body.classList.remove("sheet-leaving");
+ document.body.classList.add("sheet-open");
 }
 function unlockSheet(){
  const scroller=$('#app-scroll');
@@ -511,7 +642,16 @@ function unlockSheet(){
  scroller.scrollTop=sheetScrollY;
  scroller.toggleAttribute?.('inert',false);
  $('#nv').toggleAttribute?.('inert',false);
- document.body.classList.remove('sheet-open');
+ document.body.classList.remove("sheet-open");
+ document.body.classList.remove("sheet-leaving");
+ resetBackdrop();
+}
+const sheetBackdrop=$("#sheet-backdrop");
+function resetBackdrop(){
+ if(sheetBackdrop){
+  sheetBackdrop.style.transition="";
+  sheetBackdrop.style.opacity="";
+ }
 }
 function sheetDeparture(sheet){
  const anchor=focusBeforeSheet?.closest?.('.event-ticket,.ev') || focusBeforeSheet;
@@ -538,6 +678,8 @@ function sh(h,instant=false){
  if(first){focusBeforeSheet=sheetTrigger || document.activeElement;lockSheet()}
  sheetMotion?.cancel();
  sheetClosing=false;
+ document.body.classList.remove("sheet-leaving");
+ resetBackdrop();
  sheet.toggleAttribute?.('inert',false);
  sheet.innerHTML='<button class="btn g back" onclick="closeSh(true)">‹ Назад</button>'+h;
  sheet.style.display='block';
@@ -580,6 +722,8 @@ function closeSh(animate=true,swipeFrom=0,updateHistory=true){
  const finish=()=>{if(dismissSheet() && updateHistory && location.hash==='#detail')history.back()};
  if(!animate || !sheet.animate){finish();return}
  sheetClosing=true;
+ document.body.classList.add("sheet-leaving");
+ resetBackdrop();
  const current=getComputedStyle(sheet);
  const from={opacity:Number(current.opacity),transform:current.transform};
  sheet.toggleAttribute('inert',true);
@@ -589,42 +733,113 @@ function closeSh(animate=true,swipeFrom=0,updateHistory=true){
  animateSheet(sheet,[from,to],reduceMotion()?110:260,finish);
 }
 window.addEventListener('popstate',()=>closeSh(false,0,false));
-const swipeSheet=$('#sh');
-swipeSheet.addEventListener?.('pointerdown',event=>{
- if(!event.isPrimary || event.pointerType==='mouse' || sheetClosing || reduceMotion())return;
- if(event.clientX<28 || event.clientX>window.innerWidth*.6 || event.target.closest('input,textarea,select,[contenteditable],button,a'))return;
- swipe={id:event.pointerId,x:event.clientX,y:event.clientY,time:event.timeStamp,dx:0};
+const swipeSheet=$("#sh");
+const viewport=window.visualViewport;
+if(viewport){
+ let keyboardFrame;
+ const updateKeyboard=()=>{
+  keyboardFrame=undefined;
+  const focused=document.activeElement;
+  const editing=focused?.closest?.("#sh") && focused.matches("input,textarea,[contenteditable]");
+  const keyboard=editing && (viewport.scale??1)===1 && window.innerHeight-viewport.height>120;
+  if(keyboard){
+   swipeSheet.style.setProperty("--sheet-viewport-height",Math.round(viewport.height)+"px");
+   swipeSheet.style.setProperty("--sheet-viewport-top",Math.round(viewport.offsetTop)+"px");
+  }else{
+   swipeSheet.style.removeProperty("--sheet-viewport-height");
+   swipeSheet.style.removeProperty("--sheet-viewport-top");
+  }
+ };
+ const queueKeyboard=()=>{if(keyboardFrame===undefined)keyboardFrame=window.requestAnimationFrame(updateKeyboard)};
+ viewport.addEventListener("resize",queueKeyboard);
+ viewport.addEventListener("scroll",queueKeyboard);
+ for(const type of ["focusin","focusout"])swipeSheet.addEventListener(type,queueKeyboard);
+}
+let dragFrame;
+let preventSwipeClick=false;
+function applyDrag(){
+ dragFrame=undefined;
+ if(swipe)paintDrag(swipe.dx,swipe.width);
+}
+function paintDrag(distance,width){
+ swipeSheet.style.transform="translateX("+distance+"px)";
+ if(sheetBackdrop)sheetBackdrop.style.opacity=String(.54*Math.max(0,1-distance/Math.max(1,width)));
+}
+document.addEventListener("pointerdown",()=>{preventSwipeClick=false},true);
+document.addEventListener("click",event=>{
+ if(!preventSwipeClick || event.detail===0)return;
+ preventSwipeClick=false;
+ event.preventDefault();
+ event.stopImmediatePropagation();
+},true);
+swipeSheet.addEventListener?.("pointerdown",event=>{
+ if(!event.isPrimary || event.pointerType==="mouse" || sheetClosing || reduceMotion())return;
+ if(event.clientX<28 || event.clientX>window.innerWidth*.6 || event.target.closest("input,textarea,select,[contenteditable],button,a"))return;
+ const x=event.clientX,t=event.timeStamp;
+ swipe={id:event.pointerId,x,y:event.clientY,dx:0,width:swipeSheet.clientWidth,active:false,sampleX:x,sampleT:t,lastX:x,lastT:t};
 });
-swipeSheet.addEventListener?.('pointermove',event=>{
+swipeSheet.addEventListener?.("pointermove",event=>{
  if(event.pointerId!==swipe?.id)return;
- const dx=event.clientX-swipe.x,dy=event.clientY-swipe.y;
- if(!swipe.dx){
-  if((Math.abs(dy)>10 && Math.abs(dy)>=dx) || dx < -10){swipe=undefined;return}
-  if(dx<10 || dx<Math.abs(dy)*1.3)return;
+ const x=event.clientX,t=event.timeStamp,dx=x-swipe.x,dy=event.clientY-swipe.y;
+ if(!swipe.active){
+  if(Math.hypot(dx,dy)<12)return;
+  if(dx<Math.abs(dy)*1.7 || dx<=0){swipe=undefined;return}
+  swipe.active=true;
+  if(sheetBackdrop)sheetBackdrop.style.transition="none";
   sheetMotion?.cancel();
-  swipeSheet.setPointerCapture(event.pointerId);
+  swipeSheet.setPointerCapture?.(event.pointerId);
  }
- swipe.dx=Math.max(1,dx);
- swipeSheet.style.transform='translateX('+swipe.dx+'px)';
+ if(t-swipe.sampleT>90){swipe.sampleX=swipe.lastX;swipe.sampleT=swipe.lastT}
+ swipe.lastX=x;
+ swipe.lastT=t;
+ swipe.dx=Math.max(0,dx);
+ if(dragFrame===undefined){
+  if(window.requestAnimationFrame)dragFrame=window.requestAnimationFrame(applyDrag);
+  else applyDrag();
+ }
 });
 function endSwipe(event){
  if(event.pointerId!==swipe?.id)return;
- const {dx,time}=swipe;
+ const {active,dx,width,sampleX,sampleT,lastX,lastT}=swipe;
  swipe=undefined;
- if(!dx)return;
- const speed=dx/Math.max(1,event.timeStamp-time);
- if(event.type==='pointerup' && (dx>=swipeSheet.clientWidth*.32 || (dx>=32 && speed>=.55))){closeSh(true,dx);return}
- swipeSheet.style.transform='';
- animateSheet(swipeSheet,[{transform:'translateX('+dx+'px)'},{transform:'none'}],160);
+ if(dragFrame!==undefined){window.cancelAnimationFrame(dragFrame);dragFrame=undefined}
+ if(!active)return;
+ const released=event.type==="pointerup";
+ if(released)preventSwipeClick=true;
+ const speed=(lastX-sampleX)/Math.max(1,event.timeStamp-sampleT);
+ const flick=dx>=36 && event.timeStamp-lastT<120 && speed>=.24;
+ if(released && (dx>=width*.32 || flick)){
+  paintDrag(dx,width);
+  closeSh(true,dx);
+  return;
+ }
+ swipeSheet.style.transform="";
+ resetBackdrop();
+ if(dx)animateSheet(swipeSheet,[{transform:"translateX("+dx+"px)"},{transform:"none"}],160);
 }
-for(const type of ['pointerup','pointercancel','lostpointercapture']) swipeSheet.addEventListener?.(type,endSwipe);
+for(const type of ["pointerup","pointercancel","lostpointercapture"])swipeSheet.addEventListener?.(type,endSwipe);
 document.addEventListener('keydown',event=>{const sheet=$('#sh');if(sheet.style.display!=='block')return;if(event.key==='Escape'){event.preventDefault();closeSh(false);return}if(event.key!=='Tab')return;const els=[...sheet.querySelectorAll('button,a[href],input,select,textarea,[tabindex="0"]')].filter(el=>!el.disabled);if(!els.length)return;const first=els[0],last=els[els.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}})
-function star(id){fav[id]=!fav[id];L('fav',fav);render();document.querySelector(`[data-event-id="${id}"]`)?.focus?.()}
+function acknowledgeFavourite(button,selected){
+ const target=button?.querySelector?.("svg") || button;
+ if(!target?.animate)return;
+ const reduce=reduceMotion();
+ const frames=reduce ? [{opacity:.65},{opacity:1}] : selected
+  ? [{transform:"scale(.88)"},{transform:"scale(1.12)",offset:.5},{transform:"none"}]
+  : [{transform:"scale(.9)"},{transform:"none"}];
+ target.animate(frames,{duration:reduce?110:selected?220:150,easing:motionEase});
+}
+function star(id){
+ fav[id]=!fav[id];L('fav',fav);render();
+ const button=document.querySelector(`[data-event-id="${id}"]`);
+ button?.focus?.({preventScroll:true});
+ acknowledgeFavourite(button,fav[id]);
+}
 function toggleEventFavourite(id,button){
  fav[id]=!fav[id];
  L("fav",fav);
  button.setAttribute("aria-pressed",String(fav[id]));
  button.textContent=fav[id]?"В расписании":"В моё расписание";
+ acknowledgeFavourite(button,fav[id]);
  refreshVisitorView();
 }
 function openEv(id,focusNote=false){
@@ -759,7 +974,11 @@ function tickKey(){
  return [cur?.id,nxt?.id,nxt?.unknown,soon.join()].join('|');
 }
 let lastTick='';
-function tick(){const k=tickKey();if(k!==lastTick){lastTick=k;if(tab==='home')refreshVisitorView()}}
+function tick(){
+ if(tab!=="home" || document.hidden || document.body.classList.contains("install-view"))return;
+ const key=tickKey();
+ if(key!==lastTick){lastTick=key;refreshVisitorView()}
+}
 /* ===== скрытая админка: 6 касаний по фото организаторов ===== */
 function sec(){clearTimeout(tt);if(++tp>=6){tp=0;if(!REMOTE.ready)return toast('Общие правки пока не подключены');sh('<div class="pad"><h1>Вход организатора</h1><form onsubmit="event.preventDefault();signIn()"><label for="email">Электронная почта</label><input id="email" type="email" autocomplete="username" required><label for="password">Пароль</label><input id="password" type="password" autocomplete="current-password" required><button class="btn" type="submit">Войти</button></form></div>')}tt=setTimeout(()=>tp=0,2500)}
 async function signIn(){try{await REMOTE.login($('#email').value,$('#password').value);await sync();adm=1;admPanel()}catch(e){REMOTE.logout();toast('Не удалось войти. Проверьте учётную запись и соединение.')}}
@@ -866,8 +1085,7 @@ function sync({initial=false}={}){
    const next=IFM.state(await REMOTE.read());
    const changed=JSON.stringify(next)!==JSON.stringify(S);
    const latest=S.news[0]?.ts;
-   S=next;
-   L('s',S);
+   if(changed){S=next;L("s",S)}
    lastSync=Date.now();
    L('program-sync-at',lastSync);
    hideProgramStatus();
@@ -916,38 +1134,56 @@ async function retryProgram(){
 const loadDeadline=setTimeout(()=>{if(!document.body.classList.contains('loading'))return;$('#v').innerHTML='<div class=cd><h1>Программа загружается слишком долго</h1><p>Проверьте соединение или попробуйте ещё раз.</p><button class=btn onclick=location.reload()>Повторить</button></div>';finishLoading()},10000);
 function program(raw){if(!raw||!Array.isArray(raw.events)||!raw.events.every(IFM.validEvent)||!Array.isArray(raw.speakers)||!Array.isArray(raw.links)||!Array.isArray(raw.dealers))return null;const links=a=>a.filter(x=>x&&typeof x.n==='string'&&typeof x.u==='string'&&/^https:\/\//.test(x.u));return {...raw,speakers:raw.speakers.filter(s=>s&&typeof s.id==='string'&&/^[a-zA-Z0-9_-]+$/.test(s.id)),links:links(raw.links),dealers:links(raw.dealers)}}
 (async()=>{
+ const cached=program(L("d"));
+ if(cached){
+  D=cached;
+  startApp();
+  try{
+   const fresh=await readProgram();
+   if(D===cached && JSON.stringify(fresh)!==JSON.stringify(cached)){
+    D=fresh;
+    L("d",D);
+    refreshVisitorView();
+   }
+  }catch{
+   if(D!==cached)return;
+   launchOffline=true;
+   if(!document.hidden && $("#sh").style.display!=="block")showProgramStatus();
+  }
+  return;
+ }
  try{
   D=await readProgram();
-  L('d',D);
+  L("d",D);
  }catch{
-  const cached=program(L('d'));
-  if(!cached){
-   clearTimeout(loadDeadline);
-   $('#v').innerHTML='<div class=cd><h1>Программа не загрузилась</h1><p>Проверьте соединение или попробуйте ещё раз.</p><button class=btn onclick=location.reload()>Повторить</button></div>';
-   finishLoading();
-   return;
-  }
-  D=cached;
-  launchOffline=true;
+  clearTimeout(loadDeadline);
+  $("#v").innerHTML='<div class=cd><h1>Программа не загрузилась</h1><p>Проверьте соединение или попробуйте ещё раз.</p><button class=btn onclick=location.reload()>Повторить</button></div>';
+  finishLoading();
+  return;
  }
+ startApp();
+})();
+function startApp(){
  clearTimeout(loadDeadline);
- if(launchOffline) showProgramStatus();
+ if(launchOffline)showProgramStatus();
  try{
-  if(!sessionStorage.getItem('ifm2027:session')){
-   sessionStorage.setItem('ifm2027:session','1');
-   const r=L('resume');
-   if(r&&TABS.includes(r.tab)&&(r.tab!=='home'||r.ev)&&Date.now()-r.at<6048e5)resumeOffer=r;
+  if(!sessionStorage.getItem("ifm2027:session")){
+   sessionStorage.setItem("ifm2027:session","1");
+   const r=L("resume");
+   if(r&&TABS.includes(r.tab)&&(r.tab!=="home"||r.ev)&&Date.now()-r.at<6048e5)resumeOffer=r;
   }
  }catch{}
  render();
  lastTick=tickKey();
- setInterval(tick,30000);
- document.addEventListener('visibilitychange',()=>{if(document.hidden)saveResume()});
  finishLoading();
  sync({initial:true});
- setInterval(sync,20000);
- document.addEventListener('visibilitychange',()=>!document.hidden&&sync());
-})();
+ setInterval(tick,30000);
+ setInterval(()=>{if(!document.hidden && !document.body.classList.contains("install-view"))sync()},20000);
+ document.addEventListener("visibilitychange",()=>{
+  if(document.hidden)saveResume();
+  else{tick();sync()}
+ });
+}
 async function retireDemo(){if(!navigator.serviceWorker.getRegistrations)return;const scope=new URL('./demo/',location.href).href;const registrations=await navigator.serviceWorker.getRegistrations();await Promise.all(registrations.filter(registration=>registration.scope===scope).map(registration=>registration.unregister()))}
 async function registerAppWorker() {
  const serviceWorker = navigator.serviceWorker;
