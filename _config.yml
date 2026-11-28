@@ -1,0 +1,7 @@
+exclude:
+  - docs
+  - firebase
+  - tests
+  - PRODUCT.md
+  - README.md
+  - server.cjs

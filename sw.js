@@ -1,6 +1,6 @@
 const PREFIX = 'ifm2027:' + self.registration.scope + ':';
 const DEMO_PREFIX = 'ifm2027:' + new URL('./demo/', self.registration.scope).href + ':';
-const CACHE = PREFIX + 'app-25';
+const CACHE = PREFIX + 'app-27';
 const ASSETS = ['./','./index.html','./assets/js/storage.js','./assets/js/firebase-config.js','./assets/js/remote.js','./data.json','./manifest.json','./assets/images/hero.jpg','./assets/icons/icon-180.png','./assets/icons/icon-192.png','./assets/icons/icon-512.png','./tokens.css','./assets/fonts/ifm-fonts.css','./assets/fonts/literata-cyrillic.woff2','./assets/fonts/literata-latin.woff2','./assets/fonts/onest-cyrillic.woff2','./assets/fonts/onest-latin.woff2','./assets/participants/asi.jpg','./assets/participants/mind.jpg','./assets/participants/umid.jpg','./assets/participants/duo.jpg','./assets/participants/artak.jpg'];
 const urls = new Set(ASSETS.map(file => new URL(file,self.registration.scope).href));
 self.addEventListener('install', event => event.waitUntil((async()=>{

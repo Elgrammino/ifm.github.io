@@ -106,7 +106,7 @@ small,.m{color:var(--m);font-size:14px}
 input,textarea,select{width:100%;min-height:var(--target-touch);background:var(--color-field);border:1px solid var(--color-control-border);border-radius:var(--radius-control);padding:var(--space-3);margin:var(--space-1) 0}
 input::placeholder,textarea::placeholder{color:var(--color-text-muted);opacity:1}
 textarea{min-height:140px;resize:vertical}
-nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:2px calc(4px + env(safe-area-inset-right)) var(--nav-bottom) calc(4px + env(safe-area-inset-left));z-index:5}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:2px calc(4px + env(safe-area-inset-right)) var(--nav-bottom) calc(4px + env(safe-area-inset-left));z-index:5}
 nav button{min-width:0;min-height:var(--target-touch);line-height:1.15;flex:1;background:none;border:0;color:var(--m);font-size:var(--size-nav);font-weight:700;padding:var(--space-1);position:relative}nav button svg{display:block;width:20px;height:20px;margin:0 auto 2px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);background:var(--surface-strong);border:1px solid var(--ln);border-radius:var(--radius-control)}nav button[data-view="prog"].on{color:var(--ink-on-gold);background:var(--gold);border-color:var(--gold)}nav b{position:absolute;top:2px;left:55%;width:9px;height:9px;border-radius:50%;background:var(--lime)}
 #sh{position:fixed;inset:0;height:100dvh;z-index:9;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top) + 12px) 0 calc(24px + env(safe-area-inset-bottom));display:none}
@@ -145,6 +145,9 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
 :root{--nav-bottom:2px;--nav-clearance:calc(var(--nav-height, calc(47px + var(--nav-bottom))) + var(--space-2))}
 @media(display-mode:standalone){:root{--nav-bottom:max(2px,calc(env(safe-area-inset-bottom) - 12px))}}
 .ios-standalone{--nav-bottom:max(2px,calc(env(safe-area-inset-bottom) - 12px))}
+.ios-standalone.has-system-gutter{--nav-bottom:4px}
+.has-system-gutter #sh{padding-bottom:24px}
+.topics{flex-wrap:wrap;overflow:visible}
 .topics{flex-wrap:wrap;overflow:visible}
 .day-tabs{overflow:visible}
 .day-selector{
@@ -213,9 +216,62 @@ small.eta{display:inline;margin:0}
 .resume-x{flex:none;width:var(--target-touch);border:0;background:none;color:var(--m);font-size:24px}
 .reminder{display:block}
 .note-actions{display:grid;gap:var(--space-2);margin-block:var(--space-3)}
+.hero{margin-inline:calc(16px + env(safe-area-inset-left)) calc(16px + env(safe-area-inset-right));padding:16px 0 14px;gap:12px;font-size:17px}
+.hero img{width:52px;height:52px}
+.hero time{font-size:clamp(.875rem,4vw,1.0625rem);color:#c8afe2;text-align:end}
+.now-intro{margin-block:16px 12px}
+.now-intro h1{font-size:clamp(1.75rem,7.3vw,2.1rem)}
+.ann{margin-inline:calc(14px + env(safe-area-inset-left)) calc(14px + env(safe-area-inset-right))}
+.ann > .event-ticket{padding:15px 14px 13px;border-radius:18px;background:linear-gradient(155deg,#241435,#20122f 64%,#251637)}
+.ann-head,.ann .ann-live{font-size:1rem}
+.ann-live::before{width:9px;height:9px}
+.ann .event-cue{gap:4px 10px;padding:8px 0 11px;line-height:1.15}
+.ann .event-cue time{font-size:clamp(1.5rem,7.2vw,1.9rem);letter-spacing:-.025em}
+.ann .event-cue span{font-size:.9375rem;font-weight:700}
+.ann h2{font-size:clamp(1.55rem,7.4vw,1.95rem);line-height:1.12;letter-spacing:-.028em;margin:13px 0 17px;text-wrap:initial}
+.now-speaker{gap:6px;margin-bottom:17px;font-size:1.0625rem}
+.now-portrait{aspect-ratio:2.08;isolation:isolate;overflow:visible;box-shadow:0 0 14px #a35cff56}
+.now-portrait img{position:absolute;inset:0;margin-inline:auto;width:100%;height:100%;aspect-ratio:auto;object-position:center}
+.now-portrait--asi img{width:78%;object-position:center 46%;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.now-portrait--asi::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--portrait-image) center 46% / cover;filter:blur(10px);opacity:.8}
+.now-portrait::after{filter:brightness(1.22)}
+.ann-controls{gap:4px}
+.ann-controls button:first-child{min-height:48px;font-size:1.0625rem}
+.ann-controls button.event-details-link{font-weight:700}
+.stage-demo{margin-inline-start:auto;font-size:.75rem;color:var(--m)}
+.speaker-stage{margin-bottom:24px}
+.speaker-stage h1{font-size:var(--size-title)}
+.speaker-stage .now-portrait{margin-bottom:12px}
+.speaker-stage p{margin:6px 0 0}
+#sh > .back{min-height:44px;background:none;border:0;color:var(--gold);padding-inline:0}
+.next-section h2{font-size:1.4375rem;margin-top:17px;margin-bottom:8px}
+.next-event{gap:14px}
+.next-event time,.next-event strong{font-size:1.0625rem}
+.demo-notice{margin-top:16px;background:transparent;padding:4px 16px 8px;color:var(--m);font-size:.75rem}
+.app-scroll{padding-top:env(safe-area-inset-top)}
+.now-date{white-space:nowrap}
+.now-title-subject{display:block}
+#nv button svg{display:none}
+#nv button{font-size:var(--size-nav);font-weight:750}
+@media(max-width:350px){#nv button{font-size:var(--size-nav-compact)}}
+.app-ready #v:has(.now-intro){animation:ready-stage 420ms var(--ease-out) both}
+@keyframes ready-stage{from{transform:translateY(12px);opacity:.82}to{transform:none;opacity:1}}
+.install-brand{position:relative;isolation:isolate;width:108px;margin:0 0 22px}
+.install-brand::after{content:"";position:absolute;z-index:-1;inset:-6px;border-radius:100%;background:conic-gradient(from 40deg,#a35cff,#20142e 31%,#d5ff72 64%,#f7dcb1 82%,#a35cff);filter:blur(11px);opacity:.55}
+.install-logo{width:108px;height:108px;margin:0}
+.install-first .install-brand::after{animation:mark-halo 900ms var(--ease-out) both}
+.install-first .install-logo{animation:install-mark 760ms var(--ease-out) both}
+.install-first .install-arrow{transform-origin:left center;animation:install-hint 340ms var(--ease-out) 180ms both}
+.install-arrow{font-size:0;width:37px;height:12px;position:relative}
+.install-arrow::before{content:"";position:absolute;top:5px;left:0;right:2px;height:1px;background:currentColor}
+.install-arrow::after{content:"";position:absolute;top:2px;right:0;width:6px;height:6px;border-top:1px solid;border-right:1px solid;transform:rotate(45deg)}
+@keyframes mark-halo{0%{opacity:0;transform:scale(.65) rotate(-70deg)}35%{opacity:.96}100%{opacity:.55;transform:scale(1) rotate(0)}}
+@keyframes install-mark{0%{opacity:0;transform:scale(.84)}60%{opacity:1}100%{opacity:1;transform:scale(1)}}
+@keyframes install-hint{from{opacity:0;transform:scaleX(.12)}to{opacity:1;transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){.app-ready #v:has(.now-intro),.install-first .install-brand::after{animation:none}.install-first .install-logo,.install-first .install-arrow{animation:gentle-enter 90ms var(--ease-out) both}}
 </style></head><body class="loading">
 <section id="install" class="install-screen" aria-labelledby="install-title" hidden>
- <img class="install-logo" src="assets/images/hero.jpg" width="88" height="88" alt="МФИ 2027">
+ <div class="install-brand"><img class="install-logo" src="assets/images/hero.jpg" width="108" height="108" alt="МФИ 2027"></div>
  <h1 id="install-title">Помощник форума МФИ</h1>
  <p>Программа, спикеры и заметки к лекциям.</p>
  <div class="install-steps">
@@ -231,7 +287,7 @@ small.eta{display:inline;margin:0}
  </div>
  <p>Если нужного пункта нет, откройте ссылку в Safari на iPhone или в Chrome на Android.</p>
  <a href="?app=1">Открыть программу в браузере</a>
-</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v25</span></div><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
+</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v27</span></div></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
 <nav id="nv" aria-label="Основная навигация"></nav>
 <aside class="app-update" id="app-update" aria-label="Обновление приложения" hidden><span role="status"></span><button class="btn" type="button">Обновить</button></aside>
 <script src="assets/js/storage.js"></script>
@@ -248,14 +304,22 @@ if(typeof ResizeObserver === "function") {
   if(height) document.documentElement.style.setProperty("--nav-height", height+"px");
  }).observe(nav);
 }
-if(navigator.standalone === true) document.body.classList.add("ios-standalone");
+if(navigator.standalone === true){
+ document.body.classList.add("ios-standalone");
+ const syncSystemGutter=()=>{
+  const outside=window.screen?.height-window.innerHeight;
+  document.body.classList.toggle?.("has-system-gutter",outside>=48 && outside<=96);
+ };
+ syncSystemGutter();
+ window.addEventListener("resize",syncSystemGutter);
+}
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function revealApp(){const splash=$('#splash');if(!splash||document.body.classList.contains('app-ready'))return;document.body.classList.remove('loading');document.body.classList.add('app-ready');splash.classList.add('done');splash.setAttribute('aria-hidden','true');setTimeout(()=>splash.remove(),350)}
 function finishLoading(){setTimeout(revealApp,0)}
 let backend;try{backend=localStorage}catch{backend={getItem(){return null},setItem(){throw Error('Storage unavailable')}}}
 const storageScope=location.pathname.replace(/index\.html$/,'')+(previewLecture?'lecture-preview/':'');
 const installScreen=$('#install');
-if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v25 · отдельные заметки';
+if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v27 · отдельные заметки';
 const installed=navigator.standalone===true || window.matchMedia?.('(display-mode: standalone)').matches;
 if(installed) document.body.classList.add('installed');
 if(installScreen && !installed && !previewLecture && params.get('app')!=='1'){
@@ -265,7 +329,7 @@ if(installScreen && !installed && !previewLecture && params.get('app')!=='1'){
  $('#install-android').hidden=apple;
  try{
   const key='ifm2027:'+storageScope+':install-intro';
-  if(!backend.getItem(key)){installScreen.classList.add('install-first');backend.setItem(key,'1')}
+  if(params.get('motion')==='1' || !backend.getItem(key)){installScreen.classList.add('install-first');backend.setItem(key,'1')}
  }catch{}
  installScreen.hidden=false;
  document.body.classList.add('install-view');
@@ -316,13 +380,22 @@ let notemeta=IFM.record(L('notemeta'),v=>v&&typeof v==='object'&&typeof v.title=
 let resumeOffer=null,openEventId='',admEvent='';
 const TABS=['home','sp','prog','notes','news'];
 function saveResume(){if(previewLecture)return;L('resume',{tab,day,topic,ev:openEventId,at:Date.now()})}
+function demoEvent(schedule){
+ if(Date.now()>=T0 || !D.showcaseEvent)return;
+ return schedule.find(event=>event.id===D.showcaseEvent && !S.off[event.id]);
+}
 const SP=id=>D.speakers.find(s=>s?.id===id);
 const speakerName=s=>typeof s?.name==='string'&&s.name.trim()?s.name.trim():'Имя спикера уточняется';
 const speakerRole=s=>typeof s?.role==='string'?s.role.trim():'';
 const speakerPhoto=s=>typeof s?.photo==='string'&&/^[a-zA-Z0-9_./-]+$/.test(s.photo)&&!s.photo.includes('..')?s.photo:'';
-function nowSpeaker(s){
+function stagePortrait(s){
  const photo=speakerPhoto(s);
- return `<button type="button" class="now-speaker" onclick="openSp('${s.id}')">${photo?`<span class="now-portrait"><img src="${esc(photo)}" alt="" onerror="this.parentElement.remove()"></span>`:''}<span dir="auto">${esc(speakerName(s))}</span></button>`;
+ if(!photo)return "";
+ const asiPortrait=photo==='assets/participants/asi.jpg';
+ return `<span class="now-portrait${asiPortrait?' now-portrait--asi':''}"${asiPortrait?' style="--portrait-image:url(assets/participants/asi.jpg)"':''}><img src="${esc(photo)}" alt="" onerror="this.parentElement.remove()"></span>`;
+}
+function nowSpeaker(s){
+ return `<button type="button" class="now-speaker" onclick="openSp('${s.id}')">${stagePortrait(s)}<span dir="auto">${esc(speakerName(s))}</span></button>`;
 }
 function av(s,c=''){const name=typeof s?.name==='string'?s.name.trim():'';const words=name.split(/\s+/).filter(Boolean),first=w=>Intl.Segmenter?[...new Intl.Segmenter('ru',{granularity:'grapheme'}).segment(w)][0]?.segment:[...w][0];const initials=words.length?[first(words[0]),...(words.length>1?[first(words.at(-1))]:[])].join(''):'?';const photo=speakerPhoto(s);return `<span class="av ${photo?'':'ph'} ${c}" aria-hidden="true">${esc(initials)}${photo?`<img src="${esc(photo)}" width="64" height="64" alt="" onerror="this.remove()">`:''}</span>`}
 function toast(t){const d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=t;document.body.append(d);navigator.vibrate&&navigator.vibrate(120);setTimeout(()=>{d.classList.add('leaving');setTimeout(()=>d.remove(),200)},3800)}
@@ -332,13 +405,19 @@ function eventCue(event){
   : ["lec","con","show"].includes(event.type) ? "Главный зал" : "";
  return `<div class="event-cue"><time>${tm(event.ts)}–${tm(event.end??event.ts+event.d*60000)}</time>${room ? `<span>${esc(room)}</span>` : ""}</div>`;
 }
+function nowTitle(event){
+ const separator=event.title.indexOf(': ');
+ if(event.type!=='lec' || separator<0 || separator>23)return esc(event.title);
+ return `${esc(event.title.slice(0,separator+1))}<span class="now-title-subject">${esc(event.title.slice(separator+2))}</span>`;
+}
 const V={
  home(){
  const now = forumNow();
  const all = EV();
  const schedule = all.filter(event => !S.off[event.id]);
- const current = schedule.find(event => event.live);
- const next = nextEvent(all, now);
+ const showcase = !previewLecture && demoEvent(schedule);
+ const current = showcase || schedule.find(event => event.live);
+ const next = nextEvent(all, showcase ? showcase.ts : now);
  const featured = current || next;
  const speaker = featured && SP(featured.sp);
  const latestNews = S.news[0];
@@ -349,22 +428,22 @@ const V={
  const cue = featured ? etaText(featured) : '';
  const soon = schedule.filter(e => fav[e.id] && !e.over && !e.live && e.ts > now && e.ts - now <= 15 * 6e4);
  const resume = resumeOffer ? `<aside class="resume" aria-label="Продолжить"><button type="button" class="resume-go" onclick="resumeGo()"><small>Вернуться, где остановился</small><strong>${esc(resumeLabel(resumeOffer))}</strong></button><button type="button" class="resume-x" aria-label="Скрыть" onclick="resumeDismiss()">×</button></aside>` : '';
- return `${resume}<div class="hero"><img src="assets/images/hero.jpg" width="40" height="40" alt=""><span aria-label="Международный форум иллюзионистов">МФИ 2027</span>${featured ? `<time>${date(featured.ts)}</time>` : ""}</div>
- <header class="pad now-intro"><h1>Сейчас</h1>${featured ? (days > 0 ? `<p>До форума: ${days} ${plural(days,'день','дня','дней')}</p>` : "") : "<p>19–21 января 2027 · Санкт-Петербург</p>"}</header>
+ return `${resume}<div class="hero"><img src="assets/images/hero.jpg" width="52" height="52" alt=""><span aria-label="Международный форум иллюзионистов">МФИ 2027</span>${featured ? `<time class="now-date">${date(featured.ts)}</time>` : ""}</div>
+ <header class="pad now-intro"><h1>Сейчас</h1>${featured ? (days > 0 && !showcase ? `<p>До форума: ${days} ${plural(days,'день','дня','дней')}</p>` : "") : "<p>19–21 января 2027 · Санкт-Петербург</p>"}</header>
  <section class="ann" aria-label="Анонс события">
   <div class="event-ticket">
-   <div class="ann-head"><span class="${current ? 'ann-live' : ''}">${status}</span></div>
+   <div class="ann-head"><span class="${current ? 'ann-live' : ''}">${status}</span>${showcase ? '<span class="stage-demo">Демо форума</span>' : ''}</div>
    ${featured ? eventCue(featured) : ""}
    ${cue ? `<p class="eta">${esc(cue)}</p>` : ""}
-  ${featured ? `<h2>${esc(featured.title)}</h2>
+  ${featured ? `<h2>${nowTitle(featured)}</h2>
   ${speaker ? nowSpeaker(speaker) : ''}
   <div class="ann-controls">
    <button type="button" onclick="openEv('${featured.id}'${current && featured.type === 'lec' ? ',true' : ''})">${current && featured.type === 'lec' ? 'Записать заметку' : 'О событии'}</button>
-   ${current && featured.type === 'lec' ? `<button class="event-details-link" type="button" onclick="openEv('${featured.id}')">О событии</button>` : `<button type="button" data-event-id="${featured.id}" onclick="star('${featured.id}')" aria-pressed="${!!fav[featured.id]}">${fav[featured.id] ? 'В расписании' : 'В моё расписание'}</button>`}
+   ${current && featured.type === 'lec' ? `<button class="event-details-link" type="button" onclick="openEv('${featured.id}')">О событии <span aria-hidden="true">→</span></button>` : `<button type="button" data-event-id="${featured.id}" onclick="star('${featured.id}')" aria-pressed="${!!fav[featured.id]}">${fav[featured.id] ? 'В расписании' : 'В моё расписание'}</button>`}
   </div>` : `<h2>${empty}</h2>`}
  </div></section>
  ${soon.length ? `<section><h2>Скоро в вашем расписании</h2>${soon.map(e => `<button type="button" class="cd reminder" onclick="openEv('${e.id}')"><small>Через ${Math.max(1, Math.ceil((e.ts - now) / 6e4))} мин · ${tm(e.ts)}</small><br><strong>${esc(e.title)}</strong></button>`).join('')}</section>` : ''}
- ${current && next ? `<section><h2>Дальше</h2><div class="pad"><button type="button" class="next-event" onclick="openEv('${next.id}')"><time>${tm(next.ts)}</time><strong>${esc(next.title)}</strong></button>${etaText(next) ? `<p class="eta">${esc(etaText(next))}</p>` : ''}</div></section>` : ''}
+ ${current && next ? `<section class="next-section"><h2>Дальше</h2><div class="pad"><button type="button" class="next-event" onclick="openEv('${next.id}')"><time>${tm(next.ts)}</time><strong>${esc(next.title)}</strong></button>${etaText(next) ? `<p class="eta">${esc(etaText(next))}</p>` : ''}</div></section>` : ''}
  ${latestNews ? `<button class="cd" type="button" onclick="go('news')"><small>Новость</small><br><strong>${esc(latestNews.t)}</strong></button>` : ''}
  <details class="forum-links"><summary>О форуме</summary>
   <h2>Дилерская зона</h2><div class="cd">${D.dealers.length ? D.dealers.map(d=>`<a href="${esc(d.u)}" target="_blank" rel="noopener">${esc(d.n)}</a>`).join('<br>') : '<span class="m">Список магазинов появится здесь.</span>'}</div>
@@ -410,6 +489,12 @@ function showNoteView(view,button){
 function go(t){tab=t;closeSh(false);render();$('#app-scroll').scrollTop=0;saveResume()}
 let focusBeforeSheet=null, sheetScrollY=0, sheetMotion, sheetClosing=false, swipe;
 let pendingViewRefresh=false;
+let sheetTrigger, triggerFromKeyboard=false;
+document.addEventListener('click',event=>{
+ sheetTrigger=event.target.closest?.('button,[role="button"]');
+ triggerFromKeyboard=event.detail===0;
+ queueMicrotask(()=>{sheetTrigger=undefined;triggerFromKeyboard=false});
+},true);
 const motionEase='cubic-bezier(.23,1,.32,1)';
 const reduceMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 function lockSheet(){
@@ -428,48 +513,57 @@ function unlockSheet(){
  $('#nv').toggleAttribute?.('inert',false);
  document.body.classList.remove('sheet-open');
 }
-function sheetFrames(sheet){
- if(reduceMotion())return [{opacity:.7},{opacity:1}];
- const source=focusBeforeSheet?.getBoundingClientRect?.();
+function sheetDeparture(sheet){
+ const anchor=focusBeforeSheet?.closest?.('.event-ticket,.ev') || focusBeforeSheet;
+ const source=anchor?.getBoundingClientRect?.();
  const bounds=sheet.getBoundingClientRect();
- const x=source?Math.max(-14,Math.min(14,source.x+source.width/2-bounds.x-bounds.width/2)):0;
- const y=source?Math.max(-16,Math.min(16,source.y+source.height/2-bounds.y-bounds.height/2)):12;
- return [{opacity:.7,transform:'translate('+x+'px,'+y+'px) scale(.97)'},{opacity:1,transform:'none'}];
+ const x=source?Math.max(-60,Math.min(60,source.x+source.width/2-bounds.x-bounds.width/2)):0;
+ const y=source?Math.max(-110,Math.min(110,source.y+source.height/2-bounds.y-bounds.height/2)):70;
+ return 'translate('+x+'px,'+y+'px) scale(.88)';
 }
-function animateSheet(sheet,frames,duration){
+function animateSheet(sheet,frames,duration,after){
  sheetMotion?.cancel();
- if(!sheet.animate)return;
+ if(!sheet.animate){after?.();return}
  const animation=sheet.animate(frames,{duration,easing:motionEase,fill:'both'});
  sheetMotion=animation;
- animation.finished.then(()=>{if(sheetMotion===animation){animation.cancel();sheetMotion=null}},()=>{});
- return animation;
+ animation.finished.then(()=>{
+  if(sheetMotion!==animation)return;
+  after?.();
+  if(sheetMotion===animation){animation.cancel();sheetMotion=null}
+ },()=>{});
 }
 function sh(h,instant=false){
  const sheet=$('#sh');
  const first=sheet.style.display!=='block';
- if(first){focusBeforeSheet=document.activeElement;lockSheet()}
+ if(first){focusBeforeSheet=sheetTrigger || document.activeElement;lockSheet()}
  sheetMotion?.cancel();
  sheetClosing=false;
  sheet.toggleAttribute?.('inert',false);
- sheet.innerHTML='<button class="btn g back" onclick="closeSh(event.detail !== 0)">‹ Назад</button>'+h;
+ sheet.innerHTML='<button class="btn g back" onclick="closeSh(true)">‹ Назад</button>'+h;
  sheet.style.display='block';
  sheet.scrollTop=0;
  if(!instant) sheet.querySelector?.('button')?.focus?.({preventScroll:true});
- if(first && !instant && sheet.animate && !focusBeforeSheet?.matches?.(':focus-visible'))
-  animateSheet(sheet,sheetFrames(sheet),reduceMotion()?90:240);
+ if(first && !instant && !triggerFromKeyboard){
+  const frames=reduceMotion()? [{opacity:0},{opacity:1}] : [
+   {opacity:0,transform:'translateY(70px) scale(.94)'},
+   {opacity:1,transform:'translateY(14px) scale(.985)',offset:.66},
+   {opacity:1,transform:'none'}
+  ];
+  animateSheet(sheet,frames,reduceMotion()?110:330);
+ }
  if(location.hash!=='#detail')history.pushState({sheet:true},'','#detail');
 }
 function dismissSheet(){
  const sheet=$('#sh');
  if(sheet.style.display!=='block')return false;
  openEventId='';saveResume();
+ sheet.style.display='none';
  sheetMotion?.cancel();
  sheetMotion=null;
  sheetClosing=false;
  swipe=undefined;
  sheet.toggleAttribute?.('inert',false);
  sheet.style.transform='';
- sheet.style.display='none';
  adm=0;
  if(pendingViewRefresh){pendingViewRefresh=false;render()}
  const eventId=focusBeforeSheet?.dataset?.openEvent;
@@ -486,11 +580,13 @@ function closeSh(animate=true,swipeFrom=0,updateHistory=true){
  const finish=()=>{if(dismissSheet() && updateHistory && location.hash==='#detail')history.back()};
  if(!animate || !sheet.animate){finish();return}
  sheetClosing=true;
+ const current=getComputedStyle(sheet);
+ const from={opacity:Number(current.opacity),transform:current.transform};
  sheet.toggleAttribute('inert',true);
- const frames=swipeFrom && !reduceMotion()
-  ? [{transform:'translateX('+swipeFrom+'px)'},{transform:'translateX(100%)'}]
-  : sheetFrames(sheet).reverse();
- animateSheet(sheet,frames,reduceMotion()?90:180).finished.then(finish,()=>{});
+ const to=reduceMotion() ? {opacity:0} : swipeFrom
+  ? {opacity:1,transform:'translateX(100%)'}
+  : {opacity:0,transform:sheetDeparture(sheet)};
+ animateSheet(sheet,[from,to],reduceMotion()?110:260,finish);
 }
 window.addEventListener('popstate',()=>closeSh(false,0,false));
 const swipeSheet=$('#sh');
@@ -535,8 +631,8 @@ function openEv(id,focusNote=false){
  const event=EV().find(item=>item.id===id);
  if(!event) return toast("Событие не найдено");
  const speaker=SP(event.sp);
- const now=forumNow();
- const live=!!event.live;openEventId=id;saveResume();
+ const live=!!event.live || event.id===demoEvent([event])?.id;
+ openEventId=id;saveResume();
  const date=new Date(event.ts).toLocaleDateString("ru",{day:"numeric",month:"long",timeZone:"Europe/Moscow"});
  const status=S.off[id] ? "Событие отменено" : live ? "Идёт сейчас" : TY[event.type];
  sh(`<div class="pad"><article class="event-ticket" aria-label="Событие">
@@ -563,7 +659,7 @@ function prods(s){
  const list=[...own,...added];
  return list.length?`<h2 style="margin:16px 0 6px">Реквизит спикера</h2>`+list.filter(p=>p&&typeof p==='object').map(p=>{const shops=Array.isArray(p.shops)?p.shops.filter(h=>h&&typeof h.n==='string'&&/^https:\/\//.test(h.u)):[];return `<div class="cd" style="margin:8px 0"><b>${esc(p.n||'Реквизит')}</b>${p.d?`<p class="m" style="margin:4px 0">${esc(p.d)}</p>`:''}${shops.length?'Где купить: '+shops.map(h=>`<a href="${esc(h.u)}" target="_blank" rel="noopener">${esc(h.n)}</a>`).join(' · '):`<span class="m">${p.wait?'Ссылка появится после лекции.':'Ссылка появится позже.'}</span>`}</div>`}).join(''):'';
 }
-function openSp(id){const s=SP(id);if(!s)return toast('Спикер не найден');const ls=EV().filter(e=>e.sp==id);sh(`<div class="pad" style="text-align:center">${av(s,'big')}<h1 dir="auto">${esc(speakerName(s))}</h1>${speakerRole(s)?`<p class="m">${esc(speakerRole(s))}</p>`:''}</div><div class="pad">${s.bio?`<p>${esc(s.bio)}</p>`:''}${prods(s)}<h2 style="margin:16px 0 0">Выступления</h2></div>${ls.map(card).join('')||'<div class="cd m">Выступления спикера пока не добавлены.</div>'}`)}
+function openSp(id){const s=SP(id);if(!s)return toast('Спикер не найден');const ls=EV().filter(e=>e.sp==id);sh(`<div class="pad speaker-stage" style="text-align:center">${stagePortrait(s)}<h1 dir="auto">${esc(speakerName(s))}</h1>${speakerRole(s)?`<p class="m">${esc(speakerRole(s))}</p>`:''}</div><div class="pad">${s.bio && s.bio!=='Описание появится позже.' ? `<p>${esc(s.bio)}</p>`:''}${prods(s)}<h2 style="margin:16px 0 0">Выступления</h2></div>${ls.map(card).join('')||'<div class="cd m">Выступления спикера пока не добавлены.</div>'}`)}
 function saveNote(id,value){
  notes[id]=value;
  if(!value.trim()&&isFree(id))delete notes[id];
