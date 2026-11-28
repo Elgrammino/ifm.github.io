@@ -13,7 +13,7 @@ test('only identified IFM legacy data is migrated',()=>{
  assert.equal(api.storage(backend({notes:'{"a3":"Чужое"}'}),'/')('notes'),null);
 });
 test('partial state and invalid event input recover',()=>{
- assert.deepEqual(api.state({shift:'bad',off:null,add:[{}],news:[{}]}),{shift:0,off:{},add:[],news:[]});
+ assert.deepEqual(api.state({shift:'bad',off:null,add:[{}],news:[{}]}),{shift:0,off:{},add:[],live:{},prod:[],news:[]});
  assert.ok(data.events.every(api.validEvent));assert.equal(api.validEvent({...data.events[0],t:'25:00'}),false);assert.equal(api.validEvent({...data.events[0],d:-1}),false);
 });
 function app(response,values={},serviceWorker,options={}){
@@ -39,15 +39,14 @@ test('loader waits for program and reveals either content or retry screen',async
  assert.equal(stalled.ctx.document.body.classList.contains('app-ready'),true);
 });
 test('home announcement follows live schedule, cancellation and favourites',async()=>{
- const actualProgramme={...data,showcaseEvent:null};
- const {ctx,elements}=app({ok:true,json:async()=>actualProgramme});await flush();
+ const {ctx,elements}=app({ok:true,json:async()=>data});await flush();
  assert.match(elements['#v'].innerHTML,/class="ann"/);
  assert.match(elements['#v'].innerHTML,/Регистрация участников/);
  assert.match(elements['#v'].innerHTML,/О событии/);
  vm.runInContext("star('a1')",ctx);
- assert.match(elements['#v'].innerHTML,/aria-pressed="true">Убрать из расписания/);
+ assert.match(elements['#v'].innerHTML,/aria-pressed="true">В расписании/);
  const state={'ifm2027:/ifm.github.io/:s':JSON.stringify({shift:0,off:{a1:true},add:[],news:[]})};
- const cancelled=app({ok:true,json:async()=>actualProgramme},state);await flush();
+ const cancelled=app({ok:true,json:async()=>data},state);await flush();
  assert.match(cancelled.elements['#v'].innerHTML,/<section class="ann"[^>]*>[\s\S]*?<h2>Открытие форума<\/h2>/);
  assert.doesNotMatch(cancelled.elements['#v'].innerHTML,/<h2>Регистрация участников<\/h2>/);
 });
@@ -77,7 +76,7 @@ test('short tabs keep navigation outside scroll area; sheet restores its scroll 
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
  assert.ok(html.indexOf('<nav id="nv"')>html.indexOf('</main></div>'));
  assert.match(html,/body\{position:relative;[^}]*height:100dvh/);
- assert.match(html,/nav\{position:fixed;left:0;right:0;bottom:0/);
+ assert.match(html,/nav\{position:absolute;left:0;right:0;bottom:0/);
  vm.runInContext("openEv('a1')",ctx);
  assert.equal(elements['#app-scroll'].style.overflowY,'hidden');
  assert.equal(elements['#sh'].style.display,'block');
@@ -96,7 +95,7 @@ test('program, speaker, saved note and favourite render',async()=>{
  assert.match(elements['#v'].innerHTML,/<button class="event-open"/);
  assert.match(elements['#v'].innerHTML,/<\/button><button class="st /);
  assert.match(elements['#v'].innerHTML,/aria-pressed="true"/);
- assert.match(elements['#sh'].innerHTML,/Сохранено/);assert.match(elements['#sh'].innerHTML,/Удалить из моего расписания/);
+ assert.match(elements['#sh'].innerHTML,/Сохранено/);assert.match(elements['#sh'].innerHTML,/В расписании/);
  vm.runInContext("openSp('umid')",ctx);assert.match(elements['#sh'].innerHTML,/Умид Миргасанов/);
 });
 test('HTTP failure gives recovery screen or valid cached program',async()=>{
@@ -180,37 +179,62 @@ test('lecture preview isolates old notes and sheet swipe accepts only qualifying
  gesture(50,220,300);assert.equal(sheet.style.display,'none');
 });
 
-test('closing a card keeps the final rendered frame until the sheet is hidden',async()=>{
- const {ctx,elements}=app({ok:true,json:async()=>data});await flush();
- const sheet=elements['#sh'];
- const animationRuns=[];
- ctx.getComputedStyle=()=>({opacity:'0.8',transform:'matrix(1, 0, 0, 1, 0, 20)'});
- sheet.getBoundingClientRect=()=>({x:0,y:0,width:390,height:844});
- sheet.toggleAttribute=()=>{};
- sheet.animate=(frames,options)=>{
-  let finish;
-  const animation={frames,options,finished:new Promise(resolve=>{finish=resolve}),finish:()=>finish(),cancel(){this.cancelledWhen=sheet.style.display}};
-  animationRuns.push(animation);
-  return animation;
- };
- vm.runInContext("openEv('b5')",ctx);
- assert.equal(animationRuns[0].frames[0].opacity,0);
- vm.runInContext('closeSh()',ctx);
- const close=animationRuns[1];
- assert.equal(close.frames[0].opacity,0.8);
- assert.equal(close.frames[1].opacity,0);
- assert.equal(sheet.style.display,'block');
- close.finish();await flush();
- assert.equal(sheet.style.display,'none');
- assert.equal(close.cancelledWhen,'none');
+const at=s=>"Date.now=()=>Date.parse('"+s+"+03:00')";
+async function live(state){
+ const a=app({ok:true,json:async()=>data},{'ifm2027:/ifm.github.io/:s':JSON.stringify({shift:0,off:{},add:[],news:[],...state})});await flush();return a;
+}
+const times=(ctx,ids)=>JSON.parse(vm.runInContext('JSON.stringify(EV().filter(e=>'+JSON.stringify(ids)+'.includes(e.id)).map(e=>[e.id,new Date(e.ts+10800000).toISOString().slice(11,16),e.eta,e.unknown]))',ctx));
+test('delay keeps planned pauses, finishing recalculates from the actual end',async()=>{
+ const a=await live({live:{a5:{delay:30}}});
+ assert.deepEqual(times(a.ctx,['a5','a6']),[['a5','13:30','',false],['a6','16:15','estimate',false]]);
+ const end=Date.parse('2027-01-19T15:40:00+03:00');
+ const b=await live({live:{a5:{ended:end}}});
+ assert.equal(times(b.ctx,['a6'])[0][1],'15:55');
+ const c=await live({live:{a5:{ended:Date.parse('2027-01-19T16:10:00+03:00')}}});
+ assert.deepEqual(times(c.ctx,['a6']),[['a6','16:25','moved',false]]);
+ vm.runInContext('S=IFM.state({live:{a6:{start:"15:30"}}})',c.ctx);
+ assert.equal(times(c.ctx,['a6'])[0][1],'15:30');
 });
-
-test('installed demo presents the agreed lecture and reuses its photograph in the speaker card',async()=>{
- const {ctx,elements}=app({ok:true,json:async()=>data},{},undefined,{navigator:{standalone:true}});
- await flush();
- assert.match(elements['#v'].innerHTML,/Демо форума/);
- assert.match(elements['#v'].innerHTML,/Идёт сейчас[\s\S]*Asi Wind[\s\S]*Записать заметку/);
- vm.runInContext("openSp('asi')",ctx);
- assert.match(elements['#sh'].innerHTML,/now-portrait[\s\S]*<h1 dir="auto">Asi Wind<\/h1>/);
- assert.equal((elements['#sh'].innerHTML.match(/<img\b/g)||[]).length,1);
+test('expired forecast shows uncertainty and keeps previous event current',async()=>{
+ const a=await live({live:{a5:{started:Date.parse('2027-01-19T13:30:00+03:00'),delay:30}}});
+ vm.runInContext(at('2027-01-19T16:30:00'),a.ctx);
+ vm.runInContext('S=S',a.ctx);
+ assert.equal(vm.runInContext('EV().find(e=>e.id==="a5").live',a.ctx),true);
+ assert.equal(vm.runInContext('EV().find(e=>e.id==="a6").unknown',a.ctx),true);
+ vm.runInContext('go("home")',a.ctx);
+ assert.match(a.elements['#v'].innerHTML,/Начало задерживается\. Время уточняется/);
+});
+test('export groups notes by day with speaker, keeps free and orphaned notes',async()=>{
+ const a=await live({});
+ vm.runInContext("saveNote('a3','Про ментализм');saveNote('b1','Про карты');saveNote('free-1700000000000','Свободная мысль');notes.gone='Старая';notemeta.gone={title:'Снятая лекция',day:0,ts:T0+36e5*12,sp:''}",a.ctx);
+ const out=vm.runInContext('buildExport()',a.ctx);
+ assert.match(out,/19 января[\s\S]*Лекция: ментализм[\s\S]*Спикер: Умид Миргасанов[\s\S]*Про ментализм/);
+ assert.match(out,/Снятая лекция \(событие снято с программы\)/);
+ assert.ok(out.indexOf('19 января')<out.indexOf('20 января'));
+ assert.ok(out.indexOf('20 января')<out.indexOf('Свободные записи'));
+ assert.match(out,/Свободная мысль/);
+ vm.runInContext('go("notes")',a.ctx);assert.match(a.elements['#v'].innerHTML,/Событие снято с программы/);
+});
+test('prop links appear after the lecture ends and are validated',async()=>{
+ const prod={id:'p1',sp:'umid',n:'Колода',shop:{n:'Магазин',u:'https://example.com'},after:60,ts:1};
+ const a=await live({prod:[prod,{...prod,id:'bad',shop:{n:'x',u:'http://x'}}]});
+ assert.equal(vm.runInContext('S.prod.length',a.ctx),1);
+ vm.runInContext(at('2027-01-19T12:30:00'),a.ctx);vm.runInContext("openSp('umid')",a.ctx);
+ assert.match(a.elements['#sh'].innerHTML,/Ссылка появится после лекции/);
+ vm.runInContext(at('2027-01-19T13:31:00'),a.ctx);vm.runInContext("openSp('umid')",a.ctx);
+ assert.match(a.elements['#sh'].innerHTML,/href="https:\/\/example.com"/);
+});
+test('home shows reminder for saved lecture and offers to resume after a fresh launch',async()=>{
+ const a=await live({});
+ vm.runInContext(at('2027-01-19T10:50:00')+";star('a3');go('home')",a.ctx);
+ assert.match(a.elements['#v'].innerHTML,/Скоро в вашем расписании[\s\S]*Через 10 мин/);
+ vm.runInContext("resumeOffer={tab:'prog',day:1,topic:'',ev:'',at:Date.now()};go('home');resumeOffer={tab:'prog',day:1,topic:'',ev:'',at:Date.now()};render()",a.ctx);
+ assert.match(a.elements['#v'].innerHTML,/Вернуться, где остановился[\s\S]*Программа · 20 января/);
+ vm.runInContext('resumeGo()',a.ctx);
+ assert.match(a.elements['#v'].innerHTML,/Программа/);assert.equal(vm.runInContext('day',a.ctx),1);
+});
+test('organizer panel renders live controls and prop form',async()=>{
+ const a=await live({});
+ const html=vm.runInContext('admLive()+admProd()',a.ctx);
+ assert.match(html,/Ход программы/);assert.match(html,/Задерживается/);assert.match(html,/Ссылка на реквизит/);
 });

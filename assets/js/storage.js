@@ -3,12 +3,17 @@
   const object = value => value && typeof value === 'object' && !Array.isArray(value);
   const record = (value, check) => Object.fromEntries(Object.entries(object(value) ? value : {}).filter(([key, item]) => /^[a-zA-Z0-9_-]+$/.test(key) && check(item)));
   const validEvent = e => object(e) && /^[a-zA-Z0-9_-]+$/.test(e.id) && Number.isInteger(e.day) && e.day >= 0 && e.day <= 2 && typeof e.t === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(e.t) && Number.isInteger(e.d) && e.d > 0 && e.d <= 1440 && ['lec','con','show','party','dealer','brk'].includes(e.type) && typeof e.title === 'string';
+  const fin = Number.isFinite;
+  const validLive = l => object(l) && (l.started === undefined || fin(l.started)) && (l.ended === undefined || fin(l.ended)) && (l.delay === undefined || (Number.isInteger(l.delay) && l.delay >= 0 && l.delay <= 720)) && (l.start === undefined || /^([01]\d|2[0-3]):[0-5]\d$/.test(l.start));
+  const validProd = p => object(p) && /^[a-zA-Z0-9_-]+$/.test(p.id) && /^[a-zA-Z0-9_-]+$/.test(p.sp) && typeof p.n === 'string' && p.n.trim() && object(p.shop) && typeof p.shop.n === 'string' && /^https:\/\//.test(p.shop.u) && (p.after === undefined || p.after === null || (Number.isInteger(p.after) && p.after >= 0 && p.after <= 1440)) && fin(p.ts);
   const state = value => {
     const s = object(value) ? value : {};
     return {
       shift: Number.isFinite(s.shift) && Math.abs(s.shift) <= 1440 ? s.shift : 0,
       off: record(s.off, x => typeof x === 'boolean'),
       add: Array.isArray(s.add) ? s.add.filter(validEvent) : [],
+      live: record(s.live, validLive),
+      prod: Array.isArray(s.prod) ? s.prod.filter(validProd).map(p => ({ id: p.id, sp: p.sp, n: p.n, d: typeof p.d === 'string' ? p.d : '', shop: { n: p.shop.n, u: p.shop.u }, after: Number.isInteger(p.after) ? p.after : null, ts: p.ts })) : [],
       news: Array.isArray(s.news) ? s.news.filter(n => object(n) && typeof n.t === 'string' && typeof n.x === 'string' && Number.isFinite(n.ts)) : []
     };
   };

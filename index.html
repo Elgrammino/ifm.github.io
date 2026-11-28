@@ -106,7 +106,7 @@ small,.m{color:var(--m);font-size:14px}
 input,textarea,select{width:100%;min-height:var(--target-touch);background:var(--color-field);border:1px solid var(--color-control-border);border-radius:var(--radius-control);padding:var(--space-3);margin:var(--space-1) 0}
 input::placeholder,textarea::placeholder{color:var(--color-text-muted);opacity:1}
 textarea{min-height:140px;resize:vertical}
-nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:2px calc(4px + env(safe-area-inset-right)) var(--nav-bottom) calc(4px + env(safe-area-inset-left));z-index:5}
+nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:2px calc(4px + env(safe-area-inset-right)) var(--nav-bottom) calc(4px + env(safe-area-inset-left));z-index:5}
 nav button{min-width:0;min-height:var(--target-touch);line-height:1.15;flex:1;background:none;border:0;color:var(--m);font-size:var(--size-nav);font-weight:700;padding:var(--space-1);position:relative}nav button svg{display:block;width:20px;height:20px;margin:0 auto 2px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);background:var(--surface-strong);border:1px solid var(--ln);border-radius:var(--radius-control)}nav button[data-view="prog"].on{color:var(--ink-on-gold);background:var(--gold);border-color:var(--gold)}nav b{position:absolute;top:2px;left:55%;width:9px;height:9px;border-radius:50%;background:var(--lime)}
 #sh{position:fixed;inset:0;height:100dvh;z-index:9;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top) + 12px) 0 calc(24px + env(safe-area-inset-bottom));display:none}
@@ -145,8 +145,6 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
 :root{--nav-bottom:2px;--nav-clearance:calc(var(--nav-height, calc(47px + var(--nav-bottom))) + var(--space-2))}
 @media(display-mode:standalone){:root{--nav-bottom:max(2px,calc(env(safe-area-inset-bottom) - 12px))}}
 .ios-standalone{--nav-bottom:max(2px,calc(env(safe-area-inset-bottom) - 12px))}
-.ios-standalone.has-system-gutter{--nav-bottom:4px}
-.has-system-gutter #sh{padding-bottom:24px}
 .topics{flex-wrap:wrap;overflow:visible}
 .day-tabs{overflow:visible}
 .day-selector{
@@ -207,62 +205,17 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
  .install-first .install-logo,.install-first .install-arrow,.app-update.is-new:not([hidden]){animation:gentle-enter 90ms var(--ease-out) both}
  @keyframes gentle-enter{from{opacity:.55}to{opacity:1}}
 }
-.hero{margin-inline:calc(16px + env(safe-area-inset-left)) calc(16px + env(safe-area-inset-right));padding:16px 0 14px;gap:12px;font-size:17px}
-.hero img{width:52px;height:52px}
-.hero time{font-size:clamp(.875rem,4vw,1.0625rem);color:#c8afe2;text-align:end}
-.now-intro{margin-block:16px 12px}
-.now-intro h1{font-size:clamp(1.75rem,7.3vw,2.1rem)}
-.ann{margin-inline:calc(14px + env(safe-area-inset-left)) calc(14px + env(safe-area-inset-right))}
-.ann > .event-ticket{padding:15px 14px 13px;border-radius:18px;background:linear-gradient(155deg,#241435,#20122f 64%,#251637)}
-.ann-head,.ann .ann-live{font-size:1rem}
-.ann-live::before{width:9px;height:9px}
-.ann .event-cue{gap:4px 10px;padding:8px 0 11px;line-height:1.15}
-.ann .event-cue time{font-size:clamp(1.5rem,7.2vw,1.9rem);letter-spacing:-.025em}
-.ann .event-cue span{font-size:.9375rem;font-weight:700}
-.ann h2{font-size:clamp(1.55rem,7.4vw,1.95rem);line-height:1.12;letter-spacing:-.028em;margin:13px 0 17px;text-wrap:initial}
-.now-speaker{gap:6px;margin-bottom:17px;font-size:1.0625rem}
-.now-portrait{aspect-ratio:2.08;isolation:isolate;overflow:visible;box-shadow:0 0 14px #a35cff56}
-.now-portrait img{position:absolute;inset:0;margin-inline:auto;width:100%;height:100%;aspect-ratio:auto;object-position:center}
-.now-portrait--asi img{width:78%;object-position:center 46%;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
-.now-portrait--asi::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--portrait-image) center 46% / cover;filter:blur(10px);opacity:.8}
-.now-portrait::after{filter:brightness(1.22)}
-.ann-controls{gap:4px}
-.ann-controls button:first-child{min-height:48px;font-size:1.0625rem}
-.ann-controls button.event-details-link{font-weight:700}
-.stage-demo{margin-inline-start:auto;font-size:.75rem;color:var(--m)}
-.speaker-stage{margin-bottom:24px}
-.speaker-stage h1{font-size:var(--size-title)}
-.speaker-stage .now-portrait{margin-bottom:12px}
-.speaker-stage p{margin:6px 0 0}
-#sh > .back{min-height:44px;background:none;border:0;color:var(--gold);padding-inline:0}
-.next-section h2{font-size:1.4375rem;margin-top:17px;margin-bottom:8px}
-.next-event{gap:14px}
-.next-event time,.next-event strong{font-size:1.0625rem}
-.demo-notice{margin-top:16px;background:transparent;padding:4px 16px 8px;color:var(--m);font-size:.75rem}
-.app-scroll{padding-top:env(safe-area-inset-top)}
-.now-date{white-space:nowrap}
-.now-title-subject{display:block}
-#nv button svg{display:none}
-#nv button{font-size:var(--size-nav);font-weight:750}
-@media(max-width:350px){#nv button{font-size:var(--size-nav-compact)}}
-.app-ready #v:has(.now-intro){animation:ready-stage 420ms var(--ease-out) both}
-@keyframes ready-stage{from{transform:translateY(12px);opacity:.82}to{transform:none;opacity:1}}
-.install-brand{position:relative;isolation:isolate;width:108px;margin:0 0 22px}
-.install-brand::after{content:"";position:absolute;z-index:-1;inset:-6px;border-radius:100%;background:conic-gradient(from 40deg,#a35cff,#20142e 31%,#d5ff72 64%,#f7dcb1 82%,#a35cff);filter:blur(11px);opacity:.55}
-.install-logo{width:108px;height:108px;margin:0}
-.install-first .install-brand::after{animation:mark-halo 900ms var(--ease-out) both}
-.install-first .install-logo{animation:install-mark 760ms var(--ease-out) both}
-.install-first .install-arrow{transform-origin:left center;animation:install-hint 340ms var(--ease-out) 180ms both}
-.install-arrow{font-size:0;width:37px;height:12px;position:relative}
-.install-arrow::before{content:"";position:absolute;top:5px;left:0;right:2px;height:1px;background:currentColor}
-.install-arrow::after{content:"";position:absolute;top:2px;right:0;width:6px;height:6px;border-top:1px solid;border-right:1px solid;transform:rotate(45deg)}
-@keyframes mark-halo{0%{opacity:0;transform:scale(.65) rotate(-70deg)}35%{opacity:.96}100%{opacity:.55;transform:scale(1) rotate(0)}}
-@keyframes install-mark{0%{opacity:0;transform:scale(.84)}60%{opacity:1}100%{opacity:1;transform:scale(1)}}
-@keyframes install-hint{from{opacity:0;transform:scaleX(.12)}to{opacity:1;transform:scaleX(1)}}
-@media(prefers-reduced-motion:reduce){.app-ready #v:has(.now-intro),.install-first .install-brand::after{animation:none}.install-first .install-logo,.install-first .install-arrow{animation:gentle-enter 90ms var(--ease-out) both}}
+.eta{margin:0 0 var(--space-2);color:var(--lime);font-size:var(--size-caption);font-weight:700}
+small.eta{display:inline;margin:0}
+.resume{display:flex;align-items:stretch;margin:var(--space-3) calc(var(--space-4) + env(safe-area-inset-right)) 0 calc(var(--space-4) + env(safe-area-inset-left));border:1px solid var(--color-control-border);border-radius:var(--radius-card);background:var(--surface-strong)}
+.resume-go{flex:1;min-width:0;min-height:var(--target-touch);padding:var(--space-3) var(--space-4);border:0;background:none;text-align:left}
+.resume-go small,.resume-go strong{display:block}.resume-go strong{overflow-wrap:anywhere}
+.resume-x{flex:none;width:var(--target-touch);border:0;background:none;color:var(--m);font-size:24px}
+.reminder{display:block}
+.note-actions{display:grid;gap:var(--space-2);margin-block:var(--space-3)}
 </style></head><body class="loading">
 <section id="install" class="install-screen" aria-labelledby="install-title" hidden>
- <div class="install-brand"><img class="install-logo" src="assets/images/hero.jpg" width="108" height="108" alt="МФИ 2027"></div>
+ <img class="install-logo" src="assets/images/hero.jpg" width="88" height="88" alt="МФИ 2027">
  <h1 id="install-title">Помощник форума МФИ</h1>
  <p>Программа, спикеры и заметки к лекциям.</p>
  <div class="install-steps">
@@ -278,7 +231,7 @@ nav button.on{color:var(--lime)}nav button[data-view="prog"]{color:var(--gold);b
  </div>
  <p>Если нужного пункта нет, откройте ссылку в Safari на iPhone или в Chrome на Android.</p>
  <a href="?app=1">Открыть программу в браузере</a>
-</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v26</span></div></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
+</section><a class="skip" href="#v">К содержимому</a><div id="splash" class="splash" role="status" aria-live="polite" aria-label="Загрузка программы"><div class="splash-mark"><img src="assets/icons/icon-512.png" alt="МФИ 2027" width="184" height="184"></div><p>Загружаем программу</p></div><div id="app-scroll" class="app-scroll"><div class="demo-notice" id="demo-notice">Демонстрационная версия · программа предварительная <span class="demo-build">· v25</span></div><aside id="program-status" class="program-status" hidden><p id="program-status-text" role="status"></p><button id="program-retry" class="btn g" type="button" onclick="retryProgram()">Обновить программу</button></aside><main id="v" tabindex="-1"></main></div><section id="sh" role="dialog" aria-modal="true" aria-label="Подробности" tabindex="-1"></section>
 <nav id="nv" aria-label="Основная навигация"></nav>
 <aside class="app-update" id="app-update" aria-label="Обновление приложения" hidden><span role="status"></span><button class="btn" type="button">Обновить</button></aside>
 <script src="assets/js/storage.js"></script>
@@ -295,22 +248,14 @@ if(typeof ResizeObserver === "function") {
   if(height) document.documentElement.style.setProperty("--nav-height", height+"px");
  }).observe(nav);
 }
-if(navigator.standalone === true){
- document.body.classList.add("ios-standalone");
- const syncSystemGutter=()=>{
-  const outside=window.screen?.height-window.innerHeight;
-  document.body.classList.toggle?.("has-system-gutter",outside>=48 && outside<=96);
- };
- syncSystemGutter();
- window.addEventListener("resize",syncSystemGutter);
-}
+if(navigator.standalone === true) document.body.classList.add("ios-standalone");
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function revealApp(){const splash=$('#splash');if(!splash||document.body.classList.contains('app-ready'))return;document.body.classList.remove('loading');document.body.classList.add('app-ready');splash.classList.add('done');splash.setAttribute('aria-hidden','true');setTimeout(()=>splash.remove(),350)}
 function finishLoading(){setTimeout(revealApp,0)}
 let backend;try{backend=localStorage}catch{backend={getItem(){return null},setItem(){throw Error('Storage unavailable')}}}
 const storageScope=location.pathname.replace(/index\.html$/,'')+(previewLecture?'lecture-preview/':'');
 const installScreen=$('#install');
-if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v26 · отдельные заметки';
+if(previewLecture && $('#demo-notice')) $('#demo-notice').textContent='Предпросмотр · 20 января, 17:10 · v25 · отдельные заметки';
 const installed=navigator.standalone===true || window.matchMedia?.('(display-mode: standalone)').matches;
 if(installed) document.body.classList.add('installed');
 if(installScreen && !installed && !previewLecture && params.get('app')!=='1'){
@@ -320,7 +265,7 @@ if(installScreen && !installed && !previewLecture && params.get('app')!=='1'){
  $('#install-android').hidden=apple;
  try{
   const key='ifm2027:'+storageScope+':install-intro';
-  if(params.get('motion')==='1' || !backend.getItem(key)){installScreen.classList.add('install-first');backend.setItem(key,'1')}
+  if(!backend.getItem(key)){installScreen.classList.add('install-first');backend.setItem(key,'1')}
  }catch{}
  installScreen.hidden=false;
  document.body.classList.add('install-view');
@@ -334,64 +279,92 @@ const ICON={home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-
 const icon=(name,filled=false)=>`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"${filled?' style="fill:currentColor"':''}>${ICON[name]}</svg>`;
 let D={events:[],speakers:[],links:[],dealers:[]},S=IFM.state(L('s')),fav=IFM.record(L('fav'),v=>typeof v==='boolean'),notes=IFM.record(L('notes'),v=>typeof v==='string'),tab='home',noteView='notes',day=0,topic='',seen=Number(L('seen'))||0,adm=0,tp=0,tt,launchOffline=navigator.onLine===false;
 const tm=t=>new Date(t).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'});
-const EV=()=>[...D.events,...S.add].map(e=>({...e,ts:T0+e.day*864e5+hm(e.t)*6e4+S.shift*6e4})).sort((a,b)=>a.ts-b.ts);
-function demoEvent(schedule){
- if(Date.now()>=T0 || !D.showcaseEvent)return;
- return schedule.find(event=>event.id===D.showcaseEvent && !S.off[event.id]);
+const plural=(n,a,b,c)=>{const m=n%100,k=n%10;return m>10&&m<20?c:k===1?a:k>1&&k<5?b:c};
+/* Пересчёт дня: плановая пауза между событиями сохраняется, отметки администратора (S.live) сдвигают остаток дня. */
+function build(state,now=forumNow()){
+ const base=[...D.events,...state.add].map(e=>({...e,plan:T0+e.day*864e5+hm(e.t)*6e4+state.shift*6e4})).sort((a,b)=>a.plan-b.plan);
+ let prev=null;
+ const fin=Number.isFinite;
+ const list=base.map(e=>{
+  const l=state.live[e.id]||{},len=e.d*6e4,planEnd=e.plan+len;
+  if(state.off[e.id])return {...e,ts:e.plan,end:planEnd,planEnd,eta:'',est:false,mark:l,live:false,over:false,unknown:false,held:false};
+  if(prev&&prev.day!==e.day)prev=null;
+  let ts=e.plan,eta='',est=false;
+  if(prev){const after=prev.end+Math.max(0,e.plan-prev.planEnd);if(after>e.plan){ts=after;est=prev.est;eta=est?'estimate':'moved'}}
+  if(l.start){ts=T0+e.day*864e5+hm(l.start)*6e4;est=false;eta=ts!==e.plan?'moved':''}
+  if(fin(l.started)){ts=l.started;est=false;eta=ts>e.plan?'moved':''}
+  const ended=fin(l.ended),end=ended?l.ended:ts+len+(l.delay||0)*6e4;
+  const item={...e,ts,end,planEnd,eta,est:!ended&&(l.delay>0||est),mark:l,live:false,over:false,unknown:false,held:false};
+  prev=item;return item;
+ });
+ const active=list.filter(e=>!state.off[e.id]);
+ const sameDay=(a,b)=>a&&b&&a.day===b.day;
+ active.forEach((e,i)=>{
+  const l=e.mark,p=active[i-1],n=active[i+1];
+  e.held=!fin(l.ended)&&(l.delay>0||fin(l.started));
+  e.unknown=!fin(l.ended)&&!fin(l.started)&&sameDay(p,e)&&p.held&&now>=e.ts;
+  e.over=fin(l.ended)||(sameDay(e,n)&&fin(n.mark.started))||(!e.held&&!e.unknown&&e.end<=now);
+  e.live=!e.over&&!e.unknown&&now>=e.ts&&(now<e.end||e.held);
+ });
+ return list;
 }
+const EV=()=>build(S);
+const etaText=e=>S.off[e.id]||e.over||e.live?'':e.unknown?'Начало задерживается. Время уточняется':e.eta==='moved'?'Начало перенесено на '+tm(e.ts):e.eta==='estimate'?'Начало ориентировочно в '+tm(e.ts):'';
+const nextEvent=(list,now)=>list.find(e=>!S.off[e.id]&&!e.over&&!e.live&&(e.ts>now||e.unknown));
+const isFree=id=>/^free-/.test(id);
+let notemeta=IFM.record(L('notemeta'),v=>v&&typeof v==='object'&&typeof v.title==='string');
+let resumeOffer=null,openEventId='',admEvent='';
+const TABS=['home','sp','prog','notes','news'];
+function saveResume(){if(previewLecture)return;L('resume',{tab,day,topic,ev:openEventId,at:Date.now()})}
 const SP=id=>D.speakers.find(s=>s?.id===id);
 const speakerName=s=>typeof s?.name==='string'&&s.name.trim()?s.name.trim():'Имя спикера уточняется';
 const speakerRole=s=>typeof s?.role==='string'?s.role.trim():'';
 const speakerPhoto=s=>typeof s?.photo==='string'&&/^[a-zA-Z0-9_./-]+$/.test(s.photo)&&!s.photo.includes('..')?s.photo:'';
-function stagePortrait(s){
- const photo=speakerPhoto(s);
- if(!photo)return "";
- const asiPortrait=photo==='assets/participants/asi.jpg';
- return `<span class="now-portrait${asiPortrait?' now-portrait--asi':''}"${asiPortrait?' style="--portrait-image:url(assets/participants/asi.jpg)"':''}><img src="${esc(photo)}" alt="" onerror="this.parentElement.remove()"></span>`;
-}
 function nowSpeaker(s){
- return `<button type="button" class="now-speaker" onclick="openSp('${s.id}')">${stagePortrait(s)}<span dir="auto">${esc(speakerName(s))}</span></button>`;
+ const photo=speakerPhoto(s);
+ return `<button type="button" class="now-speaker" onclick="openSp('${s.id}')">${photo?`<span class="now-portrait"><img src="${esc(photo)}" alt="" onerror="this.parentElement.remove()"></span>`:''}<span dir="auto">${esc(speakerName(s))}</span></button>`;
 }
 function av(s,c=''){const name=typeof s?.name==='string'?s.name.trim():'';const words=name.split(/\s+/).filter(Boolean),first=w=>Intl.Segmenter?[...new Intl.Segmenter('ru',{granularity:'grapheme'}).segment(w)][0]?.segment:[...w][0];const initials=words.length?[first(words[0]),...(words.length>1?[first(words.at(-1))]:[])].join(''):'?';const photo=speakerPhoto(s);return `<span class="av ${photo?'':'ph'} ${c}" aria-hidden="true">${esc(initials)}${photo?`<img src="${esc(photo)}" width="64" height="64" alt="" onerror="this.remove()">`:''}</span>`}
 function toast(t){const d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=t;document.body.append(d);navigator.vibrate&&navigator.vibrate(120);setTimeout(()=>{d.classList.add('leaving');setTimeout(()=>d.remove(),200)},3800)}
-function card(e){const s=SP(e.sp),off=S.off[e.id];return `<div class="cd ev ${off?'off':''}"><button class="event-open" data-open-event="${e.id}" aria-label="${esc(e.title)}; ${tm(e.ts)}" onclick="openEv('${e.id}')"><span class="tm">${tm(e.ts)}<small>${e.d}&nbsp;мин</small></span><i class="dot ${e.type}" aria-hidden="true"></i><span class="b"><b>${esc(e.title)}</b><br><small>${off?'Отменено':TY[e.type]}${s&&!off?' · '+esc(s.name):''}</small></span></button><button class="st ${fav[e.id]?'on':''}" data-event-id="${e.id}" aria-label="${fav[e.id]?'Удалить из моего расписания':'Добавить в моё расписание'}: ${esc(e.title)}" aria-pressed="${!!fav[e.id]}" onclick="star('${e.id}')">${icon('star',fav[e.id])}</button></div>`}
+function card(e){const s=SP(e.sp),off=S.off[e.id];return `<div class="cd ev ${off?'off':''}"><button class="event-open" data-open-event="${e.id}" aria-label="${esc(e.title)}; ${tm(e.ts)}" onclick="openEv('${e.id}')"><span class="tm">${tm(e.ts)}<small>${e.d}&nbsp;мин</small></span><i class="dot ${e.type}" aria-hidden="true"></i><span class="b"><b>${esc(e.title)}</b><br><small>${off?'Отменено':TY[e.type]}${s&&!off?' · '+esc(s.name):''}</small>${etaText(e)?`<br><small class="eta">${esc(etaText(e))}</small>`:''}</span></button><button class="st ${fav[e.id]?'on':''}" data-event-id="${e.id}" aria-label="${fav[e.id]?'Удалить из моего расписания':'Добавить в моё расписание'}: ${esc(e.title)}" aria-pressed="${!!fav[e.id]}" onclick="star('${e.id}')">${icon('star',fav[e.id])}</button></div>`}
 function eventCue(event){
  const room=typeof event.room==="string" && event.room.trim() ? event.room.trim()
   : ["lec","con","show"].includes(event.type) ? "Главный зал" : "";
- return `<div class="event-cue"><time>${tm(event.ts)}–${tm(event.ts+event.d*60000)}</time>${room ? `<span>${esc(room)}</span>` : ""}</div>`;
-}
-function nowTitle(event){
- const separator=event.title.indexOf(': ');
- if(event.type!=='lec' || separator<0 || separator>23)return esc(event.title);
- return `${esc(event.title.slice(0,separator+1))}<span class="now-title-subject">${esc(event.title.slice(separator+2))}</span>`;
+ return `<div class="event-cue"><time>${tm(event.ts)}–${tm(event.end??event.ts+event.d*60000)}</time>${room ? `<span>${esc(room)}</span>` : ""}</div>`;
 }
 const V={
  home(){
- const schedule = EV().filter(event => !S.off[event.id]);
- const showcase = !previewLecture && demoEvent(schedule);
- const now = showcase ? showcase.ts : forumNow();
- const current = showcase || schedule.find(event => event.ts <= now && now < event.ts + event.d * 60000);
- const next = schedule.find(event => event.ts > now);
+ const now = forumNow();
+ const all = EV();
+ const schedule = all.filter(event => !S.off[event.id]);
+ const current = schedule.find(event => event.live);
+ const next = nextEvent(all, now);
  const featured = current || next;
  const speaker = featured && SP(featured.sp);
  const latestNews = S.news[0];
  const date = time => new Date(time).toLocaleDateString('ru',{day:'numeric',month:'long',timeZone:'Europe/Moscow'});
  const status = current ? 'Идёт сейчас' : next ? (now < schedule[0]?.ts ? 'Старт программы' : 'Следующее событие') : 'Программа форума';
  const empty = schedule.length ? 'Форум завершён' : D.events.length || S.add.length ? 'Нет доступных событий' : 'Программа скоро появится';
- return `<div class="hero"><img src="assets/images/hero.jpg" width="52" height="52" alt=""><span aria-label="Международный форум иллюзионистов">МФИ 2027</span>${featured ? `<time class="now-date">${date(featured.ts)}</time>` : ""}</div>
- <header class="pad now-intro"><h1>Сейчас</h1>${featured ? "" : "<p>19–21 января 2027 · Санкт-Петербург</p>"}</header>
+ const days = Math.ceil((T0 - now) / 864e5);
+ const cue = featured ? etaText(featured) : '';
+ const soon = schedule.filter(e => fav[e.id] && !e.over && !e.live && e.ts > now && e.ts - now <= 15 * 6e4);
+ const resume = resumeOffer ? `<aside class="resume" aria-label="Продолжить"><button type="button" class="resume-go" onclick="resumeGo()"><small>Вернуться, где остановился</small><strong>${esc(resumeLabel(resumeOffer))}</strong></button><button type="button" class="resume-x" aria-label="Скрыть" onclick="resumeDismiss()">×</button></aside>` : '';
+ return `${resume}<div class="hero"><img src="assets/images/hero.jpg" width="40" height="40" alt=""><span aria-label="Международный форум иллюзионистов">МФИ 2027</span>${featured ? `<time>${date(featured.ts)}</time>` : ""}</div>
+ <header class="pad now-intro"><h1>Сейчас</h1>${featured ? (days > 0 ? `<p>До форума: ${days} ${plural(days,'день','дня','дней')}</p>` : "") : "<p>19–21 января 2027 · Санкт-Петербург</p>"}</header>
  <section class="ann" aria-label="Анонс события">
   <div class="event-ticket">
-   <div class="ann-head"><span class="${current ? 'ann-live' : ''}">${status}</span>${showcase ? '<span class="stage-demo">Демо форума</span>' : ''}</div>
+   <div class="ann-head"><span class="${current ? 'ann-live' : ''}">${status}</span></div>
    ${featured ? eventCue(featured) : ""}
-  ${featured ? `<h2>${nowTitle(featured)}</h2>
+   ${cue ? `<p class="eta">${esc(cue)}</p>` : ""}
+  ${featured ? `<h2>${esc(featured.title)}</h2>
   ${speaker ? nowSpeaker(speaker) : ''}
   <div class="ann-controls">
    <button type="button" onclick="openEv('${featured.id}'${current && featured.type === 'lec' ? ',true' : ''})">${current && featured.type === 'lec' ? 'Записать заметку' : 'О событии'}</button>
-   ${current && featured.type === 'lec' ? `<button class="event-details-link" type="button" onclick="openEv('${featured.id}')">О событии <span aria-hidden="true">→</span></button>` : `<button type="button" data-event-id="${featured.id}" onclick="star('${featured.id}')" aria-pressed="${!!fav[featured.id]}">${fav[featured.id] ? 'Убрать из расписания' : 'В моё расписание'}</button>`}
+   ${current && featured.type === 'lec' ? `<button class="event-details-link" type="button" onclick="openEv('${featured.id}')">О событии</button>` : `<button type="button" data-event-id="${featured.id}" onclick="star('${featured.id}')" aria-pressed="${!!fav[featured.id]}">${fav[featured.id] ? 'В расписании' : 'В моё расписание'}</button>`}
   </div>` : `<h2>${empty}</h2>`}
  </div></section>
- ${current && next ? `<section class="next-section"><h2>Дальше</h2><div class="pad"><button type="button" class="next-event" onclick="openEv('${next.id}')"><time>${tm(next.ts)}</time><strong>${esc(next.title)}</strong></button></div></section>` : ''}
+ ${soon.length ? `<section><h2>Скоро в вашем расписании</h2>${soon.map(e => `<button type="button" class="cd reminder" onclick="openEv('${e.id}')"><small>Через ${Math.max(1, Math.ceil((e.ts - now) / 6e4))} мин · ${tm(e.ts)}</small><br><strong>${esc(e.title)}</strong></button>`).join('')}</section>` : ''}
+ ${current && next ? `<section><h2>Дальше</h2><div class="pad"><button type="button" class="next-event" onclick="openEv('${next.id}')"><time>${tm(next.ts)}</time><strong>${esc(next.title)}</strong></button>${etaText(next) ? `<p class="eta">${esc(etaText(next))}</p>` : ''}</div></section>` : ''}
  ${latestNews ? `<button class="cd" type="button" onclick="go('news')"><small>Новость</small><br><strong>${esc(latestNews.t)}</strong></button>` : ''}
  <details class="forum-links"><summary>О форуме</summary>
   <h2>Дилерская зона</h2><div class="cd">${D.dealers.length ? D.dealers.map(d=>`<a href="${esc(d.u)}" target="_blank" rel="noopener">${esc(d.n)}</a>`).join('<br>') : '<span class="m">Список магазинов появится здесь.</span>'}</div>
@@ -406,40 +379,37 @@ prog(){const l=EV(),tps=[...new Set([...D.events,...S.add].map(e=>e.topic).filte
  sp(){const speakers=D.speakers.filter(s=>s&&/^[a-zA-Z0-9_-]+$/.test(s.id));return `<h1 class="tab-title">Спикеры</h1>${speakers.map(s=>`<div class="cd row" role="button" tabindex="0" onclick="openSp('${s.id}')" onkeydown="keyAction(event,()=>openSp('${s.id}'))">${av(s)}<div class="b"><b dir="auto">${esc(speakerName(s))}</b>${speakerRole(s)?`<br><small>${esc(speakerRole(s))}</small>`:''}</div></div>`).join('')||'<div class="cd m">Информация о спикерах скоро появится.</div>'}`},
  notes(){
  const saved = noteView === 'saved';
- const events = EV().filter(event => saved ? fav[event.id] : (notes[event.id] || '').trim());
  const controls = `<div class="pad subview" aria-label="Личное"><button class="btn g" aria-pressed="${!saved}" onclick="showNoteView('notes',this)">Записи</button><button class="btn g" aria-pressed="${saved}" onclick="showNoteView('saved',this)">Моё расписание</button></div>`;
- const content = saved
-  ? events.map(card).join('') || '<div class="cd m">Сохраните событие звёздочкой в программе, и оно появится здесь.</div>'
-  : events.map(e=>`<button class="cd note-preview" type="button" onclick="openEv('${e.id}')"><strong>${esc(e.title)}</strong><br><small>${19+e.day}&nbsp;янв, ${tm(e.ts)}</small><span>${esc(notes[e.id].slice(0,160))}</span></button>`).join('') || '<div class="cd m">Откройте событие в программе и запишите заметку. Записи хранятся на этом устройстве.</div>';
- return `<h1 class="tab-title">${saved ? 'Моё расписание' : 'Заметки'}</h1>${controls}${content}${!saved && events.length ? '<div class="pad"><button class="btn" onclick="exp()">Выгрузить все заметки</button></div>' : ''}`;
+ if (saved) {
+  const events = EV().filter(event => fav[event.id]);
+  return `<h1 class="tab-title">Моё расписание</h1>${controls}<p class="m pad">Напоминание за 15 минут появляется на экране «Сейчас», пока приложение открыто.</p>${events.map(card).join('') || '<div class="cd m">Сохраните событие звёздочкой в программе, и оно появится здесь.</div>'}`;
+ }
+ const entries = noteEntries();
+ const label = x => x.kind === 'event' ? `${19+x.day}&nbsp;янв, ${tm(x.ts)}` : x.kind === 'orphan' ? 'Событие снято с программы' : 'Свободная запись';
+ const list = entries.map(x => `<button class="cd note-preview" type="button" onclick="${x.kind === 'event' ? `openEv('${x.id}')` : `openNote('${x.id}')`}"><strong>${esc(x.title)}</strong><br><small>${label(x)}</small><span>${esc(x.text.slice(0,160))}</span></button>`).join('') || '<div class="cd m">Откройте событие в программе и запишите заметку. Записи хранятся на этом устройстве.</div>';
+ return `<h1 class="tab-title">Заметки</h1>${controls}<div class="pad note-actions"><button class="btn" type="button" onclick="newNote()">Новая запись</button></div>${list}<div class="pad note-actions">${entries.length ? '<button class="btn" onclick="exp()">Выгрузить все заметки</button><button class="btn g" onclick="copyAll()">Скопировать всё</button>' : ''}<button class="btn g" onclick="backupSave()">Сохранить резервную копию</button><button class="btn g" onclick="$('#import-file').click()">Загрузить копию</button><input id="import-file" type="file" accept=".json,application/json" hidden onchange="importBackup(this.files[0]);this.value=''"></div>`;
  },
 news(){seen=S.news[0]?.ts||0;L('seen',seen);return `<h1 class="tab-title">Новости</h1>${S.news.map(n=>`<div class="cd"><b>${esc(n.t.trim()||'Обновление программы')}</b>${n.x.trim()?`<p style="margin:6px 0">${esc(n.x)}</p>`:''}<small>${new Date(n.ts).toLocaleString('ru',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'})}</small></div>`).join('')||'<div class="cd m">Новостей пока нет. Здесь организаторы сообщат об изменениях в программе.</div>'}`}};
 function keyAction(event,action){if(event.target!==event.currentTarget)return;if(event.key==='Enter'||event.key===' '){event.preventDefault();action()}}
 function selectDay(index){
  day=index;
- render();
+ render();saveResume();
 }
 function resetTopic(){
  topic="";
- render();
+ render();saveResume();
  $("#all-topics")?.focus();
 }
-function topicAt(i){topic=[...new Set([...D.events,...S.add].map(e=>e.topic).filter(Boolean))][i]||'';render()}
+function topicAt(i){topic=[...new Set([...D.events,...S.add].map(e=>e.topic).filter(Boolean))][i]||'';render();saveResume()}
 function render(){const active=document.activeElement;const navFocused=!!active?.closest?.('#nv');const filterKey=active?.dataset?.filterKey;$('#v').innerHTML=V[tab]();$('#nv').innerHTML=NAV.map(([k,i,t])=>`<button class="${tab==k?'on':''}" data-view="${k}" aria-current="${tab==k?'page':'false'}" onclick="go('${k}')">${icon(i)}${t}${k=='news'&&S.news[0]?.ts>seen&&tab!='news'?'<b></b>':''}</button>`).join('');if(navFocused)$('#nv').querySelector?.('[aria-current="page"]')?.focus?.();if(filterKey) $(`[data-filter-key="${filterKey}"]`)?.focus({preventScroll:true});if(adm)admPanel()}
 function showNoteView(view,button){
  noteView=view;
  render();
  if(button === document.activeElement || !button.isConnected) $(".subview [aria-pressed=\"true\"]")?.focus();
 }
-function go(t){tab=t;closeSh(false);render();$('#app-scroll').scrollTop=0}
+function go(t){tab=t;closeSh(false);render();$('#app-scroll').scrollTop=0;saveResume()}
 let focusBeforeSheet=null, sheetScrollY=0, sheetMotion, sheetClosing=false, swipe;
 let pendingViewRefresh=false;
-let sheetTrigger, triggerFromKeyboard=false;
-document.addEventListener('click',event=>{
- sheetTrigger=event.target.closest?.('button,[role="button"]');
- triggerFromKeyboard=event.detail===0;
- queueMicrotask(()=>{sheetTrigger=undefined;triggerFromKeyboard=false});
-},true);
 const motionEase='cubic-bezier(.23,1,.32,1)';
 const reduceMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 function lockSheet(){
@@ -458,56 +428,48 @@ function unlockSheet(){
  $('#nv').toggleAttribute?.('inert',false);
  document.body.classList.remove('sheet-open');
 }
-function sheetDeparture(sheet){
- const anchor=focusBeforeSheet?.closest?.('.event-ticket,.ev') || focusBeforeSheet;
- const source=anchor?.getBoundingClientRect?.();
+function sheetFrames(sheet){
+ if(reduceMotion())return [{opacity:.7},{opacity:1}];
+ const source=focusBeforeSheet?.getBoundingClientRect?.();
  const bounds=sheet.getBoundingClientRect();
- const x=source?Math.max(-60,Math.min(60,source.x+source.width/2-bounds.x-bounds.width/2)):0;
- const y=source?Math.max(-110,Math.min(110,source.y+source.height/2-bounds.y-bounds.height/2)):70;
- return 'translate('+x+'px,'+y+'px) scale(.88)';
+ const x=source?Math.max(-14,Math.min(14,source.x+source.width/2-bounds.x-bounds.width/2)):0;
+ const y=source?Math.max(-16,Math.min(16,source.y+source.height/2-bounds.y-bounds.height/2)):12;
+ return [{opacity:.7,transform:'translate('+x+'px,'+y+'px) scale(.97)'},{opacity:1,transform:'none'}];
 }
-function animateSheet(sheet,frames,duration,after){
+function animateSheet(sheet,frames,duration){
  sheetMotion?.cancel();
- if(!sheet.animate){after?.();return}
+ if(!sheet.animate)return;
  const animation=sheet.animate(frames,{duration,easing:motionEase,fill:'both'});
  sheetMotion=animation;
- animation.finished.then(()=>{
-  if(sheetMotion!==animation)return;
-  after?.();
-  if(sheetMotion===animation){animation.cancel();sheetMotion=null}
- },()=>{});
+ animation.finished.then(()=>{if(sheetMotion===animation){animation.cancel();sheetMotion=null}},()=>{});
+ return animation;
 }
 function sh(h,instant=false){
  const sheet=$('#sh');
  const first=sheet.style.display!=='block';
- if(first){focusBeforeSheet=sheetTrigger || document.activeElement;lockSheet()}
+ if(first){focusBeforeSheet=document.activeElement;lockSheet()}
  sheetMotion?.cancel();
  sheetClosing=false;
  sheet.toggleAttribute?.('inert',false);
- sheet.innerHTML='<button class="btn g back" onclick="closeSh(true)">‹ Назад</button>'+h;
+ sheet.innerHTML='<button class="btn g back" onclick="closeSh(event.detail !== 0)">‹ Назад</button>'+h;
  sheet.style.display='block';
  sheet.scrollTop=0;
  if(!instant) sheet.querySelector?.('button')?.focus?.({preventScroll:true});
- if(first && !instant && !triggerFromKeyboard){
-  const frames=reduceMotion()? [{opacity:0},{opacity:1}] : [
-   {opacity:0,transform:'translateY(70px) scale(.94)'},
-   {opacity:1,transform:'translateY(14px) scale(.985)',offset:.66},
-   {opacity:1,transform:'none'}
-  ];
-  animateSheet(sheet,frames,reduceMotion()?110:330);
- }
+ if(first && !instant && sheet.animate && !focusBeforeSheet?.matches?.(':focus-visible'))
+  animateSheet(sheet,sheetFrames(sheet),reduceMotion()?90:240);
  if(location.hash!=='#detail')history.pushState({sheet:true},'','#detail');
 }
 function dismissSheet(){
  const sheet=$('#sh');
  if(sheet.style.display!=='block')return false;
- sheet.style.display='none';
+ openEventId='';saveResume();
  sheetMotion?.cancel();
  sheetMotion=null;
  sheetClosing=false;
  swipe=undefined;
  sheet.toggleAttribute?.('inert',false);
  sheet.style.transform='';
+ sheet.style.display='none';
  adm=0;
  if(pendingViewRefresh){pendingViewRefresh=false;render()}
  const eventId=focusBeforeSheet?.dataset?.openEvent;
@@ -524,13 +486,11 @@ function closeSh(animate=true,swipeFrom=0,updateHistory=true){
  const finish=()=>{if(dismissSheet() && updateHistory && location.hash==='#detail')history.back()};
  if(!animate || !sheet.animate){finish();return}
  sheetClosing=true;
- const current=getComputedStyle(sheet);
- const from={opacity:Number(current.opacity),transform:current.transform};
  sheet.toggleAttribute('inert',true);
- const to=reduceMotion() ? {opacity:0} : swipeFrom
-  ? {opacity:1,transform:'translateX(100%)'}
-  : {opacity:0,transform:sheetDeparture(sheet)};
- animateSheet(sheet,[from,to],reduceMotion()?110:260,finish);
+ const frames=swipeFrom && !reduceMotion()
+  ? [{transform:'translateX('+swipeFrom+'px)'},{transform:'translateX(100%)'}]
+  : sheetFrames(sheet).reverse();
+ animateSheet(sheet,frames,reduceMotion()?90:180).finished.then(finish,()=>{});
 }
 window.addEventListener('popstate',()=>closeSh(false,0,false));
 const swipeSheet=$('#sh');
@@ -568,7 +528,7 @@ function toggleEventFavourite(id,button){
  fav[id]=!fav[id];
  L("fav",fav);
  button.setAttribute("aria-pressed",String(fav[id]));
- button.textContent=fav[id]?"Удалить из моего расписания":"Добавить в моё расписание";
+ button.textContent=fav[id]?"В расписании":"В моё расписание";
  refreshVisitorView();
 }
 function openEv(id,focusNote=false){
@@ -576,33 +536,203 @@ function openEv(id,focusNote=false){
  if(!event) return toast("Событие не найдено");
  const speaker=SP(event.sp);
  const now=forumNow();
- const live=!S.off[id] && (event.id===demoEvent([event])?.id || (event.ts<=now && now<event.ts+event.d*60000));
+ const live=!!event.live;openEventId=id;saveResume();
  const date=new Date(event.ts).toLocaleDateString("ru",{day:"numeric",month:"long",timeZone:"Europe/Moscow"});
  const status=S.off[id] ? "Событие отменено" : live ? "Идёт сейчас" : TY[event.type];
  sh(`<div class="pad"><article class="event-ticket" aria-label="Событие">
   <div class="event-detail-meta"><span class="event-status ${live ? "ann-live" : "m"}">${status}</span><time class="event-date">${date}</time></div>
-  ${eventCue(event)}<h1>${esc(event.title)}</h1>
+  ${eventCue(event)}${etaText(event) ? `<p class="eta">${esc(etaText(event))}</p>` : ""}<h1>${esc(event.title)}</h1>
   ${speaker ? `<button type="button" class="ann-speaker" onclick="openSp('${speaker.id}')">${av(speaker)}<span dir="auto">${esc(speakerName(speaker))}</span></button>` : ""}
   ${event.topic ? `<p class="m">Тема · ${esc(event.topic)}</p>` : ""}
-  <button type="button" class="btn g event-detail-save" aria-pressed="${!!fav[id]}" onclick="toggleEventFavourite('${id}',this)">${fav[id] ? "Удалить из моего расписания" : "Добавить в моё расписание"}</button>
+  <button type="button" class="btn g event-detail-save" aria-pressed="${!!fav[id]}" onclick="toggleEventFavourite('${id}',this)">${fav[id] ? "В расписании" : "В моё расписание"}</button>
  </article>
- <div class="event-note"><label for="event-note">${event.type==="lec"?"Заметка к лекции":"Заметка к событию"}</label><textarea id="event-note" aria-describedby="event-note-hint" placeholder="Что хочется запомнить?" oninput="notes['${id}']=this.value;L('notes',notes)">${esc(notes[id]||"")}</textarea><small id="event-note-hint">Записи хранятся на этом устройстве.</small></div>
+ <div class="event-note"><label for="event-note">${event.type==="lec"?"Заметка к лекции":"Заметка к событию"}</label><textarea id="event-note" aria-describedby="event-note-hint" placeholder="Что хочется запомнить?" oninput="saveNote('${id}',this.value)">${esc(notes[id]||"")}</textarea><small id="event-note-hint">Записи хранятся на этом устройстве.</small></div>
  ${event.desc ? `<p>${esc(event.desc)}</p>` : ""}${prods(speaker)}</div>`,focusNote);
  if(focusNote) $("#event-note")?.focus();
 }
-function prods(s){return Array.isArray(s?.products)&&s.products.length?`<h2 style="margin:16px 0 6px">Реквизит спикера</h2>`+s.products.filter(p=>p&&typeof p==='object').map(p=>{const shops=Array.isArray(p.shops)?p.shops.filter(h=>h&&typeof h.n==='string'&&/^https:\/\//.test(h.u)):[];return `<div class="cd" style="margin:8px 0"><b>${esc(p.n||'Реквизит')}</b>${p.d?`<p class="m" style="margin:4px 0">${esc(p.d)}</p>`:''}${shops.length?'Где купить: '+shops.map(h=>`<a href="${esc(h.u)}" target="_blank" rel="noopener">${esc(h.n)}</a>`).join(' · '):'<span class="m">Ссылка появится позже.</span>'}</div>`}).join(''):''}
-function openSp(id){const s=SP(id);if(!s)return toast('Спикер не найден');const ls=EV().filter(e=>e.sp==id);sh(`<div class="pad speaker-stage" style="text-align:center">${stagePortrait(s)}<h1 dir="auto">${esc(speakerName(s))}</h1>${speakerRole(s)?`<p class="m">${esc(speakerRole(s))}</p>`:''}</div><div class="pad">${s.bio && s.bio!=='Описание появится позже.' ? `<p>${esc(s.bio)}</p>`:''}${prods(s)}<h2 style="margin:16px 0 0">Выступления</h2></div>${ls.map(card).join('')||'<div class="cd m">Выступления спикера пока не добавлены.</div>'}`)}
-function exp(){const x=EV().filter(e=>(notes[e.id]||'').trim()).map(e=>`${19+e.day} января, ${tm(e.ts)} — ${e.title}\n${notes[e.id]}`).join('\n\n———\n\n');const f=new File([x],'IFM2027-заметки.txt',{type:'text/plain'});
- if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f]}).catch(()=>{});else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),30000)}}
+function prodRevealed(p,now=forumNow()){
+ if(!Number.isInteger(p.after))return true;
+ const own=EV().filter(e=>e.sp===p.sp&&!S.off[e.id]);
+ if(!own.length)return true;
+ const last=own[own.length-1];
+ return last.over&&now>=(Number.isFinite(last.mark.ended)?last.mark.ended:last.end)+p.after*6e4;
+}
+function prods(s){
+ const own=Array.isArray(s?.products)?s.products:[];
+ const added=s?S.prod.filter(p=>p.sp===s.id).map(p=>{const ok=prodRevealed(p);return {n:p.n,d:p.d,shops:ok?[p.shop]:[],wait:!ok}}):[];
+ const list=[...own,...added];
+ return list.length?`<h2 style="margin:16px 0 6px">Реквизит спикера</h2>`+list.filter(p=>p&&typeof p==='object').map(p=>{const shops=Array.isArray(p.shops)?p.shops.filter(h=>h&&typeof h.n==='string'&&/^https:\/\//.test(h.u)):[];return `<div class="cd" style="margin:8px 0"><b>${esc(p.n||'Реквизит')}</b>${p.d?`<p class="m" style="margin:4px 0">${esc(p.d)}</p>`:''}${shops.length?'Где купить: '+shops.map(h=>`<a href="${esc(h.u)}" target="_blank" rel="noopener">${esc(h.n)}</a>`).join(' · '):`<span class="m">${p.wait?'Ссылка появится после лекции.':'Ссылка появится позже.'}</span>`}</div>`}).join(''):'';
+}
+function openSp(id){const s=SP(id);if(!s)return toast('Спикер не найден');const ls=EV().filter(e=>e.sp==id);sh(`<div class="pad" style="text-align:center">${av(s,'big')}<h1 dir="auto">${esc(speakerName(s))}</h1>${speakerRole(s)?`<p class="m">${esc(speakerRole(s))}</p>`:''}</div><div class="pad">${s.bio?`<p>${esc(s.bio)}</p>`:''}${prods(s)}<h2 style="margin:16px 0 0">Выступления</h2></div>${ls.map(card).join('')||'<div class="cd m">Выступления спикера пока не добавлены.</div>'}`)}
+function saveNote(id,value){
+ notes[id]=value;
+ if(!value.trim()&&isFree(id))delete notes[id];
+ L('notes',notes);
+ const e=EV().find(x=>x.id===id);
+ if(e){notemeta[id]={title:e.title,day:e.day,ts:e.plan,sp:e.sp&&SP(e.sp)?speakerName(SP(e.sp)):''};L('notemeta',notemeta)}
+ else if(isFree(id)&&value.trim()&&!notemeta[id]){notemeta[id]={title:'',day:-1,ts:Number(id.slice(5))||Date.now(),sp:''};L('notemeta',notemeta)}
+ pendingViewRefresh=true;
+}
+function noteEntries(){
+ const known=new Map(EV().map(e=>[e.id,e])),out=[];
+ for(const [id,raw] of Object.entries(notes)){
+  const text=String(raw||'');if(!text.trim())continue;
+  const e=known.get(id),m=notemeta[id];
+  if(e)out.push({id,kind:'event',title:e.title,day:e.day,ts:e.ts,end:e.end,sp:e.sp&&SP(e.sp)?speakerName(SP(e.sp)):'',text});
+  else if(isFree(id))out.push({id,kind:'free',title:text.trim().split('\n')[0].slice(0,80),ts:m?.ts||Number(id.slice(5))||0,text});
+  else if(m&&Number.isInteger(m.day)&&m.day>=0&&m.day<=2)out.push({id,kind:'orphan',title:m.title||'Запись к снятому событию',day:m.day,ts:m.ts||0,sp:m.sp||'',text});
+  else out.push({id,kind:'free',title:m?.title||'Запись к снятому событию',ts:m?.ts||0,text});
+ }
+ return out.sort((a,b)=>a.ts-b.ts);
+}
+function buildExport(){
+ const all=noteEntries(),parts=['МФИ 2027 — заметки'];
+ for(let d=0;d<3;d++){
+  const items=all.filter(x=>x.kind!=='free'&&x.day===d);
+  if(!items.length)continue;
+  parts.push((19+d)+' января');
+  for(const x of items)parts.push([`${tm(x.ts)}${x.kind==='event'?'–'+tm(x.end):''} · ${x.title}${x.kind==='orphan'?' (событие снято с программы)':''}`,x.sp?'Спикер: '+x.sp:'',x.text.trim()].filter(Boolean).join('\n'));
+ }
+ const free=all.filter(x=>x.kind==='free');
+ if(free.length){
+  parts.push('Свободные записи');
+  for(const x of free)parts.push((x.ts?new Date(x.ts).toLocaleString('ru',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Moscow'})+'\n':'')+x.text.trim());
+ }
+ return parts.join('\n\n———\n\n').replace(/\n\n———\n\n(\d+ января|Свободные записи)\n\n———\n\n/g,'\n\n$1\n\n');
+}
+function deliver(file){
+ if(navigator.canShare&&navigator.canShare({files:[file]}))navigator.share({files:[file]}).catch(()=>{});
+ else{const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=file.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),30000)}
+}
+function exp(){
+ if(!noteEntries().length)return toast('Пока нет заметок для выгрузки.');
+ deliver(new File([buildExport()],'IFM2027-заметки.txt',{type:'text/plain'}));
+}
+function copyAll(){
+ const text=buildExport();
+ const ok=()=>toast('Заметки скопированы');
+ const fallback=()=>{const a=document.createElement('textarea');a.value=text;document.body.append(a);a.select();try{document.execCommand('copy');ok()}catch{toast('Не удалось скопировать. Используйте «Выгрузить».')}a.remove()};
+ if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(ok,fallback);else fallback();
+}
+function backupSave(){
+ const body=JSON.stringify({app:'ifm2027',v:1,at:Date.now(),notes,notemeta,fav});
+ deliver(new File([body],'IFM2027-резервная-копия.json',{type:'application/json'}));
+}
+async function importBackup(file){
+ if(!file)return;
+ try{
+  const data=JSON.parse(await file.text());
+  if(data?.app!=='ifm2027')throw Error('format');
+  const n=IFM.record(data.notes,v=>typeof v==='string'),m=IFM.record(data.notemeta,v=>v&&typeof v==='object'&&typeof v.title==='string'),f=IFM.record(data.fav,v=>typeof v==='boolean');
+  let added=0,kept=0;
+  for(const [id,text] of Object.entries(n)){
+   if(!text.trim())continue;
+   if((notes[id]||'').trim()){if(notes[id]!==text)kept++;continue}
+   notes[id]=text;if(m[id])notemeta[id]=m[id];added++;
+  }
+  for(const [id,v] of Object.entries(f))if(v&&fav[id]===undefined)fav[id]=true;
+  L('notes',notes);L('notemeta',notemeta);L('fav',fav);render();
+  toast('Добавлено записей: '+added+(kept?'. Совпавшие по событию оставлены как есть: '+kept:''));
+ }catch{toast('Не удалось прочитать резервную копию.')}
+}
+function newNote(){const id='free-'+Date.now();openNote(id)}
+function openNote(id){
+ const free=isFree(id),m=notemeta[id];
+ sh(`<div class="pad"><h1>${free?'Новая запись':esc(m?.title||'Запись')}</h1>${!free?'<p class="m">Событие снято с программы. Запись сохранена на этом устройстве.</p>':''}<div class="event-note"><label for="event-note">Запись</label><textarea id="event-note" placeholder="Что хочется запомнить?" oninput="saveNote('${id}',this.value)">${esc(notes[id]||'')}</textarea><small>Записи хранятся на этом устройстве.</small></div><button class="btn g" style="margin-top:16px" onclick="if(confirm('Удалить запись?')){delete notes[id];L('notes',notes);pendingViewRefresh=true;closeSh()}">Удалить запись</button></div>`.replace('onclick="if(confirm(\'Удалить запись?\')){delete notes[id]',`onclick="if(confirm('Удалить запись?')){delete notes['${id}']`),false);
+ $('#event-note')?.focus();
+}
+/* ===== возврат и напоминания ===== */
+function resumeLabel(r){
+ const ev=r.ev&&EV().find(e=>e.id===r.ev);
+ if(ev)return ev.title;
+ return ({sp:'Спикеры',prog:`Программа · ${19+(r.day||0)} января`,notes:'Заметки',news:'Новости'})[r.tab]||'Сейчас';
+}
+function resumeDismiss(){resumeOffer=null;render()}
+function resumeGo(){
+ const r=resumeOffer;resumeOffer=null;if(!r)return;
+ tab=TABS.includes(r.tab)?r.tab:'home';
+ day=Number.isInteger(r.day)&&r.day>=0&&r.day<=2?r.day:0;
+ topic=[...D.events,...S.add].some(e=>e.topic===r.topic)?r.topic:'';
+ render();$('#app-scroll').scrollTop=0;
+ if(r.ev&&EV().some(e=>e.id===r.ev))openEv(r.ev);
+ saveResume();
+}
+function tickKey(){
+ const now=forumNow(),all=EV(),cur=all.find(e=>e.live),nxt=nextEvent(all,now);
+ const soon=all.filter(e=>!S.off[e.id]&&fav[e.id]&&!e.over&&!e.live&&e.ts>now&&e.ts-now<=9e5).map(e=>e.id+':'+Math.ceil((e.ts-now)/6e4));
+ return [cur?.id,nxt?.id,nxt?.unknown,soon.join()].join('|');
+}
+let lastTick='';
+function tick(){const k=tickKey();if(k!==lastTick){lastTick=k;if(tab==='home')refreshVisitorView()}}
 /* ===== скрытая админка: 6 касаний по фото организаторов ===== */
 function sec(){clearTimeout(tt);if(++tp>=6){tp=0;if(!REMOTE.ready)return toast('Общие правки пока не подключены');sh('<div class="pad"><h1>Вход организатора</h1><form onsubmit="event.preventDefault();signIn()"><label for="email">Электронная почта</label><input id="email" type="email" autocomplete="username" required><label for="password">Пароль</label><input id="password" type="password" autocomplete="current-password" required><button class="btn" type="submit">Войти</button></form></div>')}tt=setTimeout(()=>tp=0,2500)}
 async function signIn(){try{await REMOTE.login($('#email').value,$('#password').value);await sync();adm=1;admPanel()}catch(e){REMOTE.logout();toast('Не удалось войти. Проверьте учётную запись и соединение.')}}
 function admPanel(){$('#sh').innerHTML='<button class="btn g back" onclick="closeSh()">‹ Назад</button>'+`<div class="pad"><h1 class="gold">Администратор</h1><p class="m">${REMOTE.ready?"Обновления видны всем посетителям.":"Общие правки пока не подключены."} Сдвиг сейчас: ${S.shift} мин</p>
+ ${admLive()}
  <h2 style="margin:16px 0 4px">Сдвинуть всё расписание</h2><label for="n">Минуты сдвига</label><input id="n" type="number" min="1" max="720" value="10" inputmode="numeric"><div class="row"><button class="btn b" onclick="shift(1)">Позже на N мин</button><button class="btn g b" onclick="shift(-1)">Раньше на N мин</button></div>
  <h2 style="margin:20px 0 4px">Новость</h2><label for="nt">Заголовок</label><input id="nt"><label for="nx">Текст новости</label><textarea id="nx" style="min-height:80px"></textarea><button class="btn" onclick="pub()">Опубликовать</button>
  <h2 style="margin:20px 0 4px">Добавить событие</h2><label for="at">Название</label><input id="at"><div class="row"><div class="b"><label for="ad">День</label><select id="ad"><option value="0">19 янв</option><option value="1">20 янв</option><option value="2">21 янв</option></select></div><div class="b"><label for="ah">Время</label><input id="ah" type="time" value="12:00"></div><div class="b"><label for="am">Минуты</label><input id="am" type="number" min="1" max="1440" value="30"></div></div><label for="ay">Тип события</label><select id="ay">${Object.entries(TY).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><button class="btn" onclick="addE()">Добавить</button>
+ ${admProd()}
  <h2 style="margin:20px 0 4px">Отмена событий</h2>${EV().map(e=>`<div class="row pr"><div class="b"><b>${esc(e.title)}</b><br><small>${19+e.day}&nbsp;янв, ${tm(e.ts)}</small></div><button class="btn g" onclick="save(null,s=>{s.off['${e.id}']=!s.off['${e.id}']})">${S.off[e.id]?'Вернуть':'Отменить'}</button></div>`).join('')}
  <button class="btn g" style="margin:20px 0" onclick="if(confirm('Сбросить все изменения?')){save(null,()=>({shift:0,off:{},add:[],news:[]}))}">Сбросить всё</button><button class="btn g" onclick="REMOTE.logout();closeSh()">Выйти</button></div>`}
+function admLive(){
+ const list=EV(),def=list.find(e=>e.live)||nextEvent(list,forumNow())||list[0];
+ if(!list.some(e=>e.id===admEvent))admEvent=def?.id||'';
+ const e=list.find(x=>x.id===admEvent);
+ if(!e)return '';
+ const l=e.mark||{},state=S.off[e.id]?'Отменено':e.live?'Идёт':e.over?'Закончилось':e.unknown?'Начало задерживается':'Ещё не началось';
+ const tin=new Date(e.ts+10800000).toISOString().slice(11,16);
+ return `<h2 style="margin:20px 0 4px">Ход программы</h2><p class="m">Отметки пересчитывают остаток дня: плановые паузы между событиями сохраняются.</p>
+ <label for="lv-e">Событие</label><select id="lv-e" onchange="admEvent=this.value;admPanel();$('#lv-e').focus()">${list.map(x=>`<option value="${esc(x.id)}"${x.id===admEvent?' selected':''}>${19+x.day} янв, ${tm(x.ts)} · ${esc(x.title)}</option>`).join('')}</select>
+ <p class="m">${state} · начало ${tm(e.ts)}${e.ts!==e.plan?' (по плану '+tm(e.plan)+')':''} · конец ${tm(e.end)}${l.delay?' · задержка '+l.delay+' мин':''}</p>
+ <div class="row"><button class="btn b" onclick="liveSet('start')">Началось</button><button class="btn g b" onclick="liveSet('going')">Уже идёт</button></div>
+ <div class="row" style="margin-top:8px"><button class="btn g b" onclick="liveSet('end')">Закончилось</button><button class="btn g b" onclick="liveSet('reset')">Сбросить отметки</button></div>
+ <div class="row"><div class="b"><label for="lv-n">Задержка, мин</label><input id="lv-n" type="number" min="1" max="720" value="${l.delay||15}" inputmode="numeric"></div><button class="btn g b" onclick="liveSet('delay')">Задерживается</button></div>
+ <div class="row"><div class="b"><label for="lv-t">Начало в</label><input id="lv-t" type="time" value="${tin}"></div><button class="btn g b" onclick="liveSet('time')">Назначить время</button></div>`;
+}
+function liveSet(kind){
+ const now=forumNow(),all=EV(),e=all.find(x=>x.id===admEvent);
+ if(!e)return toast('Выберите событие');
+ let patch;
+ if(kind==='start')patch={started:now};
+ else if(kind==='going')patch={started:Math.min(e.ts,now)};
+ else if(kind==='end')patch={ended:now};
+ else if(kind==='delay'){const n=+$('#lv-n').value;if(!Number.isInteger(n)||n<1||n>720)return toast('Введите задержку от 1 до 720 минут.');patch={delay:n}}
+ else if(kind==='time'){const v=$('#lv-t').value;if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(v))return toast('Укажите время начала.');patch={start:v}}
+ else patch=null;
+ const id=e.id;
+ save('Отметка сохранена',s=>{
+  const before=build(s,now);
+  const live={...s.live};
+  if(patch===null)delete live[id];else live[id]={...(live[id]||{}),...patch};
+  s.live=live;
+  const after=build(s,now),i=after.findIndex(x=>x.id===id);
+  const moved=after.slice(i+1).find(x=>!s.off[x.id]&&x.day===e.day&&x.ts!==before.find(b=>b.id===x.id)?.ts);
+  if(moved){
+   const how=moved.eta==='estimate'?'начало ориентировочно в':moved.eta==='moved'?'начало перенесено на':'начало снова по плану, в';
+   s.news.unshift({t:'Расписание изменено',x:`«${moved.title}»: ${how} ${tm(moved.ts)}. Остальные события дня сдвигаются.`,ts:Date.now()});
+  }
+ });
+}
+function admProd(){
+ const sp=D.speakers.filter(s=>s&&typeof s.id==='string');
+ return `<h2 style="margin:20px 0 4px">Ссылка на реквизит</h2>
+ <label for="pp-s">Спикер</label><select id="pp-s">${sp.map(s=>`<option value="${esc(s.id)}">${esc(speakerName(s))}</option>`).join('')}</select>
+ <label for="pp-n">Название реквизита</label><input id="pp-n"><label for="pp-d">Описание (необязательно)</label><input id="pp-d">
+ <label for="pp-sn">Название магазина</label><input id="pp-sn"><label for="pp-u">Ссылка (https://…)</label><input id="pp-u" type="url" inputmode="url">
+ <div class="row"><div class="b"><label for="pp-w">Когда показать</label><select id="pp-w"><option value="now">Сразу</option><option value="after">После лекции</option></select></div><div class="b"><label for="pp-m">Через, мин</label><input id="pp-m" type="number" min="0" max="1440" value="60" inputmode="numeric"></div></div>
+ <button class="btn" onclick="addProd()">Добавить ссылку</button>
+ ${S.prod.map(p=>`<div class="row pr"><div class="b"><b>${esc(p.n)}</b><br><small>${esc(speakerName(SP(p.sp)))} · ${Number.isInteger(p.after)?'через '+p.after+' мин после лекции':'сразу'}</small></div><button class="btn g" onclick="save(null,s=>{s.prod=s.prod.filter(x=>x.id!=='${p.id}')})">Удалить</button></div>`).join('')}`;
+}
+function addProd(){
+ const sp=$('#pp-s').value,n=$('#pp-n').value.trim(),sn=$('#pp-sn').value.trim(),u=$('#pp-u').value.trim(),m=+$('#pp-m').value;
+ const after=$('#pp-w').value==='after'?m:null;
+ if(!sp||!n)return toast('Выберите спикера и введите название реквизита.');
+ if(!sn||!/^https:\/\//.test(u))return toast('Введите название магазина и ссылку, начинающуюся с https://');
+ if(after!==null&&!(Number.isInteger(m)&&m>=0&&m<=1440))return toast('Время после лекции — от 0 до 1440 минут.');
+ const p={id:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),sp,n,d:$('#pp-d').value.trim(),shop:{n:sn,u},after,ts:Date.now()};
+ save('Ссылка добавлена',s=>{s.prod.push(p);if(after===null)s.news.unshift({t:'Ссылка на реквизит',x:`${speakerName(SP(sp))}: ${n}.`,ts:Date.now()})});
+}
 function shift(k){const n=+$('#n').value;if(!Number.isInteger(n)||n<1||n>720||Math.abs(S.shift+k*n)>1440)return toast('Введите от 1 до 720 минут. Общий сдвиг — не больше суток.');save('Расписание сдвинуто',s=>{if(Math.abs(s.shift+k*n)>1440)throw Error('Слишком большой сдвиг');s.shift+=k*n;s.news.unshift({t:'Расписание изменено',x:'Все события ' + (k>0?'сдвинуты на '+n+' минут позже':'начинаются на '+n+' минут раньше') + '.',ts:Date.now()})})}
 function pub(){const t=$('#nt').value.trim(),x=$('#nx').value;if(!t)return toast('Введите заголовок');save('Новость опубликована',s=>{s.news.unshift({t,x,ts:Date.now()})})}
 function addE(){const t=$('#at').value.trim();if(!t)return toast('Введите название');const e={id:'x'+Date.now()+'_'+Math.random().toString(36).slice(2,7),day:+$('#ad').value,t:$('#ah').value,d:+$('#am').value,type:$('#ay').value,title:t};if(!IFM.validEvent(e))return toast('Проверьте время и длительность: от 1 до 1440 минут.');save('Событие добавлено',s=>{s.add.push(e)})}
@@ -706,7 +836,17 @@ function program(raw){if(!raw||!Array.isArray(raw.events)||!raw.events.every(IFM
  }
  clearTimeout(loadDeadline);
  if(launchOffline) showProgramStatus();
+ try{
+  if(!sessionStorage.getItem('ifm2027:session')){
+   sessionStorage.setItem('ifm2027:session','1');
+   const r=L('resume');
+   if(r&&TABS.includes(r.tab)&&(r.tab!=='home'||r.ev)&&Date.now()-r.at<6048e5)resumeOffer=r;
+  }
+ }catch{}
  render();
+ lastTick=tickKey();
+ setInterval(tick,30000);
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)saveResume()});
  finishLoading();
  sync({initial:true});
  setInterval(sync,20000);
